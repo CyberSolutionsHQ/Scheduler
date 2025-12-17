@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="en">
+<head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0e1520">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Print • Cyber Solutions LLC Schedule Manager</title>
+
+  <!-- Use shared styles for basic typography, but we also add print-specific below -->
+  <link rel="stylesheet" href="assets/styles.css" />
+
+  <style>
+    /* Print view overrides */
+    body { background:#fff; color:#111; }
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 18px 14px 30px;
+      font-family: Arial, system-ui, sans-serif;
+    }
+    .printHeader {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:14px;
+      border-bottom: 2px solid #111;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .printHeader h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: .2px;
+    }
+    .printHeader .meta {
+      text-align:right;
+      font-size: 12px;
+      color:#333;
+      line-height: 1.35;
+    }
+    .employeeLine{
+      margin-top: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .contactLine{
+      margin-top: 3px;
+      font-size: 12px;
+      color:#444;
+    }
+
+    table {
+      width:100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 12px;
+    }
+    th, td {
+      border: 1px solid #bbb;
+      padding: 9px 9px;
+      vertical-align: top;
+      text-align:left;
+    }
+    th {
+      background:#f2f2f2;
+      font-size: 12px;
+    }
+    .locAddr{
+      margin-top: 4px;
+      font-size: 11px;
+      color:#444;
+      white-space: pre-wrap;
+    }
+    .tag {
+      display:inline-block;
+      border:1px solid #111;
+      border-radius:999px;
+      padding:2px 8px;
+      font-size: 11px;
+      margin: 2px 4px 0 0;
+    }
+    .muted { color:#666; }
+    .toolbar {
+      display:flex;
+      gap:10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .toolbar button, .toolbar a {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #111;
+      background:#fff;
+      color:#111;
+      font-weight: 800;
+      text-decoration:none;
+      cursor:pointer;
+    }
+    .toolbar .primary{
+      background:#111;
+      color:#fff;
+      border-color:#111;
+    }
+    .hint{
+      margin-top: 10px;
+      font-size: 12px;
+      color:#333;
+    }
+
+    .crewSection{
+      margin-top: 18px;
+      padding-top: 10px;
+      border-top: 2px solid #111;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .crewTitle{
+      margin: 0;
+      font-size: 16px;
+      font-weight: 900;
+    }
+    .crewMembers{
+      margin-top: 6px;
+      font-size: 12px;
+      color:#333;
+    }
+
+    @media print{
+      .toolbar, .hint { display:none !important; }
+      body { margin: 0; }
+      .page { padding: 12mm; }
+      .crewSection{ break-inside: avoid; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="printHeader">
+      <div>
+        <h1 id="platformName">Cyber Solutions LLC Schedule Manager</h1>
+        <div class="employeeLine" id="companyLine">Company: (Not set)</div>
+        <div class="employeeLine" id="titleLine">Schedule</div>
+        <div class="employeeLine" id="subjectLine">—</div>
+        <div class="contactLine" id="contactLine" style="display:none;"></div>
+        <div class="contactLine" id="membersLine" style="display:none;"></div>
+      </div>
+
+      <div class="meta">
+        <div>Generated: <strong id="genDate">—</strong></div>
+        <div class="muted" id="saveAs">Save as: Schedule/EmployeeName.pdf</div>
+      </div>
+    </div>
+
+    <div id="missing" class="hint" style="display:none;">
+      This print page needs parameters in the URL, like:<br/>
+      <code>print.html?empId=EMP_ID</code><br/>
+      <code>print.html?crewId=CREW_ID&amp;mode=daily&amp;date=YYYY-MM-DD</code><br/>
+      <code>print.html?crewId=CREW_ID&amp;mode=weekly&amp;weekStart=YYYY-MM-DD</code><br/>
+      <code>print.html?report=crews_all&amp;mode=daily&amp;date=YYYY-MM-DD</code><br/>
+      <code>print.html?report=crews_all&amp;mode=weekly&amp;weekStart=YYYY-MM-DD</code>
+    </div>
+
+    <div id="scheduleWrap" class="muted">Loading…</div>
+
+    <div class="toolbar no-print">
+      <button class="primary" id="printBtn" type="button">🖨️ Print / Save as PDF</button>
+      <a id="backLink" href="export.html">⬅️ Back</a>
+      <a href="index.html">🏠 Home</a>
+    </div>
+
+    <div class="hint no-print" id="hintText">
+      On phone: tap <strong>Print / Save as PDF</strong>, then use your device’s Save/Share option and save as
+      <strong>Schedule/&lt;EmployeeName&gt;.pdf</strong>.
+    </div>
+  </div>
+
+  <script src="assets/store.js"></script>
+  <script src="assets/app.js"></script>
+  <script>
+    (async () => {
+      await JanitorApp.init({ pageTitle: "Print • Cyber Solutions LLC Schedule Manager", wireSaveBar: false });
+
+      const PLATFORM_NAME = "Cyber Solutions LLC Schedule Manager";
+      const session = JanitorAuth.getSession?.();
+      const isEmployee = session?.role === "employee";
+      const backLink = document.getElementById("backLink");
+      if (isEmployee) {
+        backLink.href = "my-schedule.html";
+        backLink.textContent = "⬅️ Back to My Schedule";
+      } else {
+        backLink.href = "export.html";
+        backLink.textContent = "⬅️ Back to Export";
+      }
+
+      let empId = JanitorApp.qs("empId");
+      let crewId = JanitorApp.qs("crewId");
+      let report = String(JanitorApp.qs("report") || "").toLowerCase();
+      const mode = String(JanitorApp.qs("mode") || "").toLowerCase();
+      const dateParam = JanitorApp.qs("date");
+      const weekStartParam = JanitorApp.qs("weekStart");
+
+      const scheduleWrap = document.getElementById("scheduleWrap");
+      const missing = document.getElementById("missing");
+      const companyLine = document.getElementById("companyLine");
+      const titleLine = document.getElementById("titleLine");
+      const subjectLine = document.getElementById("subjectLine");
+      const membersLine = document.getElementById("membersLine");
+
+      document.getElementById("platformName").textContent = PLATFORM_NAME;
+      document.getElementById("genDate").textContent = new Date().toLocaleString();
+
+      const s = JanitorStore.getSaved(); // IMPORTANT: print from saved data (authoritative)
+      const companyFromStore = (Array.isArray(s.companies) && s.companies[0]) ? s.companies[0] : null;
+      const companyName =
+        String(companyFromStore?.companyName || "").trim() ||
+        String(session?.companyName || "").trim() ||
+        String(s.settings?.companyName || "").trim();
+      companyLine.textContent = `Company: ${companyName || "(Not set)"}`;
+
+      const escape = JanitorApp.escapeHtml;
+
+      // RBAC: employees may only print their own schedule (includes crews they belong to).
+      if (isEmployee) {
+        missing.style.display = "none";
+        report = "";
+        crewId = "";
+
+        const linkedEmpId = String(session?.employeeId || "");
+        if (!linkedEmpId) {
+          titleLine.textContent = "My Schedule";
+          subjectLine.textContent = "—";
+          scheduleWrap.innerHTML = `<div class="muted">Your login is not linked to an employee record yet.</div>`;
+          document.getElementById("printBtn").style.display = "none";
+          return;
+        }
+        empId = linkedEmpId;
+      }
+
+      function safeFilePart(input, fallback) {
+        const s = String(input || "").replace(/[^a-z0-9-_ ]/gi, "").trim();
+        return s || fallback;
+      }
+
+      function parseYMD(ymd) {
+        const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd || ""));
+        if (!m) return null;
+        const y = Number(m[1]);
+        const mo = Number(m[2]);
+        const d = Number(m[3]);
+        if (!y || !mo || !d) return null;
+        const dt = new Date(y, mo - 1, d);
+        if (Number.isNaN(dt.getTime())) return null;
+        return dt;
+      }
+
+      function toYMD(dt) {
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, "0");
+        const d = String(dt.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+      }
+
+      function weekdayLabel(dt) {
+        return dt.toLocaleDateString(undefined, { weekday: "long" });
+      }
+
+      function renderTags(names) {
+        if (!names.length) return `<span class="muted">None</span>`;
+        return names.map(n => `<span class="tag">${escape(n)}</span>`).join("");
+      }
+
+      function renderLocationCell(loc) {
+        return `
+          <strong>${escape(loc?.name || "—")}</strong>
+          <div class="locAddr">${escape(loc?.address || "")}</div>
+        `;
+      }
+
+      function sortByDateStart(a, b) {
+        return String(a.date + a.start).localeCompare(String(b.date + b.start));
+      }
+
+      const locById = Object.fromEntries((s.locations || []).map(l => [l.id, l]));
+      const jobById = Object.fromEntries((s.jobTypes || []).map(j => [j.id, j]));
+      const crewById = Object.fromEntries((s.crews || []).map(c => [c.id, c]));
+      const empById = Object.fromEntries((s.employees || []).map(e => [e.id, e]));
+
+      function shiftTarget(sh) {
+        const legacyEmpId = String(sh.empId || "");
+        const targetType = String(sh.targetType || (legacyEmpId ? "employee" : ""));
+        const targetId = String(sh.targetId || legacyEmpId || "");
+        return { targetType, targetId };
+      }
+
+      function renderEmployeeSchedule() {
+        const emp = (s.employees || []).find(e => e.id === empId);
+        if (!emp) {
+          titleLine.textContent = "Employee Schedule";
+          subjectLine.textContent = "Employee: —";
+          scheduleWrap.innerHTML = `<div class="muted">Employee not found.</div>`;
+          return;
+        }
+
+        titleLine.textContent = "Employee Schedule";
+        subjectLine.textContent = `Employee: ${emp.name}`;
+
+        const safeName = safeFilePart(emp.name, "Employee");
+        document.title = `${safeName} • Employee Schedule • ${PLATFORM_NAME}`;
+        document.getElementById("saveAs").textContent = `Save as: Schedule/${safeName}.pdf`;
+        document.getElementById("hintText").innerHTML =
+          `On phone: tap <strong>Print / Save as PDF</strong>, then use your device’s Save/Share option and save as ` +
+          `<strong>Schedule/${escape(safeName)}.pdf</strong>.`;
+
+        if (emp.contact) {
+          const c = document.getElementById("contactLine");
+          c.style.display = "block";
+          c.textContent = `Contact: ${emp.contact}`;
+        }
+
+        const crewIds = new Set((s.crewMembers || []).filter(cm => cm.empId === empId).map(cm => cm.crewId));
+        const shifts = (s.shifts || []).filter(sh => {
+          const { targetType, targetId } = shiftTarget(sh);
+          if (targetType === "employee") return targetId === empId;
+          if (targetType === "crew") return crewIds.has(targetId);
+          return false;
+        }).sort(sortByDateStart);
+
+        if (!shifts.length) {
+          scheduleWrap.innerHTML = `<div class="muted">No shifts scheduled.</div>`;
+          return;
+        }
+
+        const rows = shifts.map(sh => {
+          const loc = locById[sh.locId];
+          const jobs = (sh.jobTypeIds || []).map(id => jobById[id]?.name).filter(Boolean);
+          const { targetType, targetId } = shiftTarget(sh);
+          const crewLabel = targetType === "crew" ? (crewById[targetId]?.name || "Crew") : "";
+          const crewNote = crewLabel ? `<div class="muted">Crew shift: ${escape(crewLabel)}</div>` : "";
+          const notes = `${crewNote}${escape(sh.notes || "")}`;
+
+          return `
+            <tr>
+              <td>${escape(sh.date)}</td>
+              <td>${escape(sh.start)} - ${escape(sh.end)}</td>
+              <td>${renderLocationCell(loc)}</td>
+              <td>${renderTags(jobs)}</td>
+              <td>${notes || `<span class="muted">—</span>`}</td>
+            </tr>
+          `;
+        }).join("");
+
+        scheduleWrap.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th style="width:110px;">Date</th>
+                <th style="width:120px;">Hours</th>
+                <th>Location</th>
+                <th style="width:220px;">Job list</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+      }
+
+      function renderCrewMembers(crewId) {
+        const memberEmpIds = (s.crewMembers || []).filter(cm => cm.crewId === crewId).map(cm => cm.empId);
+        const names = memberEmpIds
+          .map(id => empById[id]?.name)
+          .filter(Boolean)
+          .sort((a,b) => String(a).localeCompare(String(b)));
+
+        membersLine.style.display = "block";
+        membersLine.textContent = `Members: ${names.length ? names.join(", ") : "(none)"}`;
+      }
+
+      function renderCrewDaily() {
+        const crew = (s.crews || []).find(c => c.id === crewId);
+        const dt = parseYMD(dateParam);
+
+        titleLine.textContent = "Crew Schedule Daily";
+        subjectLine.textContent = `Crew: ${crew?.name || "—"} • Date: ${dateParam || "—"}`;
+
+        if (!crew) {
+          scheduleWrap.innerHTML = `<div class="muted">Crew not found.</div>`;
+          return;
+        }
+        if (!dt) {
+          scheduleWrap.innerHTML = `<div class="muted">Missing or invalid date.</div>`;
+          return;
+        }
+
+        renderCrewMembers(crew.id);
+
+        const safeCrew = safeFilePart(crew.name, "Crew");
+        const saveName = `Crew_${safeCrew}_${toYMD(dt)}_Daily.pdf`;
+        document.title = `${safeCrew} • Daily Crew Schedule • ${PLATFORM_NAME}`;
+        document.getElementById("saveAs").textContent = `Save as: Schedule/${saveName}`;
+        document.getElementById("hintText").innerHTML =
+          `On phone: tap <strong>Print / Save as PDF</strong>, then save as <strong>Schedule/${escape(saveName)}</strong>.`;
+
+        const shifts = (s.shifts || [])
+          .filter(sh => {
+            const { targetType, targetId } = shiftTarget(sh);
+            return targetType === "crew" && targetId === crew.id && sh.date === toYMD(dt);
+          })
+          .sort((a,b) => String(a.start + a.locId).localeCompare(String(b.start + b.locId)));
+
+        if (!shifts.length) {
+          scheduleWrap.innerHTML = `<div class="muted">No crew shifts scheduled for this date.</div>`;
+          return;
+        }
+
+        const rows = shifts.map(sh => {
+          const loc = locById[sh.locId];
+          const jobs = (sh.jobTypeIds || []).map(id => jobById[id]?.name).filter(Boolean);
+          return `
+            <tr>
+              <td>${escape(sh.start)} - ${escape(sh.end)}</td>
+              <td>${renderLocationCell(loc)}</td>
+              <td>${renderTags(jobs)}</td>
+              <td>${escape(sh.notes || "") || `<span class="muted">—</span>`}</td>
+            </tr>
+          `;
+        }).join("");
+
+        scheduleWrap.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th style="width:150px;">Hours</th>
+                <th>Location</th>
+                <th style="width:240px;">Job list</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+      }
+
+      function renderCrewWeekly() {
+        const crew = (s.crews || []).find(c => c.id === crewId);
+        const startDt = parseYMD(weekStartParam);
+
+        titleLine.textContent = "Crew Schedule Weekly";
+        subjectLine.textContent = `Crew: ${crew?.name || "—"} • Week starting: ${weekStartParam || "—"}`;
+
+        if (!crew) {
+          scheduleWrap.innerHTML = `<div class="muted">Crew not found.</div>`;
+          return;
+        }
+        if (!startDt) {
+          scheduleWrap.innerHTML = `<div class="muted">Missing or invalid weekStart.</div>`;
+          return;
+        }
+
+        renderCrewMembers(crew.id);
+
+        const safeCrew = safeFilePart(crew.name, "Crew");
+        const saveName = `Crew_${safeCrew}_${toYMD(startDt)}_Weekly.pdf`;
+        document.title = `${safeCrew} • Weekly Crew Schedule • ${PLATFORM_NAME}`;
+        document.getElementById("saveAs").textContent = `Save as: Schedule/${saveName}`;
+        document.getElementById("hintText").innerHTML =
+          `On phone: tap <strong>Print / Save as PDF</strong>, then save as <strong>Schedule/${escape(saveName)}</strong>.`;
+
+        const dayDates = [];
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(startDt.getFullYear(), startDt.getMonth(), startDt.getDate() + i);
+          dayDates.push(d);
+        }
+        const ymdSet = new Set(dayDates.map(toYMD));
+
+        const crewShifts = (s.shifts || []).filter(sh => {
+          const { targetType, targetId } = shiftTarget(sh);
+          return targetType === "crew" && targetId === crew.id && ymdSet.has(String(sh.date || ""));
+        }).sort(sortByDateStart);
+
+        const shiftsByDate = {};
+        for (const sh of crewShifts) {
+          const k = String(sh.date || "");
+          if (!shiftsByDate[k]) shiftsByDate[k] = [];
+          shiftsByDate[k].push(sh);
+        }
+
+        const sections = dayDates.map(dt => {
+          const ymd = toYMD(dt);
+          const items = shiftsByDate[ymd] || [];
+          if (!items.length) {
+            return `<h2 style="margin:16px 0 6px; font-size:14px;">${escape(weekdayLabel(dt))} • ${escape(ymd)}</h2><div class="muted">No shifts.</div>`;
+          }
+
+          const rows = items.map(sh => {
+            const loc = locById[sh.locId];
+            const jobs = (sh.jobTypeIds || []).map(id => jobById[id]?.name).filter(Boolean);
+            return `
+              <tr>
+                <td>${escape(sh.start)} - ${escape(sh.end)}</td>
+                <td>${renderLocationCell(loc)}</td>
+                <td>${renderTags(jobs)}</td>
+                <td>${escape(sh.notes || "") || `<span class="muted">—</span>`}</td>
+              </tr>
+            `;
+          }).join("");
+
+          return `
+            <h2 style="margin:16px 0 6px; font-size:14px;">${escape(weekdayLabel(dt))} • ${escape(ymd)}</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:150px;">Hours</th>
+                  <th>Location</th>
+                  <th style="width:240px;">Job list</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          `;
+        }).join("");
+
+        scheduleWrap.innerHTML = sections;
+      }
+
+      function renderAllCrewsDaily() {
+        const dt = parseYMD(dateParam);
+        titleLine.textContent = "All Crews — Daily Schedule";
+        subjectLine.textContent = `Date: ${dateParam || "—"}`;
+        membersLine.style.display = "none";
+
+        if (!dt) {
+          scheduleWrap.innerHTML = `<div class="muted">Missing or invalid date.</div>`;
+          return;
+        }
+
+        const ymd = toYMD(dt);
+        const saveName = `AllCrews_${ymd}_Daily.pdf`;
+        document.title = `All Crews • Daily Schedule • ${PLATFORM_NAME}`;
+        document.getElementById("saveAs").textContent = `Save as: Schedule/${saveName}`;
+        document.getElementById("hintText").innerHTML =
+          `On phone: tap <strong>Print / Save as PDF</strong>, then save as <strong>Schedule/${escape(saveName)}</strong>.`;
+
+        const crewsWithMembers = JanitorStore.getAllCrewsWithMembers({ state: s, includeInactiveCrews: true, includeInactiveEmployees: true });
+        if (!crewsWithMembers.length) {
+          scheduleWrap.innerHTML = `<div class="muted">No crews yet.</div>`;
+          return;
+        }
+
+        const blocks = crewsWithMembers.map(({ crew, members }) => {
+          const memberNames = (members || []).map(m => m.name).filter(Boolean);
+          const shifts = JanitorStore.getCrewShiftsForPeriod(crew.id, { state: s, mode: "daily", date: ymd });
+
+          const membersHtml = `Members: ${escape(memberNames.length ? memberNames.join(", ") : "(none)")}`;
+
+          if (!shifts.length) {
+            return `
+              <div class="crewSection">
+                <h2 class="crewTitle">${escape(crew.name || "Crew")}</h2>
+                <div class="crewMembers">${membersHtml}</div>
+                <div class="muted" style="margin-top:8px;">No scheduled shifts.</div>
+              </div>
+            `;
+          }
+
+          const rows = shifts.map(sh => {
+            const loc = locById[sh.locId];
+            const jobs = (sh.jobTypeIds || []).map(id => jobById[id]?.name).filter(Boolean);
+            return `
+              <tr>
+                <td>${renderLocationCell(loc)}</td>
+                <td>${escape(sh.start)} - ${escape(sh.end)}</td>
+                <td>${renderTags(jobs)}</td>
+                <td>${escape(sh.notes || "") || `<span class="muted">—</span>`}</td>
+              </tr>
+            `;
+          }).join("");
+
+          return `
+            <div class="crewSection">
+              <h2 class="crewTitle">${escape(crew.name || "Crew")}</h2>
+              <div class="crewMembers">${membersHtml}</div>
+              <div class="muted" style="margin-top:8px;">${escape(weekdayLabel(dt))} • ${escape(ymd)}</div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Location</th>
+                    <th style="width:150px;">Hours</th>
+                    <th style="width:220px;">Job list</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>
+          `;
+        }).join("");
+
+        scheduleWrap.innerHTML = blocks;
+      }
+
+      function renderAllCrewsWeekly() {
+        const startDt = parseYMD(weekStartParam);
+        titleLine.textContent = "All Crews — Weekly Schedule";
+        const range = JanitorStore.formatWeekRange(weekStartParam);
+        subjectLine.textContent = range ? `Week: ${range}` : `Week starting: ${weekStartParam || "—"}`;
+        membersLine.style.display = "none";
+
+        if (!startDt) {
+          scheduleWrap.innerHTML = `<div class="muted">Missing or invalid weekStart.</div>`;
+          return;
+        }
+
+        const ymd = toYMD(startDt);
+        const saveName = `AllCrews_${ymd}_Weekly.pdf`;
+        document.title = `All Crews • Weekly Schedule • ${PLATFORM_NAME}`;
+        document.getElementById("saveAs").textContent = `Save as: Schedule/${saveName}`;
+        document.getElementById("hintText").innerHTML =
+          `On phone: tap <strong>Print / Save as PDF</strong>, then save as <strong>Schedule/${escape(saveName)}</strong>.`;
+
+        const crewsWithMembers = JanitorStore.getAllCrewsWithMembers({ state: s, includeInactiveCrews: true, includeInactiveEmployees: true });
+        if (!crewsWithMembers.length) {
+          scheduleWrap.innerHTML = `<div class="muted">No crews yet.</div>`;
+          return;
+        }
+
+        const blocks = crewsWithMembers.map(({ crew, members }) => {
+          const memberNames = (members || []).map(m => m.name).filter(Boolean);
+          const shifts = JanitorStore.getCrewShiftsForPeriod(crew.id, { state: s, mode: "weekly", weekStart: ymd });
+
+          const membersHtml = `Members: ${escape(memberNames.length ? memberNames.join(", ") : "(none)")}`;
+
+          if (!shifts.length) {
+            return `
+              <div class="crewSection">
+                <h2 class="crewTitle">${escape(crew.name || "Crew")}</h2>
+                <div class="crewMembers">${membersHtml}</div>
+                <div class="muted" style="margin-top:8px;">No scheduled shifts.</div>
+              </div>
+            `;
+          }
+
+          const rows = shifts.map(sh => {
+            const loc = locById[sh.locId];
+            const jobs = (sh.jobTypeIds || []).map(id => jobById[id]?.name).filter(Boolean);
+            const shDt = parseYMD(sh.date);
+            const dayLabel = shDt ? `${weekdayLabel(shDt)} • ${toYMD(shDt)}` : String(sh.date || "");
+            return `
+              <tr>
+                <td>${escape(dayLabel || "—")}</td>
+                <td>${renderLocationCell(loc)}</td>
+                <td>${escape(sh.start)} - ${escape(sh.end)}</td>
+                <td>${renderTags(jobs)}</td>
+                <td>${escape(sh.notes || "") || `<span class="muted">—</span>`}</td>
+              </tr>
+            `;
+          }).join("");
+
+          return `
+            <div class="crewSection">
+              <h2 class="crewTitle">${escape(crew.name || "Crew")}</h2>
+              <div class="crewMembers">${membersHtml}</div>
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:160px;">Day / Date</th>
+                    <th>Location</th>
+                    <th style="width:150px;">Hours</th>
+                    <th style="width:200px;">Job list</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>
+          `;
+        }).join("");
+
+        scheduleWrap.innerHTML = blocks;
+      }
+
+      // Routing
+      if (isEmployee) {
+        renderEmployeeSchedule();
+      } else if (report === "crews_all") {
+        if (mode === "daily") renderAllCrewsDaily();
+        else if (mode === "weekly") renderAllCrewsWeekly();
+        else {
+          missing.style.display = "block";
+          titleLine.textContent = "All Crews Schedule";
+          subjectLine.textContent = "—";
+          scheduleWrap.innerHTML = `<div class="muted">Missing or invalid mode. Use mode=daily or mode=weekly.</div>`;
+        }
+      } else if (crewId) {
+        if (mode === "daily") renderCrewDaily();
+        else if (mode === "weekly") renderCrewWeekly();
+        else {
+          missing.style.display = "block";
+          titleLine.textContent = "Crew Schedule";
+          subjectLine.textContent = "Crew: —";
+          scheduleWrap.innerHTML = `<div class="muted">Missing or invalid mode. Use mode=daily or mode=weekly.</div>`;
+        }
+      } else if (empId) {
+        renderEmployeeSchedule();
+      } else {
+        missing.style.display = "block";
+        titleLine.textContent = "Schedule";
+        subjectLine.textContent = "—";
+        scheduleWrap.innerHTML = `<div class="muted">No schedule selected.</div>`;
+      }
+
+      document.getElementById("printBtn").addEventListener("click", () => {
+        window.print();
+      });
+    })();
+  </script>
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+  }
+</script>
+</body>
+</html>
