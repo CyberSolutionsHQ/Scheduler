@@ -1,0 +1,2 @@
+-- Seed data (intentionally empty for now).
+-- Keep this file to satisfy `supabase/config.toml` ([db.seed].sql_paths).
