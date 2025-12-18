@@ -72,6 +72,7 @@ create table if not exists public.companies (
   constraint companies_company_code_unique unique ("companyCode")
 );
 
+drop trigger if exists companies_no_company_code_update on public.companies;
 create trigger companies_no_company_code_update
 before update on public.companies
 for each row execute function public.prevent_company_code_update();
@@ -97,10 +98,12 @@ create table if not exists public.users (
   )
 );
 
+drop trigger if exists users_set_updated_at on public.users;
 create trigger users_set_updated_at
 before update on public.users
 for each row execute function public.set_updated_at();
 
+drop trigger if exists users_no_company_code_update on public.users;
 create trigger users_no_company_code_update
 before update on public.users
 for each row execute function public.prevent_company_code_update();
@@ -122,10 +125,12 @@ create table if not exists public.employees (
   constraint employees_company_code_id_unique unique ("companyCode", id)
 );
 
+drop trigger if exists employees_set_updated_at on public.employees;
 create trigger employees_set_updated_at
 before update on public.employees
 for each row execute function public.set_updated_at();
 
+drop trigger if exists employees_no_company_code_update on public.employees;
 create trigger employees_no_company_code_update
 before update on public.employees
 for each row execute function public.prevent_company_code_update();
@@ -133,11 +138,20 @@ for each row execute function public.prevent_company_code_update();
 create index if not exists employees_company_code_idx on public.employees ("companyCode");
 create index if not exists employees_company_code_active_idx on public.employees ("companyCode", active);
 
-alter table public.users
-  add constraint users_employee_fk
-  foreign key ("companyCode", "employeeId")
-  references public.employees ("companyCode", id)
-  deferrable initially deferred;
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'users_employee_fk'
+  ) then
+    alter table public.users
+      add constraint users_employee_fk
+      foreign key ("companyCode", "employeeId")
+      references public.employees ("companyCode", id)
+      deferrable initially deferred;
+  end if;
+end $$;
 
 -- locations
 create table if not exists public.locations (
@@ -152,10 +166,12 @@ create table if not exists public.locations (
   constraint locations_company_code_id_unique unique ("companyCode", id)
 );
 
+drop trigger if exists locations_set_updated_at on public.locations;
 create trigger locations_set_updated_at
 before update on public.locations
 for each row execute function public.set_updated_at();
 
+drop trigger if exists locations_no_company_code_update on public.locations;
 create trigger locations_no_company_code_update
 before update on public.locations
 for each row execute function public.prevent_company_code_update();
@@ -174,10 +190,12 @@ create table if not exists public.job_types (
   constraint job_types_company_code_id_unique unique ("companyCode", id)
 );
 
+drop trigger if exists job_types_set_updated_at on public.job_types;
 create trigger job_types_set_updated_at
 before update on public.job_types
 for each row execute function public.set_updated_at();
 
+drop trigger if exists job_types_no_company_code_update on public.job_types;
 create trigger job_types_no_company_code_update
 before update on public.job_types
 for each row execute function public.prevent_company_code_update();
@@ -196,10 +214,12 @@ create table if not exists public.crews (
   constraint crews_company_code_id_unique unique ("companyCode", id)
 );
 
+drop trigger if exists crews_set_updated_at on public.crews;
 create trigger crews_set_updated_at
 before update on public.crews
 for each row execute function public.set_updated_at();
 
+drop trigger if exists crews_no_company_code_update on public.crews;
 create trigger crews_no_company_code_update
 before update on public.crews
 for each row execute function public.prevent_company_code_update();
@@ -221,6 +241,7 @@ create table if not exists public.crew_members (
   constraint crew_members_unique_membership unique ("companyCode", "crewId", "employeeId")
 );
 
+drop trigger if exists crew_members_no_company_code_update on public.crew_members;
 create trigger crew_members_no_company_code_update
 before update on public.crew_members
 for each row execute function public.prevent_company_code_update();
@@ -253,10 +274,12 @@ create table if not exists public.shifts (
     references public.crews ("companyCode", id)
 );
 
+drop trigger if exists shifts_set_updated_at on public.shifts;
 create trigger shifts_set_updated_at
 before update on public.shifts
 for each row execute function public.set_updated_at();
 
+drop trigger if exists shifts_no_company_code_update on public.shifts;
 create trigger shifts_no_company_code_update
 before update on public.shifts
 for each row execute function public.prevent_company_code_update();
@@ -281,6 +304,7 @@ create table if not exists public.shift_jobs (
   constraint shift_jobs_unique_per_shift unique ("companyCode", "shiftId", "jobTypeId")
 );
 
+drop trigger if exists shift_jobs_no_company_code_update on public.shift_jobs;
 create trigger shift_jobs_no_company_code_update
 before update on public.shift_jobs
 for each row execute function public.prevent_company_code_update();
@@ -306,6 +330,7 @@ create table if not exists public.requests (
   constraint requests_proposed_username_lower check ("proposedUsername" = '' or "proposedUsername" = lower("proposedUsername"))
 );
 
+drop trigger if exists requests_no_company_code_update on public.requests;
 create trigger requests_no_company_code_update
 before update on public.requests
 for each row execute function public.prevent_company_code_update();

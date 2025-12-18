@@ -1,5 +1,6 @@
+# Local (non-committed) config override used by legacy pages
 assets/config.js
-cat > .gitignore <<'EOF'
+
 # Node / JS
 node_modules/
 
@@ -10,9 +11,8 @@ node_modules/
 # Supabase
 supabase/.temp/
 supabase/.env
-supabase/.env.local
+supabase/.env.*
 
 # OS / Editor
 .DS_Store
 .vscode/
-EOF
