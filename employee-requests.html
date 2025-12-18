@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1520">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Employee Requests • Cyber Solutions LLC Schedule Manager</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="title">
+      <div>
+        <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
+        <div class="sub">Manager • employee credential requests</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="employees.html">Employees</a>
+      <a href="locations.html">Locations</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="shifts.html">Shifts</a>
+      <a href="crews.html">Crews</a>
+      <a href="export.html">Export PDFs</a>
+      <a href="users.html">Users / Access</a>
+      <a class="active" href="employee-requests.html">Employee Requests <span class="badge" data-badge="employeeRequests" style="display:none;"></span></a>
+      <a href="account.html">My Account</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <section class="card">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+        <h2 style="margin:0;">Employee Requests Inbox</h2>
+        <button class="btn secondary" id="refreshBtn" type="button">Refresh</button>
+      </div>
+      <div class="small" id="meta" style="margin-top:8px;">Loading…</div>
+      <div class="hr"></div>
+      <div id="list" class="list"></div>
+    </section>
+  </div>
+
+  <script src="assets/config.example.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/store.js"></script>
+  <script src="assets/app.js"></script>
+  <script>
+    (async () => {
+      await JanitorApp.init({ pageTitle: "Employee Requests • Cyber Solutions LLC Schedule Manager", wireSaveBar: false });
+
+      const session = JanitorAuth.getSession();
+      const metaEl = document.getElementById("meta");
+      const listEl = document.getElementById("list");
+
+      const normalizeCompany = (s) => String(s || "").trim().toUpperCase();
+      const normalizeUsername = (s) => String(s || "").trim().toLowerCase();
+      const escape = (s) => JanitorApp.escapeHtml(s);
+
+      function maskPin(p) { return p ? "••••" : "—"; }
+
+      function getUsersById() {
+        const s = JanitorStore.getSaved();
+        const map = {};
+        (s.users || []).forEach(u => { map[String(u.id || "")] = u; });
+        return map;
+      }
+
+      async function render() {
+        listEl.innerHTML = `<div class="small">Loading…</div>`;
+        try {
+          await JanitorStore.resetDraftToSaved();
+          const pending = JanitorStore.listPendingEmployeeRequestsForManager(session.companyCode);
+          const usersById = getUsersById();
+          const companyCode = normalizeCompany(session.companyCode);
+
+          metaEl.textContent = `Company code: ${companyCode} • Pending: ${pending.length}`;
+          listEl.innerHTML = "";
+
+          if (!pending.length) {
+            listEl.innerHTML = `<div class="small">No pending employee requests.</div>`;
+            JanitorApp.updateRequestBadges?.();
+            return;
+          }
+
+          for (const r of pending) {
+            const empUser = usersById[String(r.targetUserId || "")] || null;
+            const row = document.createElement("div");
+            row.className = "item";
+            row.innerHTML = `
+              <div class="meta">
+                <strong>${escape(normalizeUsername(empUser?.username || "")) || "—"}</strong>
+                <div class="muted">Employee login</div>
+                <div class="small" style="margin-top:6px;">
+                  Requested username: <strong>${escape(normalizeUsername(r.proposedUsername || "")) || "—"}</strong><br/>
+                  Requested PIN: <strong>${maskPin(r.proposedPin)}</strong><br/>
+                  Created: <strong>${escape(new Date(r.createdAt).toLocaleString())}</strong>
+                </div>
+                ${r.note ? `<div class="small" style="margin-top:6px;">Note: ${escape(r.note)}</div>` : ""}
+              </div>
+              <div class="actions">
+                <button class="btn" type="button" data-action="approve" data-id="${escape(r.id)}">Approve</button>
+                <button class="btn danger" type="button" data-action="deny" data-id="${escape(r.id)}">Deny</button>
+              </div>
+            `;
+            listEl.appendChild(row);
+          }
+
+          JanitorApp.updateRequestBadges?.();
+        } catch (err) {
+          metaEl.textContent = `Company code: ${normalizeCompany(session.companyCode)}`;
+          listEl.innerHTML = `<div class="small" style="color:#ffdf9f;">${escape(err?.message || "Failed to load requests.")}</div>`;
+        }
+      }
+
+      document.getElementById("refreshBtn").addEventListener("click", () => render());
+
+      listEl.addEventListener("click", async (e) => {
+        const btn = e.target.closest("button[data-action][data-id]");
+        if (!btn) return;
+        const action = btn.dataset.action;
+        const requestId = String(btn.dataset.id || "");
+        if (!requestId) return;
+        if (action !== "approve" && action !== "deny") return;
+
+        const ok = await JanitorApp.confirmBox(`${action === "approve" ? "Approve" : "Deny"} this employee credential request?`);
+        if (!ok) return;
+
+        try {
+          await JanitorStore.resetDraftToSaved();
+          if (action === "approve") await JanitorStore.approveRequest(requestId);
+          else JanitorStore.denyRequest(requestId);
+          await JanitorStore.save();
+          JanitorApp.toast(action === "approve" ? "Request approved." : "Request denied.", { type: "success" });
+          await render();
+        } catch (err) {
+          try { await JanitorStore.resetDraftToSaved(); } catch {}
+          JanitorApp.toast(err?.message || "Action failed.", { type: "error" });
+        }
+      });
+
+      await render();
+      JanitorApp.updateRequestBadges?.();
+    })();
+  </script>
+</body>
+</html>

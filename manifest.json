@@ -1,0 +1,11 @@
+{
+  "name": "Cyber Solutions LLC Schedule Manager",
+  "short_name": "Schedule Manager",
+  "description": "Offline-capable scheduling web app",
+  "start_url": "./login.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0e1520",
+  "theme_color": "#0e1520"
+}
+

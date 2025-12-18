@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0e1520">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shifts • Cyber Solutions LLC Schedule Manager</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="title">
+      <div>
+        <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
+        <div class="sub">Shifts • Assign employees to locations + hours + job checklist • Tap <strong>Save</strong> to commit.</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="employees.html">Employees</a>
+      <a href="locations.html">Locations</a>
+      <a href="jobs.html">Jobs</a>
+      <a class="active" href="shifts.html">Shifts</a>
+      <a href="crews.html">Crews</a>
+      <a href="export.html">Export PDFs</a>
+      <a href="users.html">Users / Access</a>
+      <a href="employee-requests.html">Employee Requests <span class="badge" data-badge="employeeRequests" style="display:none;"></span></a>
+      <a href="account.html">My Account</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <section class="card">
+      <h2>Create shift</h2>
+
+      <div class="row three">
+        <div>
+          <label for="assignType">Assign to</label>
+          <select id="assignType">
+            <option value="employee" selected>Employee</option>
+            <option value="crew">Crew</option>
+          </select>
+        </div>
+        <div>
+          <label id="assigneeLabel" for="assigneeSel">Employee</label>
+          <select id="assigneeSel"></select>
+        </div>
+        <div>
+          <label for="locSel">Location</label>
+          <select id="locSel"></select>
+        </div>
+      </div>
+
+      <div class="row three">
+        <div>
+          <label for="dateEl">Date</label>
+          <input id="dateEl" type="date" />
+        </div>
+        <div>
+          <label for="startEl">Start</label>
+          <input id="startEl" type="time" />
+        </div>
+        <div>
+          <label for="endEl">End</label>
+          <input id="endEl" type="time" />
+        </div>
+      </div>
+
+      <label>Job checklist</label>
+      <div id="jobsWrap" class="checkboxPills"></div>
+
+      <label for="notesEl">Notes (optional)</label>
+      <textarea id="notesEl" placeholder="Anything special for this shift…"></textarea>
+
+      <div class="btnRow">
+        <button class="btn" id="addShiftBtn" type="button">➕ Add shift</button>
+        <button class="btn secondary" id="clearBtn" type="button">Clear</button>
+      </div>
+
+      <div class="small" style="margin-top:10px;">
+        If you don’t see employees/locations/jobs, add them first on those pages.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Upcoming shifts</h2>
+
+      <div class="row three">
+        <div>
+          <label for="filterEmp">Filter by employee</label>
+          <select id="filterEmp"></select>
+        </div>
+        <div>
+          <label for="filterCrew">Filter by crew</label>
+          <select id="filterCrew"></select>
+        </div>
+        <div>
+          <label for="filterLoc">Filter by location</label>
+          <select id="filterLoc"></select>
+        </div>
+      </div>
+
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:110px;">Date</th>
+              <th style="width:180px;">Assigned to</th>
+              <th>Location</th>
+              <th style="width:140px;">Hours</th>
+              <th style="width:220px;">Jobs</th>
+              <th>Notes</th>
+              <th style="width:90px;"></th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="small" style="margin-top:10px;">
+        Tip: Export PDFs from the Export page after you Save.
+      </div>
+    </section>
+
+    <!-- Save bar -->
+    <div id="saveBar"></div>
+  </div>
+
+  <script src="assets/config.example.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/store.js"></script>
+  <script src="assets/app.js"></script>
+  <script>
+    (async () => {
+      await JanitorApp.init({ pageTitle: "Shifts • Cyber Solutions LLC Schedule Manager" });
+
+      const assignType = document.getElementById("assignType");
+      const assigneeSel = document.getElementById("assigneeSel");
+      const assigneeLabel = document.getElementById("assigneeLabel");
+      const locSel = document.getElementById("locSel");
+      const dateEl = document.getElementById("dateEl");
+      const startEl = document.getElementById("startEl");
+      const endEl = document.getElementById("endEl");
+      const notesEl = document.getElementById("notesEl");
+      const jobsWrap = document.getElementById("jobsWrap");
+
+      const filterEmp = document.getElementById("filterEmp");
+      const filterCrew = document.getElementById("filterCrew");
+      const filterLoc = document.getElementById("filterLoc");
+      const tbody = document.getElementById("tbody");
+
+      function opt(value, label) {
+        return `<option value="${JanitorApp.escapeHtml(value)}">${JanitorApp.escapeHtml(label)}</option>`;
+      }
+
+      function buildAssigneeSelect({ keepValue = true } = {}) {
+        const s = JanitorStore.getDraft();
+        const prev = keepValue ? assigneeSel.value : "";
+
+        if (assignType.value === "crew") {
+          assigneeLabel.textContent = "Crew";
+          const crews = (s.crews || []).filter(c => c.active !== false).sort((a,b)=>a.name.localeCompare(b.name));
+          assigneeSel.innerHTML = crews.length
+            ? `<option value="">— Select —</option>` + crews.map(c => opt(c.id, c.name)).join("")
+            : `<option value="">No crews (create one first)</option>`;
+        } else {
+          assigneeLabel.textContent = "Employee";
+          const emps = (s.employees || []).filter(e => e.active !== false).sort((a,b)=>a.name.localeCompare(b.name));
+          assigneeSel.innerHTML = emps.length
+            ? `<option value="">— Select —</option>` + emps.map(e => opt(e.id, e.name)).join("")
+            : `<option value="">No employees (add one first)</option>`;
+        }
+
+        if (prev && Array.from(assigneeSel.options).some(o => o.value === prev)) assigneeSel.value = prev;
+      }
+
+      function buildSelects() {
+        const s = JanitorStore.getDraft();
+
+        // Assignee
+        buildAssigneeSelect({ keepValue: true });
+
+        // Filters
+        const emps = (s.employees || []).filter(e => e.active !== false).sort((a,b)=>a.name.localeCompare(b.name));
+        filterEmp.innerHTML = `<option value="">All employees</option>` + emps.map(e => opt(e.id, e.name)).join("");
+
+        const crews = (s.crews || []).filter(c => c.active !== false).sort((a,b)=>a.name.localeCompare(b.name));
+        filterCrew.innerHTML = `<option value="">All crews</option>` + crews.map(c => opt(c.id, c.name)).join("");
+
+        // Locations
+        const locs = (s.locations || []).filter(l => l.active !== false).sort((a,b)=>a.name.localeCompare(b.name));
+        locSel.innerHTML = `<option value="">— Select —</option>` + locs.map(l => opt(l.id, l.name)).join("");
+        filterLoc.innerHTML = `<option value="">All locations</option>` + locs.map(l => opt(l.id, l.name)).join("");
+
+        // Jobs checklist
+        const jobs = [...s.jobTypes].sort((a,b)=>a.name.localeCompare(b.name));
+        jobsWrap.innerHTML = "";
+        if (jobs.length === 0) {
+          jobsWrap.innerHTML = `<div class="small">No job types yet. Add them on the Jobs page.</div>`;
+        } else {
+          for (const j of jobs) {
+            const lbl = document.createElement("label");
+            lbl.innerHTML = `<input type="checkbox" value="${JanitorApp.escapeHtml(j.id)}" /> ${JanitorApp.escapeHtml(j.name)}`;
+            jobsWrap.appendChild(lbl);
+          }
+        }
+      }
+
+      function selectedJobIds() {
+        return Array.from(jobsWrap.querySelectorAll("input[type=checkbox]"))
+          .filter(cb => cb.checked)
+          .map(cb => cb.value);
+      }
+
+      function clearForm() {
+        // keep selects as-is (manager may add multiple shifts quickly)
+        dateEl.value = "";
+        startEl.value = "";
+        endEl.value = "";
+        notesEl.value = "";
+        Array.from(jobsWrap.querySelectorAll("input[type=checkbox]")).forEach(cb => cb.checked = false);
+        dateEl.focus();
+      }
+
+      function renderTable() {
+        const s = JanitorStore.getDraft();
+
+        const empById = Object.fromEntries((s.employees || []).map(e => [e.id, e]));
+        const crewById = Object.fromEntries((s.crews || []).map(c => [c.id, c]));
+        const memberEmpIdsByCrewId = {};
+        for (const cm of (s.crewMembers || [])) {
+          if (!memberEmpIdsByCrewId[cm.crewId]) memberEmpIdsByCrewId[cm.crewId] = [];
+          memberEmpIdsByCrewId[cm.crewId].push(cm.empId);
+        }
+        const locById = Object.fromEntries(s.locations.map(l => [l.id, l]));
+        const jobById = Object.fromEntries(s.jobTypes.map(j => [j.id, j]));
+
+        let shifts = [...(s.shifts || [])];
+
+        // Apply filters
+        if (filterEmp.value) shifts = shifts.filter(x => (x.targetType || "employee") === "employee" && (x.targetId || x.empId) === filterEmp.value);
+        if (filterCrew.value) shifts = shifts.filter(x => (x.targetType || "employee") === "crew" && (x.targetId || x.crewId) === filterCrew.value);
+        if (filterLoc.value) shifts = shifts.filter(x => x.locId === filterLoc.value);
+
+        // Sort
+        shifts.sort((a,b) => (a.date + a.start).localeCompare(b.date + b.start));
+
+        tbody.innerHTML = "";
+        if (shifts.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="small">No shifts yet.</td></tr>`;
+          return;
+        }
+
+        for (const sh of shifts) {
+          const targetType = sh.targetType || "employee";
+          const targetId = sh.targetId || sh.empId || "";
+          const isCrew = targetType === "crew";
+          const emp = !isCrew ? empById[targetId] : null;
+          const crew = isCrew ? crewById[targetId] : null;
+          const loc = locById[sh.locId];
+          const jobs = (sh.jobTypeIds || []).map(id => jobById[id]?.name).filter(Boolean);
+
+          const assignedName = isCrew ? (crew?.name || "—") : (emp?.name || "—");
+          const assignedMeta = isCrew
+            ? `${(memberEmpIdsByCrewId[targetId] || []).length} member(s)`
+            : "";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${JanitorApp.escapeHtml(sh.date)}</td>
+            <td>
+              <strong>${JanitorApp.escapeHtml(assignedName)}</strong>
+              ${isCrew ? `<div class="small">Crew • ${JanitorApp.escapeHtml(assignedMeta)}</div>` : ``}
+            </td>
+            <td>
+              <strong>${JanitorApp.escapeHtml(loc?.name || "—")}</strong><br/>
+              <span class="small">${JanitorApp.escapeHtml((loc?.address || "").replace(/\n/g, " • "))}</span>
+            </td>
+            <td>${JanitorApp.escapeHtml(sh.start)} - ${JanitorApp.escapeHtml(sh.end)}</td>
+            <td>
+              <div class="tags">
+                ${jobs.length ? jobs.map(j => `<span class="tag">${JanitorApp.escapeHtml(j)}</span>`).join("") : `<span class="small">None</span>`}
+              </div>
+            </td>
+            <td>${JanitorApp.escapeHtml(sh.notes || "")}</td>
+            <td><button class="btn danger" type="button" data-del="${JanitorApp.escapeHtml(sh.id)}">Delete</button></td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      document.getElementById("addShiftBtn").addEventListener("click", () => {
+        try {
+          JanitorStore.addShift({
+            targetType: assignType.value,
+            targetId: assigneeSel.value,
+            locId: locSel.value,
+            date: dateEl.value,
+            start: startEl.value,
+            end: endEl.value,
+            jobTypeIds: selectedJobIds(),
+            notes: notesEl.value
+          });
+          JanitorApp.toast("Shift added (tap Save) ✅", { type: "success" });
+          JanitorApp.markDirty();
+          clearForm();
+          renderTable();
+        } catch (e) {
+          JanitorApp.toast(e.message || "Could not add shift.", { type: "error" });
+        }
+      });
+
+      document.getElementById("clearBtn").addEventListener("click", clearForm);
+
+      tbody.addEventListener("click", async (ev) => {
+        const btn = ev.target.closest("button[data-del]");
+        if (!btn) return;
+        const id = btn.getAttribute("data-del");
+
+        const ok = await JanitorApp.confirmBox("Delete this shift? (Tap Save to commit.)");
+        if (!ok) return;
+
+        try {
+          JanitorStore.deleteShift(id);
+          JanitorApp.toast("Shift deleted (tap Save) ⚠️", { type: "warn" });
+          JanitorApp.markDirty();
+          renderTable();
+        } catch (e) {
+          JanitorApp.toast(e.message || "Delete failed.", { type: "error" });
+        }
+      });
+
+      filterEmp.addEventListener("change", () => {
+        if (filterEmp.value) filterCrew.value = "";
+        renderTable();
+      });
+      filterCrew.addEventListener("change", () => {
+        if (filterCrew.value) filterEmp.value = "";
+        renderTable();
+      });
+      filterLoc.addEventListener("change", renderTable);
+
+      assignType.addEventListener("change", () => {
+        buildAssigneeSelect({ keepValue: false });
+      });
+
+      // If user discards changes, rebuild everything from saved/draft
+      window.addEventListener("janitor:discard", () => {
+        buildSelects();
+        renderTable();
+      });
+
+      // Initial render
+      buildSelects();
+      renderTable();
+    })();
+  </script>
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+  }
+</script>
+</body>
+</html>

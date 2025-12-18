@@ -1,0 +1,18 @@
+assets/config.js
+cat > .gitignore <<'EOF'
+# Node / JS
+node_modules/
+
+# Environment variables
+.env
+.env.*
+
+# Supabase
+supabase/.temp/
+supabase/.env
+supabase/.env.local
+
+# OS / Editor
+.DS_Store
+.vscode/
+EOF

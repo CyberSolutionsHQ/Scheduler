@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0e1520">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jobs • Cyber Solutions LLC Schedule Manager</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="title">
+      <div>
+        <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
+        <div class="sub">Jobs • Add / remove job options • Tap <strong>Save</strong> to commit changes.</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="employees.html">Employees</a>
+      <a href="locations.html">Locations</a>
+      <a class="active" href="jobs.html">Jobs</a>
+      <a href="shifts.html">Shifts</a>
+      <a href="crews.html">Crews</a>
+      <a href="export.html">Export PDFs</a>
+      <a href="users.html">Users / Access</a>
+      <a href="employee-requests.html">Employee Requests <span class="badge" data-badge="employeeRequests" style="display:none;"></span></a>
+      <a href="account.html">My Account</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <section class="card">
+      <h2>Add job type</h2>
+
+      <div class="row">
+        <div>
+          <label for="jobName">Job name</label>
+          <input id="jobName" placeholder="e.g., Waxing" />
+        </div>
+      </div>
+
+      <div class="btnRow">
+        <button class="btn" id="addBtn" type="button">➕ Add job type</button>
+        <button class="btn secondary" id="clearBtn" type="button">Clear</button>
+      </div>
+
+      <div class="small" style="margin-top:10px;">
+        Tip: Keep job names short so they fit nicely on PDF checklists.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Job type list</h2>
+      <div class="small" id="countLine">Loading…</div>
+      <div id="list" class="list"></div>
+    </section>
+
+    <!-- Save bar -->
+    <div id="saveBar"></div>
+  </div>
+
+  <script src="assets/config.example.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/store.js"></script>
+  <script src="assets/app.js"></script>
+  <script>
+    (async () => {
+      await JanitorApp.init({ pageTitle: "Jobs • Cyber Solutions LLC Schedule Manager" });
+
+      const nameEl = document.getElementById("jobName");
+      const listEl = document.getElementById("list");
+      const countLine = document.getElementById("countLine");
+
+      function render() {
+        const s = JanitorStore.getDraft();
+        const jobs = [...s.jobTypes].sort((a,b) => a.name.localeCompare(b.name));
+
+        countLine.textContent = `${jobs.length} job type(s)`;
+
+        listEl.innerHTML = "";
+        if (jobs.length === 0) {
+          listEl.innerHTML = `<div class="small">No job types yet. Add one above.</div>`;
+          return;
+        }
+
+        for (const j of jobs) {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `
+            <div class="meta">
+              <strong>${JanitorApp.escapeHtml(j.name)}</strong>
+              <span class="pill">ID: ${JanitorApp.escapeHtml(j.id)}</span>
+            </div>
+            <div class="actions">
+              <button class="btn danger" type="button" data-del="${JanitorApp.escapeHtml(j.id)}">Delete</button>
+            </div>
+          `;
+          listEl.appendChild(div);
+        }
+      }
+
+      function clearForm() {
+        nameEl.value = "";
+        nameEl.focus();
+      }
+
+      document.getElementById("addBtn").addEventListener("click", () => {
+        try {
+          JanitorStore.addJobType({ name: nameEl.value });
+          JanitorApp.toast("Job type added (tap Save) ✅", { type: "success" });
+          JanitorApp.markDirty();
+          clearForm();
+          render();
+        } catch (e) {
+          JanitorApp.toast(e.message || "Could not add job type.", { type: "error" });
+        }
+      });
+
+      document.getElementById("clearBtn").addEventListener("click", clearForm);
+
+      listEl.addEventListener("click", async (ev) => {
+        const btn = ev.target.closest("button[data-del]");
+        if (!btn) return;
+        const id = btn.getAttribute("data-del");
+
+        const ok = await JanitorApp.confirmBox(
+          "Delete this job type? (It will be removed from any existing shifts when you Save.)"
+        );
+        if (!ok) return;
+
+        try {
+          JanitorStore.deleteJobType(id);
+          JanitorApp.toast("Job type deleted (tap Save) ⚠️", { type: "warn" });
+          JanitorApp.markDirty();
+          render();
+        } catch (e) {
+          JanitorApp.toast(e.message || "Delete failed.", { type: "error" });
+        }
+      });
+
+      window.addEventListener("janitor:discard", render);
+
+      render();
+    })();
+  </script>
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+  }
+</script>
+</body>
+</html>
