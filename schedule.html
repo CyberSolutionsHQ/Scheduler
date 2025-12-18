@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1520">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Schedule • Cyber Solutions LLC Schedule Manager</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="header" id="appHeader"></header>
+
+  <div class="container">
+    <section class="card" id="companyPicker" style="display:none;"></section>
+
+    <section class="card">
+      <h2>Week</h2>
+      <div class="row two">
+        <div>
+          <label for="weekStart">Week start (Monday)</label>
+          <input id="weekStart" type="date" />
+        </div>
+        <div style="display:flex; align-items:flex-end;">
+          <button class="btn" id="createWeekBtn" type="button">Create week</button>
+        </div>
+      </div>
+      <div class="small" style="margin-top:10px;">
+        Schedules are stored in <code>schedules</code> and shifts in <code>shifts</code> (RLS enforces company isolation).
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Add shift</h2>
+      <form id="shiftForm" autocomplete="off">
+        <div class="row three">
+          <div>
+            <label for="date">Date</label>
+            <input id="date" type="date" />
+          </div>
+          <div>
+            <label for="start">Start</label>
+            <input id="start" type="time" />
+          </div>
+          <div>
+            <label for="end">End</label>
+            <input id="end" type="time" />
+          </div>
+        </div>
+
+        <div class="row two">
+          <div>
+            <label for="jobSiteId">Job site</label>
+            <select id="jobSiteId"></select>
+          </div>
+          <div>
+            <label for="employeeId">Employee</label>
+            <select id="employeeId"></select>
+          </div>
+        </div>
+
+        <label for="notes">Notes</label>
+        <textarea id="notes" placeholder="Optional"></textarea>
+
+        <div class="btnRow">
+          <button class="btn" type="submit">Add shift</button>
+        </div>
+      </form>
+    </section>
+
+    <div id="shifts"></div>
+  </div>
+
+  <script type="module" src="./js/pages/schedule.js"></script>
+</body>
+</html>
+

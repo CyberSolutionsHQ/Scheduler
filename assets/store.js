@@ -16,8 +16,14 @@
   const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
   const nowISO = () => new Date().toISOString();
 
-  const uid = (prefix = "id") =>
-    `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
+  const newId = () => {
+    try {
+      const v = globalThis.crypto?.randomUUID?.();
+      if (v) return v;
+    } catch {}
+    return `id_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
+  };
+  const uid = () => newId();
 
   const normalizeCompanyCode = (s) => String(s || "").trim().toUpperCase();
 
@@ -69,22 +75,23 @@
   const emptyState = () => ({
     meta: {
       appKey: APP_KEY,
-      version: 3,
+      version: 4,
       lastSavedAt: null,
       lastEditedAt: null,
     },
     settings: {
       companyName: "",
     },
-    companies: [],   // {id, companyCode, companyName, isDisabled, createdAt, updatedAt}
+    companies: [],   // {id, companyCode, companyName, isDisabled, supportEnabled?, createdAt}
     users: [],       // {id, companyCode, username, pinHash|pin, role, employeeId?, active, createdAt, updatedAt}
-    requests: [],    // {id, companyCode, createdAt, status, type, requesterRole, requesterUserId, targetUserId, proposedUsername?, proposedPin?, note?, handledByUserId?, handledAt?, decisionNote?}
+    requests: [],    // {id, companyCode, type, status, requesterUserId, targetUserId, proposedUsername?, proposedPin?, createdAt, handledAt?, handledBy?, decisionNote?}
     employees: [],   // {id, companyCode, name, contact, active, createdAt, updatedAt}
     locations: [],   // {id, companyCode, name, address, active, createdAt, updatedAt}
-    jobTypes: [],    // {id, companyCode, name, active, createdAt, updatedAt}
+    job_types: [],   // {id, companyCode, name, active, createdAt, updatedAt}
     crews: [],       // {id, companyCode, name, active, createdAt, updatedAt}
-    crewMembers: [], // {id, companyCode, crewId, empId, createdAt, updatedAt}
-    shifts: [],      // {id, companyCode, targetType: "employee"|"crew", targetId, locId, date, start, end, jobTypeIds[], notes, createdAt, updatedAt}
+    crew_members: [], // {id, companyCode, crewId, employeeId, createdAt}
+    shifts: [],      // {id, companyCode, date, start, end, notes, locId, empId|null, crewId|null, createdAt, updatedAt}
+    shift_jobs: [],  // {id, companyCode, shiftId, jobTypeId, createdAt}
   });
 
   /** ---------------------------
@@ -198,12 +205,77 @@
     // Dirty flags so pages can show "unsaved changes"
     _dirty: false,
 
+    /** ---------------------------
+     *  Session + Tenant helpers (store-level contract)
+     *  ---------------------------
+     */
+    getSession() { return readSession(); },
+
+    setSession(session) {
+      const s = session && typeof session === "object" ? session : null;
+      if (!s) throw new Error("Invalid session.");
+      const next = {
+        ...s,
+        companyCode: normalizeCompanyCode(s.companyCode),
+        username: normalizeUsername(s.username),
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(next));
+      return next;
+    },
+
+    clearSession() { localStorage.removeItem(SESSION_KEY); },
+
+    requireAuth(allowedRoles = []) {
+      const sess = readSession();
+      if (!sess) {
+        const next = `${location.pathname.split("/").pop() || "index.html"}${location.search || ""}`;
+        location.href = `login.html?next=${encodeURIComponent(next)}`;
+        throw new Error("Not signed in.");
+      }
+      const roles = Array.isArray(allowedRoles) ? allowedRoles : [];
+      if (roles.length && !roles.includes(String(sess.role || ""))) {
+        location.href = "login.html";
+        throw new Error("Not authorized.");
+      }
+      return sess;
+    },
+
+    getCompanyCode() { return getActiveCompanyCode(); },
+    normalizeCompanyCode(code) { return normalizeCompanyCode(code); },
+
+    tenantGuard(recordCompanyCode) {
+      const rc = normalizeCompanyCode(recordCompanyCode);
+      const role = getActiveRole();
+      if (role === "platform_admin") return true;
+      const cc = getActiveCompanyCode();
+      if (!cc || !rc || cc !== rc) throw new Error("Tenant mismatch.");
+      return true;
+    },
+
     async init() {
       if (this._ready) return;
       await storage.init();
 
       const saved = await storage.getSavedState();
-      this._saved = this._normalize(saved || emptyState());
+      const normalizedSaved = this._normalize(saved || emptyState());
+      const hasLegacyShape = (() => {
+        if (!saved || typeof saved !== "object") return false;
+        const v = Number(saved?.meta?.version || 0);
+        if (v && v < 4) return true;
+        if (saved.jobTypes || saved.crewMembers) return true;
+        if (Array.isArray(saved.shifts) && saved.shifts.some(sh => sh && (sh.targetType || sh.targetId || Array.isArray(sh.jobTypeIds)))) return true;
+        return false;
+      })();
+
+      if (hasLegacyShape) {
+        try {
+          normalizedSaved.meta = { ...(normalizedSaved.meta || {}), migratedAt: nowISO() };
+          normalizedSaved.meta.lastSavedAt = normalizedSaved.meta.lastSavedAt || nowISO();
+          await storage.setSavedState(normalizedSaved);
+        } catch {}
+      }
+
+      this._saved = deepClone(normalizedSaved);
 
       // One-time migration: legacy users were stored outside the main state.
       // Move them into the persisted store so RBAC accounts are backed up with the rest of the data.
@@ -231,6 +303,19 @@
       this._ready = true;
     },
 
+    async migrateLegacyDataOnce() {
+      await this.init();
+      const saved = await storage.getSavedState();
+      const normalized = this._normalize(saved || emptyState());
+      normalized.meta = { ...(normalized.meta || {}), migratedAt: nowISO() };
+      normalized.meta.lastSavedAt = normalized.meta.lastSavedAt || nowISO();
+      await storage.setSavedState(normalized);
+      this._saved = deepClone(normalized);
+      this._draft = deepClone(normalized);
+      this._dirty = false;
+      return this.getSaved({ scope: "all" });
+    },
+
     isReady() { return this._ready; },
 
     // Read-only view
@@ -238,21 +323,21 @@
       if (scope === "all") {
         const hasSession = !!readSession();
         if (hasSession && getActiveRole() !== "platform_admin") {
-          return deepClone(this._scopedToActiveCompany(this._saved));
+          return this._viewState(this._scopedToActiveCompany(this._saved));
         }
-        return deepClone(this._saved);
+        return this._viewState(this._saved);
       }
-      return deepClone(this._scopedToActiveCompany(this._saved));
+      return this._viewState(this._scopedToActiveCompany(this._saved));
     },
     getDraft({ scope = "active" } = {}) {
       if (scope === "all") {
         const hasSession = !!readSession();
         if (hasSession && getActiveRole() !== "platform_admin") {
-          return deepClone(this._scopedToActiveCompany(this._draft));
+          return this._viewState(this._scopedToActiveCompany(this._draft));
         }
-        return deepClone(this._draft);
+        return this._viewState(this._draft);
       }
-      return deepClone(this._scopedToActiveCompany(this._draft));
+      return this._viewState(this._scopedToActiveCompany(this._draft));
     },
 
     isDirty() { return !!this._dirty; },
@@ -304,10 +389,11 @@
       const next = deepClone(this._draft);
       next.employees = (next.employees || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
       next.locations = (next.locations || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
-      next.jobTypes = (next.jobTypes || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
+      next.job_types = (next.job_types || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
       next.crews = (next.crews || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
-      next.crewMembers = (next.crewMembers || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
+      next.crew_members = (next.crew_members || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
       next.shifts = (next.shifts || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
+      next.shift_jobs = (next.shift_jobs || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
       next.requests = (next.requests || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
       next.users = (next.users || []).filter(keepUser);
 
@@ -352,6 +438,19 @@
       if (!cc) throw new Error("Company code is required.");
       if (!un) throw new Error("Username is required.");
       if (!allowedRoles.has(r)) throw new Error("Invalid role.");
+
+      const actorRole = getActiveRole();
+      const hasSession = !!readSession();
+      if (!hasSession) {
+        // Bootstrap: allow creating the platform admin before any session exists.
+        if (!(cc === "PLATFORM" && r === "platform_admin")) {
+          throw new Error("Not authorized.");
+        }
+      } else if (actorRole !== "platform_admin") {
+        if (cc !== getActiveCompanyCode()) throw new Error("Not authorized.");
+        if (cc === "PLATFORM") throw new Error("Not authorized.");
+        if (r === "platform_admin") throw new Error("Not authorized.");
+      }
 
       const ph = String(pinHash || "").trim();
       if (!ph) throw new Error("PIN hash is required.");
@@ -530,26 +629,29 @@
         if (dupe) throw new Error("That username is already in use for this company.");
       }
 
-      const n = String(note || "").trim();
-
       const isAdminAudit = t === "admin_change_credentials";
       const createdAt = nowISO();
 
+      const requestedNote = String(note || "").trim();
       const req = {
         id: uid("req"),
         companyCode: sessionCompany,
-        createdAt,
-        status: isAdminAudit ? "approved" : "pending",
         type: t,
-        requesterRole: role,
+        status: isAdminAudit ? "approved" : "pending",
         requesterUserId,
         targetUserId,
+        createdAt,
         proposedUsername: wantsUsername ? desiredUsername : "",
         proposedPin: wantsPin ? cleanPin : "",
-        note: n,
-        handledByUserId: isAdminAudit ? requesterUserId : "",
+        handledBy: isAdminAudit ? requesterUserId : "",
         handledAt: isAdminAudit ? createdAt : "",
-        decisionNote: isAdminAudit ? "Self-managed admin credential change." : "",
+        decisionNote: (() => {
+          const base = requestedNote ? `Request: ${requestedNote}` : "";
+          if (!isAdminAudit) return base;
+          const adminAudit = "Decision: Self-managed admin credential change.";
+          if (!base) return adminAudit;
+          return `${base}\n\n${adminAudit}`;
+        })(),
       };
 
       this._draft.requests = Array.isArray(this._draft.requests) ? this._draft.requests : [];
@@ -566,6 +668,10 @@
           .filter(r => String(r.status || "") === "pending" && String(r.type || "") === "manager_change_credentials")
           .sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || "")))
       );
+    },
+
+    listPendingManagerRequestsForAdmin() {
+      return this.listPendingRequestsForAdmin();
     },
 
     listPendingEmployeeRequestsForManager(companyCode) {
@@ -634,9 +740,12 @@
       }
 
       req.status = "approved";
-      req.handledByUserId = actorUserId;
+      req.handledBy = actorUserId;
       req.handledAt = nowISO();
-      req.decisionNote = String(decisionNote || "").trim();
+      const dn = String(decisionNote || "").trim();
+      if (dn) {
+        req.decisionNote = req.decisionNote ? `${req.decisionNote}\n\nDecision: ${dn}` : `Decision: ${dn}`;
+      }
       this.markEdited();
       return deepClone(req);
     },
@@ -664,9 +773,12 @@
       }
 
       req.status = "denied";
-      req.handledByUserId = actorUserId;
+      req.handledBy = actorUserId;
       req.handledAt = nowISO();
-      req.decisionNote = String(decisionNote || "").trim();
+      const dn = String(decisionNote || "").trim();
+      if (dn) {
+        req.decisionNote = req.decisionNote ? `${req.decisionNote}\n\nDecision: ${dn}` : `Decision: ${dn}`;
+      }
       this.markEdited();
       return deepClone(req);
     },
@@ -725,8 +837,12 @@
       this._draft.employees = (this._draft.employees || []).filter(x => x.id !== empId);
 
       if (cascade) {
-        this._draft.crewMembers = (this._draft.crewMembers || []).filter(cm => cm.empId !== empId);
-        this._draft.shifts = this._draft.shifts.filter(s => !(s.targetType === "employee" && s.targetId === empId));
+        this._draft.crew_members = (this._draft.crew_members || []).filter(cm => String(cm.employeeId || "") !== String(empId));
+        const deletedShiftIds = new Set((this._draft.shifts || []).filter(s => String(s.empId || "") === String(empId)).map(s => s.id));
+        this._draft.shifts = (this._draft.shifts || []).filter(s => String(s.empId || "") !== String(empId));
+        if (deletedShiftIds.size) {
+          this._draft.shift_jobs = (this._draft.shift_jobs || []).filter(sj => !deletedShiftIds.has(String(sj.shiftId || "")));
+        }
       }
       this.markEdited();
       return true;
@@ -810,13 +926,13 @@
         createdAt: nowISO(),
         updatedAt: nowISO(),
       };
-      this._draft.jobTypes.push(j);
+      this._draft.job_types.push(j);
       this.markEdited();
       return deepClone(j);
     },
 
     updateJobType(jobId, patch) {
-      const j = this._draft.jobTypes.find(x => x.id === jobId);
+      const j = this._draft.job_types.find(x => x.id === jobId);
       if (!j) throw new Error("Job type not found.");
       if (normalizeCompanyCode(j.companyCode) !== getActiveCompanyCode() && getActiveRole() !== "platform_admin") {
         throw new Error("Job type not found.");
@@ -835,18 +951,13 @@
     },
 
     deleteJobType(jobId) {
-      const target = (this._draft.jobTypes || []).find(x => x.id === jobId);
+      const target = (this._draft.job_types || []).find(x => x.id === jobId);
       if (!target) throw new Error("Job type not found.");
       if (normalizeCompanyCode(target.companyCode) !== getActiveCompanyCode() && getActiveRole() !== "platform_admin") {
         throw new Error("Job type not found.");
       }
-      this._draft.jobTypes = (this._draft.jobTypes || []).filter(x => x.id !== jobId);
-
-      // Remove from shifts
-      this._draft.shifts = this._draft.shifts.map(s => ({
-        ...s,
-        jobTypeIds: (s.jobTypeIds || []).filter(id => id !== jobId),
-      }));
+      this._draft.job_types = (this._draft.job_types || []).filter(x => x.id !== jobId);
+      this._draft.shift_jobs = (this._draft.shift_jobs || []).filter(sj => String(sj.jobTypeId || "") !== String(jobId));
       this.markEdited();
       return true;
     },
@@ -914,57 +1025,109 @@
       this._draft.crews = (this._draft.crews || []).filter(x => x.id !== crewId);
 
       if (cascade) {
-        this._draft.crewMembers = (this._draft.crewMembers || []).filter(cm => cm.crewId !== crewId);
-        this._draft.shifts = (this._draft.shifts || []).filter(s => !(s.targetType === "crew" && s.targetId === crewId));
+        this._draft.crew_members = (this._draft.crew_members || []).filter(cm => String(cm.crewId || "") !== String(crewId));
+        const deletedShiftIds = new Set((this._draft.shifts || []).filter(s => String(s.crewId || "") === String(crewId)).map(s => s.id));
+        this._draft.shifts = (this._draft.shifts || []).filter(s => String(s.crewId || "") !== String(crewId));
+        if (deletedShiftIds.size) {
+          this._draft.shift_jobs = (this._draft.shift_jobs || []).filter(sj => !deletedShiftIds.has(String(sj.shiftId || "")));
+        }
       }
       this.markEdited();
       return true;
     },
 
-    addCrewMember({ crewId, empId } = {}) {
+    addCrewMember({ crewId, employeeId, empId } = {}) {
       const cc = getActiveCompanyCode();
       if (!cc) throw new Error("Missing company code in session. Please sign in again.");
       crewId = String(crewId || "");
-      empId = String(empId || "");
+      const finalEmployeeId = String(employeeId || empId || "");
       if (!crewId) throw new Error("Crew is required.");
-      if (!empId) throw new Error("Employee is required.");
+      if (!finalEmployeeId) throw new Error("Employee is required.");
 
       const crew = (this._draft.crews || []).find(c => c.id === crewId) || null;
       if (!crew || normalizeCompanyCode(crew.companyCode) !== cc) throw new Error("Crew not found.");
-      const emp = (this._draft.employees || []).find(e => e.id === empId) || null;
+      const emp = (this._draft.employees || []).find(e => e.id === finalEmployeeId) || null;
       if (!emp || normalizeCompanyCode(emp.companyCode) !== cc) throw new Error("Employee not found.");
 
-      const exists = (this._draft.crewMembers || []).some(cm =>
-        normalizeCompanyCode(cm.companyCode) === cc && cm.crewId === crewId && cm.empId === empId
+      const exists = (this._draft.crew_members || []).some(cm =>
+        normalizeCompanyCode(cm.companyCode) === cc && String(cm.crewId || "") === crewId && String(cm.employeeId || "") === finalEmployeeId
       );
       if (exists) return false;
 
       const cm = {
-        id: uid("cm"),
+        id: uid("crew_member"),
         companyCode: cc,
         crewId,
-        empId,
+        employeeId: finalEmployeeId,
         createdAt: nowISO(),
-        updatedAt: nowISO(),
       };
-      this._draft.crewMembers.push(cm);
+      this._draft.crew_members.push(cm);
       this.markEdited();
       return deepClone(cm);
     },
 
-    removeCrewMember({ crewId, empId } = {}) {
+    removeCrewMember({ crewId, employeeId, empId } = {}) {
       const cc = getActiveCompanyCode();
       if (!cc) throw new Error("Missing company code in session. Please sign in again.");
       crewId = String(crewId || "");
-      empId = String(empId || "");
-      const before = (this._draft.crewMembers || []).length;
-      this._draft.crewMembers = (this._draft.crewMembers || []).filter(cm => {
+      const finalEmployeeId = String(employeeId || empId || "");
+      const before = (this._draft.crew_members || []).length;
+      this._draft.crew_members = (this._draft.crew_members || []).filter(cm => {
         if (normalizeCompanyCode(cm.companyCode) !== cc) return true;
-        return !(cm.crewId === crewId && cm.empId === empId);
+        return !(String(cm.crewId || "") === crewId && String(cm.employeeId || "") === finalEmployeeId);
       });
-      if (this._draft.crewMembers.length === before) throw new Error("Crew member not found.");
+      if (this._draft.crew_members.length === before) throw new Error("Crew member not found.");
       this.markEdited();
       return true;
+    },
+
+    setEmployeeCrews(employeeId, crewIds = []) {
+      const cc = getActiveCompanyCode();
+      if (!cc) throw new Error("Missing company code in session. Please sign in again.");
+      const empId = String(employeeId || "");
+      if (!empId) throw new Error("Employee is required.");
+      const emp = (this._draft.employees || []).find(e => String(e.id || "") === empId) || null;
+      if (!emp || normalizeCompanyCode(emp.companyCode) !== cc) throw new Error("Employee not found.");
+
+      const allowedCrewIds = new Set(
+        (this._draft.crews || [])
+          .filter(c => normalizeCompanyCode(c.companyCode) === cc)
+          .map(c => String(c.id || ""))
+      );
+      const desired = Array.from(new Set((Array.isArray(crewIds) ? crewIds : []).map(String)))
+        .filter(id => allowedCrewIds.has(id));
+
+      this._draft.crew_members = Array.isArray(this._draft.crew_members) ? this._draft.crew_members : [];
+      this._draft.crew_members = this._draft.crew_members.filter(cm =>
+        normalizeCompanyCode(cm.companyCode) !== cc || String(cm.employeeId || "") !== empId
+      );
+      for (const crewId of desired) {
+        this._draft.crew_members.push({
+          id: uid("crew_member"),
+          companyCode: cc,
+          crewId: String(crewId),
+          employeeId: empId,
+          createdAt: nowISO(),
+        });
+      }
+      this.markEdited();
+      return true;
+    },
+
+    getCrewsForEmployee(employeeId, { state = null, includeInactive = true } = {}) {
+      const s = state && typeof state === "object" ? state : this._draft;
+      const empId = String(employeeId || "");
+      if (!empId) return [];
+      const crewIds = new Set(
+        (Array.isArray(s.crew_members) ? s.crew_members : [])
+          .filter(cm => String(cm.employeeId || "") === empId)
+          .map(cm => String(cm.crewId || ""))
+          .filter(Boolean)
+      );
+      let crews = (Array.isArray(s.crews) ? s.crews : []).filter(c => crewIds.has(String(c.id || "")));
+      if (!includeInactive) crews = crews.filter(c => c.active !== false);
+      crews = crews.slice().sort((a,b) => String(a.name || "").localeCompare(String(b.name || "")));
+      return deepClone(crews);
     },
 
     /** ---------------------------
@@ -984,13 +1147,15 @@
       end = String(end || "");
       notes = String(notes || "").trim();
 
-      if (!targetType) {
-        if (empId) { targetType = "employee"; targetId = empId; }
-        else if (crewId) { targetType = "crew"; targetId = crewId; }
+      let finalEmpId = empId || null;
+      let finalCrewId = crewId || null;
+
+      if (!finalEmpId && !finalCrewId && targetType && targetId) {
+        if (targetType === "employee") finalEmpId = targetId;
+        if (targetType === "crew") finalCrewId = targetId;
       }
 
-      if (!targetType) throw new Error("Assignee type is required.");
-      if (!targetId) throw new Error("Assignee is required.");
+      if (!!finalEmpId === !!finalCrewId) throw new Error("Shift must be assigned to exactly one: employee or crew.");
       if (!locId) throw new Error("Location is required.");
       if (!date) throw new Error("Date is required.");
       if (!start) throw new Error("Start time is required.");
@@ -998,39 +1163,50 @@
       if (end <= start) throw new Error("End time must be after start time.");
 
       // Ensure emp/loc exist (in draft)
-      if (targetType === "employee") {
-        const emp = (this._draft.employees || []).find(e => e.id === targetId) || null;
+      if (finalEmpId) {
+        const emp = (this._draft.employees || []).find(e => e.id === finalEmpId) || null;
         if (!emp || normalizeCompanyCode(emp.companyCode) !== cc) throw new Error("Employee not found.");
-      } else if (targetType === "crew") {
-        const crew = (this._draft.crews || []).find(c => c.id === targetId) || null;
+      }
+      if (finalCrewId) {
+        const crew = (this._draft.crews || []).find(c => c.id === finalCrewId) || null;
         if (!crew || normalizeCompanyCode(crew.companyCode) !== cc) throw new Error("Crew not found.");
-      } else {
-        throw new Error("Invalid assignee type.");
       }
       const loc = (this._draft.locations || []).find(l => l.id === locId) || null;
       if (!loc || normalizeCompanyCode(loc.companyCode) !== cc) throw new Error("Location not found.");
 
       // Filter jobTypeIds to valid ids
-      const validJobs = new Set((this._draft.jobTypes || []).filter(j => normalizeCompanyCode(j.companyCode) === cc).map(j => j.id));
+      const validJobs = new Set((this._draft.job_types || []).filter(j => normalizeCompanyCode(j.companyCode) === cc).map(j => j.id));
       const jobs = Array.from(new Set((jobTypeIds || []).map(String))).filter(id => validJobs.has(id));
 
+      const shiftId = uid("shift");
       const s = {
-        id: uid("shift"),
+        id: shiftId,
         companyCode: cc,
-        targetType,
-        targetId,
         locId,
         date,
         start,
         end,
-        jobTypeIds: jobs,
         notes,
+        empId: finalEmpId ? String(finalEmpId) : null,
+        crewId: finalCrewId ? String(finalCrewId) : null,
         createdAt: nowISO(),
         updatedAt: nowISO(),
       };
       this._draft.shifts.push(s);
+
+      this._draft.shift_jobs = Array.isArray(this._draft.shift_jobs) ? this._draft.shift_jobs : [];
+      for (const jobTypeId of jobs) {
+        this._draft.shift_jobs.push({
+          id: uid("shift_job"),
+          companyCode: cc,
+          shiftId,
+          jobTypeId: String(jobTypeId),
+          createdAt: nowISO(),
+        });
+      }
+
       this.markEdited();
-      return deepClone(s);
+      return deepClone({ ...s, jobTypeIds: jobs });
     },
 
     updateShift(shiftId, patch) {
@@ -1043,40 +1219,65 @@
       const next = { ...s, ...patch };
 
       // Validate
-      if (!next.targetType) throw new Error("Assignee type is required.");
-      if (!next.targetId) throw new Error("Assignee is required.");
+      const incomingEmpId = patch.empId !== undefined ? (patch.empId ? String(patch.empId) : null) : (next.empId ? String(next.empId) : null);
+      const incomingCrewId = patch.crewId !== undefined ? (patch.crewId ? String(patch.crewId) : null) : (next.crewId ? String(next.crewId) : null);
+      let finalEmpId = incomingEmpId;
+      let finalCrewId = incomingCrewId;
+      if ((patch.targetType !== undefined || patch.targetId !== undefined) && patch.targetType && patch.targetId) {
+        if (String(patch.targetType) === "employee") { finalEmpId = String(patch.targetId); finalCrewId = null; }
+        if (String(patch.targetType) === "crew") { finalCrewId = String(patch.targetId); finalEmpId = null; }
+      }
+      if (!!finalEmpId === !!finalCrewId) throw new Error("Shift must be assigned to exactly one: employee or crew.");
       if (!next.locId) throw new Error("Location is required.");
       if (!next.date) throw new Error("Date is required.");
       if (!next.start) throw new Error("Start time is required.");
       if (!next.end) throw new Error("End time is required.");
       if (String(next.end) <= String(next.start)) throw new Error("End time must be after start time.");
 
-      if (next.targetType === "employee") {
-        const emp = (this._draft.employees || []).find(e => e.id === next.targetId) || null;
+      if (finalEmpId) {
+        const emp = (this._draft.employees || []).find(e => e.id === finalEmpId) || null;
         if (!emp || normalizeCompanyCode(emp.companyCode) !== normalizeCompanyCode(s.companyCode)) throw new Error("Employee not found.");
-      } else if (next.targetType === "crew") {
-        const crew = (this._draft.crews || []).find(c => c.id === next.targetId) || null;
+      }
+      if (finalCrewId) {
+        const crew = (this._draft.crews || []).find(c => c.id === finalCrewId) || null;
         if (!crew || normalizeCompanyCode(crew.companyCode) !== normalizeCompanyCode(s.companyCode)) throw new Error("Crew not found.");
-      } else {
-        throw new Error("Invalid assignee type.");
       }
       const loc = (this._draft.locations || []).find(l => l.id === next.locId) || null;
       if (!loc || normalizeCompanyCode(loc.companyCode) !== normalizeCompanyCode(s.companyCode)) throw new Error("Location not found.");
 
-      // Normalize jobTypeIds
+      let nextJobTypeIds = null;
       if (patch.jobTypeIds !== undefined) {
-        const validJobs = new Set((this._draft.jobTypes || []).filter(j => normalizeCompanyCode(j.companyCode) === normalizeCompanyCode(s.companyCode)).map(j => j.id));
-        next.jobTypeIds = Array.from(new Set((patch.jobTypeIds || []).map(String))).filter(id => validJobs.has(id));
-      } else {
-        next.jobTypeIds = Array.isArray(next.jobTypeIds) ? next.jobTypeIds : [];
+        const validJobs = new Set((this._draft.job_types || []).filter(j => normalizeCompanyCode(j.companyCode) === normalizeCompanyCode(s.companyCode)).map(j => j.id));
+        nextJobTypeIds = Array.from(new Set((patch.jobTypeIds || []).map(String))).filter(id => validJobs.has(id));
       }
 
       next.notes = String(next.notes || "").trim();
       next.updatedAt = nowISO();
+      next.empId = finalEmpId;
+      next.crewId = finalCrewId;
 
       Object.assign(s, next);
+
+      if (nextJobTypeIds !== null) {
+        const cc = normalizeCompanyCode(s.companyCode);
+        this._draft.shift_jobs = Array.isArray(this._draft.shift_jobs) ? this._draft.shift_jobs : [];
+        this._draft.shift_jobs = this._draft.shift_jobs.filter(sj => String(sj.shiftId || "") !== String(shiftId));
+        for (const jobTypeId of nextJobTypeIds) {
+          this._draft.shift_jobs.push({
+            id: uid("shift_job"),
+            companyCode: cc,
+            shiftId: String(shiftId),
+            jobTypeId: String(jobTypeId),
+            createdAt: nowISO(),
+          });
+        }
+      }
+
       this.markEdited();
-      return deepClone(s);
+      const jobTypeIds = Array.isArray(this._draft.shift_jobs)
+        ? this._draft.shift_jobs.filter(sj => String(sj.shiftId || "") === String(shiftId)).map(sj => String(sj.jobTypeId || "")).filter(Boolean)
+        : [];
+      return deepClone({ ...s, jobTypeIds });
     },
 
     deleteShift(shiftId) {
@@ -1086,6 +1287,7 @@
         throw new Error("Shift not found.");
       }
       this._draft.shifts = (this._draft.shifts || []).filter(x => x.id !== shiftId);
+      this._draft.shift_jobs = (this._draft.shift_jobs || []).filter(sj => String(sj.shiftId || "") !== String(shiftId));
       this.markEdited();
       return true;
     },
@@ -1095,6 +1297,7 @@
      *  ---------------------------
      */
     addCompany({ companyCode, companyName } = {}) {
+      if (getActiveRole() !== "platform_admin") throw new Error("Not authorized.");
       const cc = normalizeCompanyCode(companyCode);
       const name = String(companyName || "").trim();
       if (!cc) throw new Error("Company code is required.");
@@ -1110,8 +1313,8 @@
         companyCode: cc,
         companyName: name,
         isDisabled: false,
+        supportEnabled: false,
         createdAt: nowISO(),
-        updatedAt: nowISO(),
       };
       this._draft.companies.push(c);
       this.markEdited();
@@ -1119,6 +1322,7 @@
     },
 
     updateCompany(companyIdOrCode, patch = {}) {
+      if (getActiveRole() !== "platform_admin") throw new Error("Not authorized.");
       this._draft.companies = Array.isArray(this._draft.companies) ? this._draft.companies : [];
       const key = String(companyIdOrCode || "").trim();
       if (!key) throw new Error("Company is required.");
@@ -1132,12 +1336,13 @@
         match.companyName = name;
       }
       if (patch.isDisabled !== undefined) match.isDisabled = !!patch.isDisabled;
-      match.updatedAt = nowISO();
+      if (patch.supportEnabled !== undefined) match.supportEnabled = !!patch.supportEnabled;
       this.markEdited();
       return deepClone(match);
     },
 
     deleteCompany(companyIdOrCode, { deleteData = true, deleteUsers = true } = {}) {
+      if (getActiveRole() !== "platform_admin") throw new Error("Not authorized.");
       this._draft.companies = Array.isArray(this._draft.companies) ? this._draft.companies : [];
       const key = String(companyIdOrCode || "").trim();
       if (!key) throw new Error("Company is required.");
@@ -1153,10 +1358,11 @@
       if (deleteData) {
         this._draft.employees = (this._draft.employees || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
         this._draft.locations = (this._draft.locations || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
-        this._draft.jobTypes = (this._draft.jobTypes || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
+        this._draft.job_types = (this._draft.job_types || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
         this._draft.crews = (this._draft.crews || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
-        this._draft.crewMembers = (this._draft.crewMembers || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
+        this._draft.crew_members = (this._draft.crew_members || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
         this._draft.shifts = (this._draft.shifts || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
+        this._draft.shift_jobs = (this._draft.shift_jobs || []).filter(x => normalizeCompanyCode(x.companyCode) !== cc);
       }
 
       if (deleteUsers) {
@@ -1183,7 +1389,7 @@
     },
     listJobTypes({ activeOnly = true } = {}) {
       const cc = getActiveCompanyCode();
-      const rows = (this._draft.jobTypes || []).filter(j => normalizeCompanyCode(j.companyCode) === cc);
+      const rows = (this._draft.job_types || []).filter(j => normalizeCompanyCode(j.companyCode) === cc);
       return deepClone(rows.filter(j => activeOnly ? j.active : true));
     },
     listCrews({ activeOnly = true } = {}) {
@@ -1193,11 +1399,63 @@
     },
     listCrewMembers() {
       const cc = getActiveCompanyCode();
-      return deepClone((this._draft.crewMembers || []).filter(cm => normalizeCompanyCode(cm.companyCode) === cc));
+      return deepClone((this._draft.crew_members || []).filter(cm => normalizeCompanyCode(cm.companyCode) === cc));
     },
     listShifts() {
       const cc = getActiveCompanyCode();
-      return deepClone((this._draft.shifts || []).filter(sh => normalizeCompanyCode(sh.companyCode) === cc));
+      const shifts = (this._draft.shifts || []).filter(sh => normalizeCompanyCode(sh.companyCode) === cc);
+      const jobTypeIdsByShiftId = {};
+      for (const sj of (this._draft.shift_jobs || [])) {
+        if (normalizeCompanyCode(sj.companyCode) !== cc) continue;
+        const sid = String(sj.shiftId || "");
+        const jid = String(sj.jobTypeId || "");
+        if (!sid || !jid) continue;
+        if (!jobTypeIdsByShiftId[sid]) jobTypeIdsByShiftId[sid] = new Set();
+        jobTypeIdsByShiftId[sid].add(jid);
+      }
+      return deepClone(shifts.map(sh => ({
+        ...sh,
+        jobTypeIds: Array.from(jobTypeIdsByShiftId[String(sh.id || "")] || []),
+        targetType: sh.empId ? "employee" : "crew",
+        targetId: sh.empId ? sh.empId : sh.crewId,
+      })));
+    },
+
+    _viewState(stateObj) {
+      const s = deepClone(stateObj && typeof stateObj === "object" ? stateObj : emptyState());
+      // Back-compat aliases (read-only snapshots; source of truth remains the *_tables keys)
+      if (!("jobTypes" in s)) s.jobTypes = Array.isArray(s.job_types) ? s.job_types : [];
+      if (!("crewMembers" in s)) {
+        s.crewMembers = (Array.isArray(s.crew_members) ? s.crew_members : []).map(cm => ({
+          ...cm,
+          empId: cm.employeeId,
+        }));
+      }
+      if (!("shiftJobs" in s)) s.shiftJobs = Array.isArray(s.shift_jobs) ? s.shift_jobs : [];
+
+      const jobTypeIdsByShiftId = {};
+      for (const sj of (s.shift_jobs || [])) {
+        const sid = String(sj.shiftId || "");
+        const jid = String(sj.jobTypeId || "");
+        if (!sid || !jid) continue;
+        if (!jobTypeIdsByShiftId[sid]) jobTypeIdsByShiftId[sid] = new Set();
+        jobTypeIdsByShiftId[sid].add(jid);
+      }
+      s.shifts = (Array.isArray(s.shifts) ? s.shifts : []).map(sh => ({
+        ...sh,
+        jobTypeIds: Array.from(jobTypeIdsByShiftId[String(sh.id || "")] || []),
+        targetType: sh.empId ? "employee" : "crew",
+        targetId: sh.empId ? sh.empId : sh.crewId,
+      }));
+
+      s.requests = (Array.isArray(s.requests) ? s.requests : []).map(r => ({
+        ...r,
+        // Back-compat: older UI surfaces requester notes via `r.note`
+        note: r.decisionNote || "",
+        handledByUserId: r.handledBy || "",
+      }));
+
+      return s;
     },
 
     /** ---------------------------
@@ -1216,7 +1474,7 @@
       const s = state && typeof state === "object" ? state : this._draft;
       const crewsRaw = Array.isArray(s.crews) ? s.crews : [];
       const employeesRaw = Array.isArray(s.employees) ? s.employees : [];
-      const crewMembersRaw = Array.isArray(s.crewMembers) ? s.crewMembers : [];
+      const crewMembersRaw = Array.isArray(s.crew_members) ? s.crew_members : [];
 
       const crews = includeInactiveCrews ? crewsRaw.slice() : crewsRaw.filter(c => c.active !== false);
       crews.sort((a,b) => String(a.name || "").localeCompare(String(b.name || "")));
@@ -1225,10 +1483,10 @@
       const empIdsByCrewId = {};
       for (const cm of crewMembersRaw) {
         const crewId = String(cm.crewId || "");
-        const empId = String(cm.empId || "");
-        if (!crewId || !empId) continue;
+        const employeeId = String(cm.employeeId || "");
+        if (!crewId || !employeeId) continue;
         if (!empIdsByCrewId[crewId]) empIdsByCrewId[crewId] = new Set();
-        empIdsByCrewId[crewId].add(empId);
+        empIdsByCrewId[crewId].add(employeeId);
       }
 
       return crews.map(c => {
@@ -1257,20 +1515,12 @@
       weekStart = String(weekStart || "");
       if (!crewId) return [];
 
-      const shiftTarget = (sh) => {
-        const legacyEmpId = String(sh.empId || "");
-        const targetType = String(sh.targetType || (legacyEmpId ? "employee" : ""));
-        const targetId = String(sh.targetId || legacyEmpId || "");
-        return { targetType, targetId };
-      };
-
       if (mode === "daily") {
         if (!parseYMD(date)) return [];
         return deepClone(
           shifts
             .filter(sh => {
-              const { targetType, targetId } = shiftTarget(sh);
-              return targetType === "crew" && targetId === crewId && String(sh.date || "") === date;
+              return String(sh.crewId || "") === crewId && String(sh.date || "") === date;
             })
             .sort((a,b) => String(a.date + a.start).localeCompare(String(b.date + b.start)))
         );
@@ -1288,14 +1538,142 @@
         return deepClone(
           shifts
             .filter(sh => {
-              const { targetType, targetId } = shiftTarget(sh);
-              return targetType === "crew" && targetId === crewId && ymdSet.has(String(sh.date || ""));
+              return String(sh.crewId || "") === crewId && ymdSet.has(String(sh.date || ""));
             })
             .sort((a,b) => String(a.date + a.start).localeCompare(String(b.date + b.start)))
         );
       }
 
       return [];
+    },
+
+    listShiftsForPeriod({ state = null, mode, date, weekStart, empId, crewId, includeCrewIds = [] } = {}) {
+      const s = state && typeof state === "object" ? state : this._draft;
+      mode = String(mode || "").toLowerCase();
+      date = String(date || "");
+      weekStart = String(weekStart || "");
+      empId = empId ? String(empId) : "";
+      crewId = crewId ? String(crewId) : "";
+      const includeCrewSet = new Set((Array.isArray(includeCrewIds) ? includeCrewIds : []).map(String).filter(Boolean));
+
+      const jobTypeIdsByShiftId = {};
+      for (const sj of (Array.isArray(s.shift_jobs) ? s.shift_jobs : [])) {
+        const sid = String(sj.shiftId || "");
+        const jid = String(sj.jobTypeId || "");
+        if (!sid || !jid) continue;
+        if (!jobTypeIdsByShiftId[sid]) jobTypeIdsByShiftId[sid] = new Set();
+        jobTypeIdsByShiftId[sid].add(jid);
+      }
+
+      let ymdSet = null;
+      if (mode === "daily") {
+        if (!parseYMD(date)) return [];
+        ymdSet = new Set([date]);
+      } else if (mode === "weekly") {
+        const startDt = parseYMD(weekStart);
+        if (!startDt) return [];
+        ymdSet = new Set();
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(startDt.getFullYear(), startDt.getMonth(), startDt.getDate() + i);
+          ymdSet.add(toYMD(d));
+        }
+      }
+
+      let shifts = Array.isArray(s.shifts) ? s.shifts : [];
+      if (ymdSet) shifts = shifts.filter(sh => ymdSet.has(String(sh.date || "")));
+
+      if (crewId) shifts = shifts.filter(sh => String(sh.crewId || "") === crewId);
+      if (empId) {
+        shifts = shifts.filter(sh => {
+          if (String(sh.empId || "") === empId) return true;
+          const cid = String(sh.crewId || "");
+          return !!cid && includeCrewSet.has(cid);
+        });
+      }
+
+      return deepClone(
+        shifts
+          .map(sh => ({
+            ...sh,
+            jobTypeIds: Array.from(jobTypeIdsByShiftId[String(sh.id || "")] || []),
+            targetType: sh.empId ? "employee" : "crew",
+            targetId: sh.empId ? sh.empId : sh.crewId,
+          }))
+          .sort((a,b) => String(a.date + a.start).localeCompare(String(b.date + b.start)))
+      );
+    },
+
+    getEmployeeScheduleData(employeeId, { state = null, mode, date, weekStart } = {}) {
+      const s = state && typeof state === "object" ? state : this._saved;
+      const empId = String(employeeId || "");
+      if (!empId) throw new Error("Employee is required.");
+      const employee = (Array.isArray(s.employees) ? s.employees : []).find(e => String(e.id || "") === empId) || null;
+      if (!employee) throw new Error("Employee not found.");
+
+      const companyCode = normalizeCompanyCode(employee.companyCode);
+      const company = (Array.isArray(s.companies) ? s.companies : []).find(c => normalizeCompanyCode(c.companyCode) === companyCode) || null;
+
+      const crewIds = new Set(
+        (Array.isArray(s.crew_members) ? s.crew_members : [])
+          .filter(cm => normalizeCompanyCode(cm.companyCode) === companyCode && String(cm.employeeId || "") === empId)
+          .map(cm => String(cm.crewId || ""))
+          .filter(Boolean)
+      );
+
+      const shifts = this.listShiftsForPeriod({
+        state: s,
+        mode,
+        date,
+        weekStart,
+        empId,
+        includeCrewIds: Array.from(crewIds),
+      });
+
+      const locations = (Array.isArray(s.locations) ? s.locations : []).filter(l => normalizeCompanyCode(l.companyCode) === companyCode);
+      const job_types = (Array.isArray(s.job_types) ? s.job_types : []).filter(j => normalizeCompanyCode(j.companyCode) === companyCode);
+      const crews = (Array.isArray(s.crews) ? s.crews : []).filter(c => normalizeCompanyCode(c.companyCode) === companyCode && crewIds.has(String(c.id || "")));
+
+      return deepClone({
+        companyCode,
+        company,
+        employee,
+        crews,
+        shifts,
+        locations,
+        job_types,
+      });
+    },
+
+    getAllCrewsScheduleData(mode, dateOrWeekStart, { state = null } = {}) {
+      const s = state && typeof state === "object" ? state : this._saved;
+      const m = String(mode || "").toLowerCase();
+      const date = m === "daily" ? String(dateOrWeekStart || "") : "";
+      const weekStart = m === "weekly" ? String(dateOrWeekStart || "") : "";
+
+      const crewsWithMembers = this.getAllCrewsWithMembers({ state: s, includeInactiveCrews: true, includeInactiveEmployees: true });
+      const locations = Array.isArray(s.locations) ? s.locations : [];
+      const job_types = Array.isArray(s.job_types) ? s.job_types : [];
+
+      const byCrewId = crewsWithMembers.map(({ crew, members }) => {
+        const shifts = this.getCrewShiftsForPeriod(crew.id, { state: s, mode: m, date, weekStart });
+        const shiftsWithJobs = this.listShiftsForPeriod({
+          state: s,
+          mode: m,
+          date,
+          weekStart,
+          crewId: crew.id,
+        });
+        return { crew, members, shifts: shiftsWithJobs.length ? shiftsWithJobs : shifts };
+      });
+
+      return deepClone({
+        mode: m,
+        date,
+        weekStart,
+        crews: byCrewId,
+        locations,
+        job_types,
+      });
     },
 
     _scopedToActiveCompany(stateObj) {
@@ -1309,10 +1687,11 @@
           requests: [],
           employees: [],
           locations: [],
-          jobTypes: [],
+          job_types: [],
           crews: [],
-          crewMembers: [],
+          crew_members: [],
           shifts: [],
+          shift_jobs: [],
         };
       }
 
@@ -1326,72 +1705,67 @@
         requests: pick(s.requests),
         employees: pick(s.employees),
         locations: pick(s.locations),
-        jobTypes: pick(s.jobTypes),
+        job_types: pick(s.job_types),
         crews: pick(s.crews),
-        crewMembers: pick(s.crewMembers),
+        crew_members: pick(s.crew_members),
         shifts: pick(s.shifts),
+        shift_jobs: pick(s.shift_jobs),
       };
     },
 
     _normalize(stateObj) {
       const s = stateObj && typeof stateObj === "object" ? stateObj : emptyState();
-
       const out = emptyState();
 
-      // meta
-      out.meta = {
-        ...out.meta,
-        ...(s.meta || {}),
-      };
+      const str = (v) => String(v ?? "");
+      const trim = (v) => str(v).trim();
+      const ensureId = (v) => (trim(v) ? trim(v) : newId());
+      const ensureCreatedAt = (v) => (trim(v) ? trim(v) : nowISO());
+      const ensureUpdatedAt = (v) => (trim(v) ? trim(v) : nowISO());
+      const boolActive = (v) => (v === undefined ? true : !!v);
 
-      // arrays
+      out.meta = { ...out.meta, ...(s.meta || {}) };
+      out.meta.version = 4;
+
       out.settings = { ...(out.settings || {}), ...(s.settings || {}) };
+      out.settings.companyName = trim(out.settings.companyName);
+
       out.companies = Array.isArray(s.companies) ? s.companies : [];
       out.users = Array.isArray(s.users) ? s.users : [];
       out.requests = Array.isArray(s.requests) ? s.requests : [];
       out.employees = Array.isArray(s.employees) ? s.employees : [];
       out.locations = Array.isArray(s.locations) ? s.locations : [];
-      out.jobTypes = Array.isArray(s.jobTypes) ? s.jobTypes : [];
+      out.job_types = Array.isArray(s.job_types) ? s.job_types : (Array.isArray(s.jobTypes) ? s.jobTypes : []);
       out.crews = Array.isArray(s.crews) ? s.crews : [];
-      out.crewMembers = Array.isArray(s.crewMembers) ? s.crewMembers : [];
+      out.crew_members = Array.isArray(s.crew_members) ? s.crew_members : (Array.isArray(s.crewMembers) ? s.crewMembers : []);
       out.shifts = Array.isArray(s.shifts) ? s.shifts : [];
+      out.shift_jobs = Array.isArray(s.shift_jobs) ? s.shift_jobs : [];
 
-      // ensure required fields exist
-      const fixCommon = (obj) => {
-        if (!obj.id) obj.id = uid("fix");
-        if (obj.active === undefined) obj.active = true;
-        if (!obj.createdAt) obj.createdAt = nowISO();
-        if (!obj.updatedAt) obj.updatedAt = nowISO();
-        return obj;
-      };
-
-      out.settings = {
-        ...(out.settings || {}),
-        companyName: String(out.settings?.companyName || "").trim(),
-      };
-
-      out.companies = out.companies.map(c => fixCommon({
-        id: String(c.id || ""),
-        companyCode: normalizeCompanyCode(c.companyCode || ""),
-        companyName: String(c.companyName || "").trim(),
-        isDisabled: c.isDisabled !== undefined ? !!c.isDisabled : false,
-        active: true,
-        createdAt: c.createdAt,
-        updatedAt: c.updatedAt,
-      })).filter(c => c.companyCode && c.companyName);
+      out.companies = out.companies
+        .map(c => ({
+          id: ensureId(c?.id),
+          companyCode: normalizeCompanyCode(c?.companyCode),
+          companyName: trim(c?.companyName),
+          isDisabled: c?.isDisabled !== undefined ? !!c.isDisabled : false,
+          supportEnabled: c?.supportEnabled !== undefined ? !!c.supportEnabled : false,
+          createdAt: ensureCreatedAt(c?.createdAt),
+        }))
+        .filter(c => c.companyCode && c.companyName);
 
       const allowedRoles = new Set(["platform_admin", "manager", "employee"]);
-      out.users = out.users.map(u => fixCommon({
-        id: String(u.id || ""),
-        companyCode: normalizeCompanyCode(u.companyCode || ""),
-        username: normalizeUsername(u.username),
-        pinHash: String(u.pinHash || u.pin || "").trim(),
-        role: allowedRoles.has(String(u.role || "")) ? String(u.role) : "employee",
-        employeeId: u.employeeId ? String(u.employeeId) : null,
-        active: u.active !== undefined ? !!u.active : true,
-        createdAt: u.createdAt,
-        updatedAt: u.updatedAt,
-      })).filter(u => u.companyCode && u.username && u.pinHash);
+      out.users = out.users
+        .map(u => ({
+          id: ensureId(u?.id),
+          companyCode: normalizeCompanyCode(u?.companyCode),
+          username: normalizeUsername(u?.username),
+          pinHash: trim(u?.pinHash || u?.pin),
+          role: allowedRoles.has(str(u?.role)) ? str(u.role) : "employee",
+          employeeId: u?.employeeId ? str(u.employeeId) : null,
+          active: u?.active !== undefined ? !!u.active : true,
+          createdAt: ensureCreatedAt(u?.createdAt),
+          updatedAt: ensureUpdatedAt(u?.updatedAt),
+        }))
+        .filter(u => u.companyCode && u.username && u.pinHash);
 
       const allowedRequestStatuses = new Set(["pending", "approved", "denied"]);
       const allowedRequestTypes = new Set([
@@ -1399,32 +1773,29 @@
         "employee_change_credentials",
         "admin_change_credentials",
       ]);
-      const allowedRequestRoles = new Set(["platform_admin", "manager", "employee"]);
-
-      out.requests = out.requests.map(r => {
-        const cc = normalizeCompanyCode(r.companyCode || "");
-        const status = allowedRequestStatuses.has(String(r.status || "")) ? String(r.status) : "pending";
-        const type = allowedRequestTypes.has(String(r.type || "")) ? String(r.type) : "";
-        const requesterRole = allowedRequestRoles.has(String(r.requesterRole || "")) ? String(r.requesterRole) : "";
-        const proposedUsername = normalizeUsername(r.proposedUsername || "");
-        const proposedPin = String(r.proposedPin || "").trim();
-        return {
-          id: String(r.id || ""),
-          companyCode: cc,
-          createdAt: String(r.createdAt || "") || nowISO(),
-          status,
-          type,
-          requesterRole,
-          requesterUserId: String(r.requesterUserId || ""),
-          targetUserId: String(r.targetUserId || ""),
-          proposedUsername,
-          proposedPin: /^[0-9]{4}$/.test(proposedPin) ? proposedPin : "",
-          note: String(r.note || r.reason || "").trim(),
-          handledByUserId: String(r.handledByUserId || ""),
-          handledAt: String(r.handledAt || ""),
-          decisionNote: String(r.decisionNote || "").trim(),
-        };
-      }).filter(r => r.id && r.companyCode && r.type && r.requesterRole && r.requesterUserId && r.targetUserId);
+      out.requests = out.requests
+        .map(r => {
+          const companyCode = normalizeCompanyCode(r?.companyCode);
+          const status = allowedRequestStatuses.has(str(r?.status)) ? str(r.status) : "pending";
+          const type = allowedRequestTypes.has(str(r?.type)) ? str(r.type) : "";
+          const proposedUsername = normalizeUsername(r?.proposedUsername || "");
+          const proposedPin = trim(r?.proposedPin || "");
+          return {
+            id: ensureId(r?.id),
+            companyCode,
+            type,
+            status,
+            requesterUserId: trim(r?.requesterUserId),
+            targetUserId: trim(r?.targetUserId),
+            proposedUsername,
+            proposedPin: /^[0-9]{4}$/.test(proposedPin) ? proposedPin : "",
+            createdAt: ensureCreatedAt(r?.createdAt),
+            handledAt: trim(r?.handledAt),
+            handledBy: trim(r?.handledBy || r?.handledByUserId),
+            decisionNote: trim(r?.decisionNote || r?.note || r?.reason || ""),
+          };
+        })
+        .filter(r => r.id && r.companyCode && r.type && r.requesterUserId && r.targetUserId);
 
       const nonPlatformCompanyCodes = (() => {
         const fromCompanies = (out.companies || []).map(c => normalizeCompanyCode(c.companyCode)).filter(Boolean);
@@ -1441,65 +1812,58 @@
         const has = (out.companies || []).some(c => normalizeCompanyCode(c.companyCode) === cc);
         if (has) continue;
         const nameFallback = nonPlatformCompanyCodes.length === 1
-          ? (String(out.settings?.companyName || "").trim() || cc)
+          ? (trim(out.settings?.companyName) || cc)
           : cc;
-        out.companies.push(fixCommon({
-          id: uid("co"),
+        out.companies.push({
+          id: newId(),
           companyCode: cc,
           companyName: nameFallback,
           isDisabled: false,
-          active: true,
+          supportEnabled: false,
           createdAt: nowISO(),
-          updatedAt: nowISO(),
-        }));
+        });
       }
 
-      out.employees = out.employees.map(e => fixCommon({
-        id: String(e.id || ""),
-        companyCode: normalizeCompanyCode(e.companyCode || defaultCompanyCode),
-        name: String(e.name || "").trim(),
-        contact: String(e.contact || ""),
-        active: e.active !== undefined ? !!e.active : true,
-        createdAt: e.createdAt,
-        updatedAt: e.updatedAt,
-      })).filter(e => e.name);
+      const normalizeNamedRecord = (row, { companyCode, nameKey, extra = {} } = {}) => {
+        const cc = normalizeCompanyCode(row?.companyCode || companyCode);
+        if (!cc) return null;
+        const name = trim(row?.[nameKey]);
+        if (!name) return null;
+        return {
+          id: ensureId(row?.id),
+          companyCode: cc,
+          ...extra,
+          [nameKey]: name,
+          active: row?.active !== undefined ? !!row.active : true,
+          createdAt: ensureCreatedAt(row?.createdAt),
+          updatedAt: ensureUpdatedAt(row?.updatedAt),
+        };
+      };
 
-      out.locations = out.locations.map(l => fixCommon({
-        id: String(l.id || ""),
-        companyCode: normalizeCompanyCode(l.companyCode || defaultCompanyCode),
-        name: String(l.name || "").trim(),
-        address: String(l.address || ""),
-        active: l.active !== undefined ? !!l.active : true,
-        createdAt: l.createdAt,
-        updatedAt: l.updatedAt,
-      })).filter(l => l.name);
+      out.employees = out.employees
+        .map(e => normalizeNamedRecord(e, { companyCode: defaultCompanyCode, nameKey: "name", extra: { contact: str(e?.contact || "") } }))
+        .filter(Boolean);
 
-      out.jobTypes = out.jobTypes.map(j => fixCommon({
-        id: String(j.id || ""),
-        companyCode: normalizeCompanyCode(j.companyCode || defaultCompanyCode),
-        name: String(j.name || "").trim(),
-        active: j.active !== undefined ? !!j.active : true,
-        createdAt: j.createdAt,
-        updatedAt: j.updatedAt,
-      })).filter(j => j.name);
+      out.locations = out.locations
+        .map(l => normalizeNamedRecord(l, { companyCode: defaultCompanyCode, nameKey: "name", extra: { address: str(l?.address || "") } }))
+        .filter(Boolean);
 
-      out.crews = out.crews.map(c => fixCommon({
-        id: String(c.id || ""),
-        companyCode: normalizeCompanyCode(c.companyCode || defaultCompanyCode),
-        name: String(c.name || "").trim(),
-        active: c.active !== undefined ? !!c.active : true,
-        createdAt: c.createdAt,
-        updatedAt: c.updatedAt,
-      })).filter(c => c.name);
+      out.job_types = out.job_types
+        .map(j => normalizeNamedRecord(j, { companyCode: defaultCompanyCode, nameKey: "name" }))
+        .filter(Boolean);
+
+      out.crews = out.crews
+        .map(c => normalizeNamedRecord(c, { companyCode: defaultCompanyCode, nameKey: "name" }))
+        .filter(Boolean);
 
       const crewById = Object.fromEntries(out.crews.map(c => [c.id, c]));
       const empById = Object.fromEntries(out.employees.map(e => [e.id, e]));
       const locById = Object.fromEntries(out.locations.map(l => [l.id, l]));
-      const jobById = Object.fromEntries(out.jobTypes.map(j => [j.id, j]));
+      const jobById = Object.fromEntries(out.job_types.map(j => [j.id, j]));
 
       // Ensure employee accounts reference valid employees (or allow null for defensive compatibility)
       out.users = out.users.map(u => {
-        if (String(u.role || "") === "employee") {
+        if (str(u.role) === "employee") {
           const emp = u.employeeId ? empById[u.employeeId] : null;
           if (u.employeeId && !emp) u.employeeId = null;
           if (emp && normalizeCompanyCode(emp.companyCode) !== normalizeCompanyCode(u.companyCode)) u.employeeId = null;
@@ -1509,84 +1873,166 @@
         return u;
       });
 
-      out.crewMembers = out.crewMembers.map(cm => fixCommon({
-        id: String(cm.id || ""),
-        companyCode: normalizeCompanyCode(cm.companyCode || defaultCompanyCode),
-        crewId: String(cm.crewId || ""),
-        empId: String(cm.empId || ""),
-        active: true,
-        createdAt: cm.createdAt,
-        updatedAt: cm.updatedAt,
-      })).filter(cm => {
-        const cc = normalizeCompanyCode(cm.companyCode);
-        const crew = crewById[cm.crewId];
-        const emp = empById[cm.empId];
-        if (!crew || !emp) return false;
-        return cc === normalizeCompanyCode(crew.companyCode) && cc === normalizeCompanyCode(emp.companyCode);
-      });
-
-      // shifts: must have keys
-      out.shifts = out.shifts.map(sh => {
-        const legacyEmpId = String(sh.empId || "");
-        let targetType = String(sh.targetType || "");
-        let targetId = String(sh.targetId || "");
-
-        if (!targetType && legacyEmpId) {
-          targetType = "employee";
-          targetId = legacyEmpId;
-        }
-
-        return fixCommon({
-          id: String(sh.id || ""),
-          companyCode: normalizeCompanyCode(sh.companyCode || defaultCompanyCode),
-          targetType,
-          targetId,
-          locId: String(sh.locId || ""),
-          date: String(sh.date || ""),
-          start: String(sh.start || ""),
-          end: String(sh.end || ""),
-          jobTypeIds: Array.isArray(sh.jobTypeIds) ? sh.jobTypeIds.map(String) : [],
-          notes: String(sh.notes || ""),
-          active: true,
-          createdAt: sh.createdAt,
-          updatedAt: sh.updatedAt,
-        });
-      }).filter(sh => {
-        const cc = normalizeCompanyCode(sh.companyCode);
-        if (!sh.targetType || !sh.targetId || !sh.locId || !sh.date || !sh.start || !sh.end) return false;
-        const loc = locById[sh.locId];
-        if (!loc || normalizeCompanyCode(loc.companyCode) !== cc) return false;
-        if (sh.targetType === "employee") {
-          const emp = empById[sh.targetId];
-          return !!emp && normalizeCompanyCode(emp.companyCode) === cc;
-        }
-        if (sh.targetType === "crew") {
-          const crew = crewById[sh.targetId];
-          return !!crew && normalizeCompanyCode(crew.companyCode) === cc;
-        }
-        return false;
-      });
-
-      // Normalize shift job types to valid company job IDs.
-      out.shifts = out.shifts.map(sh => {
-        const cc = normalizeCompanyCode(sh.companyCode);
-        const valid = new Set(
-          Object.values(jobById)
-            .filter(j => normalizeCompanyCode(j.companyCode) === cc)
-            .map(j => j.id)
-        );
+      const normalizeCrewMember = (cm) => {
+        const companyCode = normalizeCompanyCode(cm?.companyCode || defaultCompanyCode);
+        const crewId = trim(cm?.crewId);
+        const employeeId = trim(cm?.employeeId || cm?.empId);
+        if (!companyCode || !crewId || !employeeId) return null;
+        const crew = crewById[crewId];
+        const emp = empById[employeeId];
+        if (!crew || !emp) return null;
+        const cc = normalizeCompanyCode(companyCode);
+        if (normalizeCompanyCode(crew.companyCode) !== cc) return null;
+        if (normalizeCompanyCode(emp.companyCode) !== cc) return null;
         return {
-          ...sh,
-          jobTypeIds: (sh.jobTypeIds || []).filter(id => valid.has(String(id))),
+          id: ensureId(cm?.id),
+          companyCode: cc,
+          crewId,
+          employeeId,
+          createdAt: ensureCreatedAt(cm?.createdAt),
         };
-      });
+      };
+
+      out.crew_members = out.crew_members.map(normalizeCrewMember).filter(Boolean);
+
+      const normalizeShift = (sh) => {
+        let empId = sh?.empId ? trim(sh.empId) : "";
+        let crewId = sh?.crewId ? trim(sh.crewId) : "";
+
+        if (!empId && !crewId && sh?.targetType && sh?.targetId) {
+          const tt = str(sh.targetType);
+          const tid = trim(sh.targetId);
+          if (tt === "employee") empId = tid;
+          if (tt === "crew") crewId = tid;
+        }
+
+        if (!!empId === !!crewId) return null;
+
+        const locId = trim(sh?.locId);
+        const date = trim(sh?.date);
+        const start = trim(sh?.start);
+        const end = trim(sh?.end);
+        if (!locId || !date || !start || !end) return null;
+        if (end <= start) return null;
+
+        // Determine companyCode, then validate references against it.
+        let companyCode = normalizeCompanyCode(sh?.companyCode || defaultCompanyCode);
+        if (!companyCode) {
+          if (empId && empById[empId]) companyCode = normalizeCompanyCode(empById[empId].companyCode);
+          else if (crewId && crewById[crewId]) companyCode = normalizeCompanyCode(crewById[crewId].companyCode);
+        }
+        if (!companyCode) return null;
+
+        const loc = locById[locId];
+        if (!loc || normalizeCompanyCode(loc.companyCode) !== companyCode) return null;
+        if (empId) {
+          const emp = empById[empId];
+          if (!emp || normalizeCompanyCode(emp.companyCode) !== companyCode) return null;
+        }
+        if (crewId) {
+          const crew = crewById[crewId];
+          if (!crew || normalizeCompanyCode(crew.companyCode) !== companyCode) return null;
+        }
+
+        return {
+          id: ensureId(sh?.id),
+          companyCode,
+          date,
+          start,
+          end,
+          notes: trim(sh?.notes),
+          locId,
+          empId: empId || null,
+          crewId: crewId || null,
+          createdAt: ensureCreatedAt(sh?.createdAt),
+          updatedAt: ensureUpdatedAt(sh?.updatedAt),
+        };
+      };
+
+      out.shifts = out.shifts.map(normalizeShift).filter(Boolean);
+      const shiftById = Object.fromEntries(out.shifts.map(sh => [sh.id, sh]));
+
+      const shiftJobsFromLegacyShifts = [];
+      for (const sh of Array.isArray(s.shifts) ? s.shifts : []) {
+        const sid = trim(sh?.id);
+        if (!sid) continue;
+        const jobTypeIds = Array.isArray(sh?.jobTypeIds) ? sh.jobTypeIds.map(trim).filter(Boolean) : [];
+        for (const jobTypeId of jobTypeIds) {
+          shiftJobsFromLegacyShifts.push({ shiftId: sid, jobTypeId, companyCode: sh?.companyCode, createdAt: sh?.createdAt });
+        }
+      }
+
+      const rawShiftJobs = [
+        ...(Array.isArray(out.shift_jobs) ? out.shift_jobs : []),
+        ...shiftJobsFromLegacyShifts,
+      ];
+
+      const seen = new Set();
+      out.shift_jobs = rawShiftJobs
+        .map(sj => {
+          const shiftId = trim(sj?.shiftId);
+          const jobTypeId = trim(sj?.jobTypeId);
+          if (!shiftId || !jobTypeId) return null;
+          const shift = shiftById[shiftId];
+          const job = jobById[jobTypeId];
+          if (!shift || !job) return null;
+          const cc = normalizeCompanyCode(shift.companyCode);
+          if (normalizeCompanyCode(job.companyCode) !== cc) return null;
+          const key = `${cc}:${shiftId}:${jobTypeId}`;
+          if (seen.has(key)) return null;
+          seen.add(key);
+          return {
+            id: ensureId(sj?.id),
+            companyCode: cc,
+            shiftId,
+            jobTypeId,
+            createdAt: ensureCreatedAt(sj?.createdAt),
+          };
+        })
+        .filter(Boolean);
 
       return out;
     },
   };
 
-  // Expose globally
-  window.JanitorStore = Store;
+  const CloudStoreStub = (() => {
+    const err = () => new Error("Cloud mode is not implemented yet. Set APP_CONFIG.USE_CLOUD = false.");
+    const thrower = () => { throw err(); };
+    return {
+      _provider: "cloud",
+      async init() { throw err(); },
+      isReady() { return false; },
+      getSaved: thrower,
+      getDraft: thrower,
+      isDirty: () => false,
+      save: async () => { throw err(); },
+      resetDraftToSaved: async () => { throw err(); },
+      exportJSON: thrower,
+      importJSON: async () => { throw err(); },
+      wipeAll: async () => { throw err(); },
+      wipeCompanyData: async () => { throw err(); },
+      migrateLegacyDataOnce: async () => { throw err(); },
+      getSession: thrower,
+      setSession: thrower,
+      clearSession: thrower,
+      requireAuth: thrower,
+      getCompanyCode: thrower,
+      normalizeCompanyCode,
+      tenantGuard: thrower,
+    };
+  })();
+
+  function selectStoreProvider() {
+    const cfg = globalThis.APP_CONFIG || {};
+    const wantsCloud = cfg?.USE_CLOUD === true && !!cfg?.SUPABASE_URL && !!cfg?.SUPABASE_ANON_KEY;
+    if (wantsCloud) return CloudStoreStub;
+    return Store;
+  }
+
+  // Expose globally (adapter pattern)
+  window.JanitorStoreLocal = Store;
+  window.JanitorStore = selectStoreProvider();
+  if (!window.JanitorStore._provider) window.JanitorStore._provider = window.JanitorStore === Store ? "local" : "cloud";
 
   // Auto-init convenience
   // Pages can: await JanitorStore.init();

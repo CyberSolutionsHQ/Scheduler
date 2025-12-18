@@ -5,18 +5,21 @@
   <meta name="theme-color" content="#0e1520">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Schedule Manager</title>
+  <title>My Shifts • Cyber Solutions LLC Schedule Manager</title>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
+  <header class="header" id="appHeader"></header>
+
   <div class="container">
     <section class="card">
-      <h2>Loading…</h2>
-      <div class="small">
-        Redirecting…
-      </div>
+      <h2>Upcoming shifts</h2>
+      <div class="small" id="range" style="margin-bottom:10px;"></div>
+      <div id="list" class="list"></div>
     </section>
   </div>
-  <script type="module" src="./js/pages/index.js"></script>
+
+  <script type="module" src="./js/pages/my-shifts.js"></script>
 </body>
 </html>
+

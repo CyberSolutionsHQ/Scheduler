@@ -120,14 +120,15 @@
     }
 
     function getSession() {
-      const s = readJSON(SESSION_KEY, null);
+      const s = window.JanitorStore?.getSession?.() || readJSON(SESSION_KEY, null);
       if (!s || typeof s !== "object") return null;
       if (!s.companyCode || !s.username || !s.role) return null;
       return s;
     }
 
     function setSession(session) {
-      writeJSON(SESSION_KEY, session);
+      if (window.JanitorStore?.setSession) window.JanitorStore.setSession(session);
+      else writeJSON(SESSION_KEY, session);
       if (session?.companyCode && normalizeCompany(session.companyCode) !== PLATFORM_COMPANY_CODE) {
         safeStorage.set(LAST_COMPANY_KEY, String(session.companyCode));
       }
@@ -147,6 +148,7 @@
     }
 
     function clearSession() {
+      try { window.JanitorStore?.clearSession?.(); } catch {}
       safeStorage.remove(SESSION_KEY);
     }
 

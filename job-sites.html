@@ -5,7 +5,7 @@
   <meta name="theme-color" content="#0e1520">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Employees • Cyber Solutions LLC Schedule Manager</title>
+  <title>Job Sites • Cyber Solutions LLC Schedule Manager</title>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
@@ -15,16 +15,16 @@
     <section class="card" id="companyPicker" style="display:none;"></section>
 
     <section class="card">
-      <h2>Add employee</h2>
+      <h2>Add job site</h2>
       <form id="createForm" autocomplete="off">
         <div class="row two">
           <div>
             <label for="name">Name</label>
-            <input id="name" placeholder="e.g., Jane Doe" />
+            <input id="name" placeholder="e.g., Main Site" />
           </div>
           <div>
-            <label for="contact">Contact</label>
-            <input id="contact" placeholder="Phone / email / notes" />
+            <label for="address">Address</label>
+            <input id="address" placeholder="Street / city" />
           </div>
         </div>
 
@@ -41,13 +41,14 @@
 
     <section class="card">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-        <h2 style="margin:0;">Employees</h2>
+        <h2 style="margin:0;">Job Sites</h2>
         <button class="btn secondary" type="button" onclick="location.reload()">Refresh</button>
       </div>
       <div id="list" style="margin-top:10px;"></div>
     </section>
   </div>
 
-  <script type="module" src="./js/pages/employees.js"></script>
+  <script type="module" src="./js/pages/job-sites.js"></script>
 </body>
 </html>
+
