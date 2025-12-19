@@ -153,6 +153,8 @@
         if (cc === "PLATFORM") userEl.setAttribute("placeholder", "e.g., cybersolutionsllc228");
         else userEl.setAttribute("placeholder", defaultUsernamePlaceholder);
       });
+      // Apply placeholder rule on initial load as well.
+      companyEl.dispatchEvent(new Event("input", { bubbles: true }));
 
       document.getElementById("clearBtn").addEventListener("click", () => {
         companyEl.value = "";
@@ -171,7 +173,7 @@
 
       function getSupabaseClient() {
         const cfg = window.APP_CONFIG || {};
-        const url = String(cfg.SUPABASE_URL || "").trim();
+        const url = String(cfg.SUPABASE_URL || "https://xwroayzhbbwbiuswtuvs.supabase.co").trim();
         const key = String(cfg.SUPABASE_ANON_KEY || "").trim();
         if (!url || !key) return null;
         return createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true } });
@@ -193,7 +195,11 @@
       async function boot() {
         try {
           const supabase = getSupabaseClient();
-          if (!supabase) throw new Error("Missing Supabase configuration (SUPABASE_URL / SUPABASE_ANON_KEY).");
+          if (!supabase) {
+            throw new Error(
+              "Missing Supabase configuration (SUPABASE_ANON_KEY). Set it via the GitHub Pages deploy secret and redeploy.",
+            );
+          }
 
           const { exists, error } = await platformAdminExistsInSupabase(supabase);
           if (error) throw new Error(error.message || "Platform admin check failed.");
@@ -243,7 +249,11 @@
 
         try {
           const supabase = getSupabaseClient();
-          if (!supabase) throw new Error("Missing Supabase configuration (SUPABASE_URL / SUPABASE_ANON_KEY).");
+          if (!supabase) {
+            throw new Error(
+              "Missing Supabase configuration (SUPABASE_ANON_KEY). Set it via the GitHub Pages deploy secret and redeploy.",
+            );
+          }
 
           const wantsEmailLogin = !companyCode && String(username || "").includes("@");
           const email = wantsEmailLogin
