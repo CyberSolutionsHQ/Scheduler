@@ -1,22 +1,130 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0e1520">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0e1520">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Schedule Manager</title>
+  <title>Home • Cyber Solutions LLC Schedule Manager</title>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
+  <header class="header">
+    <div class="title">
+      <div>
+        <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
+        <div class="sub">Manager dashboard • offline capable • Save button on every page</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a class="active" href="index.html">Home</a>
+      <a href="employees.html">Employees</a>
+      <a href="locations.html">Locations</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="shifts.html">Shifts</a>
+      <a href="crews.html">Crews</a>
+      <a href="export.html">Export PDFs</a>
+      <a href="users.html">Users / Access</a>
+      <a href="employee-requests.html">Employee Requests <span class="badge" data-badge="employeeRequests" style="display:none;"></span></a>
+      <a href="account.html">My Account</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+  </header>
+
   <div class="container">
     <section class="card">
-      <h2>Loading…</h2>
-      <div class="small">
-        Redirecting…
+      <h2>Quick status</h2>
+      <div class="row two">
+        <div class="card" style="margin:0; box-shadow:none;">
+          <h2 style="margin-bottom:6px;">Counts</h2>
+          <div class="small" id="counts">Loading…</div>
+          <div class="hr"></div>
+          <div class="small" id="saveInfo">Loading…</div>
+        </div>
+
+        <div class="card" style="margin:0; box-shadow:none;">
+          <h2 style="margin-bottom:6px;">Quick actions</h2>
+          <div class="btnRow">
+            <a class="btn" href="shifts.html">➕ Add shifts</a>
+            <a class="btn secondary" href="export.html">📄 Export PDFs</a>
+          </div>
+          <div class="btnRow">
+            <button class="btn secondary" id="backupBtn" type="button">⬇️ Backup (JSON)</button>
+            <button class="btn danger" id="wipeBtn" type="button">🧨 Wipe company data</button>
+          </div>
+          <div class="small" style="margin-top:10px;">
+            Tip: Add this page to your phone’s home screen for an “app-like” experience.
+          </div>
+        </div>
       </div>
     </section>
+
+    <section class="card">
+      <h2>How it works (phone-friendly)</h2>
+      <div class="small">
+        • You edit Employees / Locations / Jobs / Shifts.<br/>
+        • A <strong>Save</strong> bar appears when you change something. Tap <strong>Save</strong> to commit.<br/>
+        • Export creates a clean schedule with a clear header and lets you save/share as PDF.
+      </div>
+    </section>
+
+    <!-- Save bar (app.js will auto-create if not present) -->
+    <div id="saveBar"></div>
   </div>
-  <script type="module" src="./js/pages/index.js"></script>
+
+  <script src="assets/config.example.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/store.js"></script>
+  <script src="assets/app.js"></script>
+  <script>
+    (async () => {
+      await JanitorApp.init({ pageTitle: "Home • Cyber Solutions LLC Schedule Manager" });
+
+      function render() {
+        const s = JanitorStore.getDraft();
+        const employees = s.employees.length;
+        const locations = s.locations.length;
+        const jobs = s.jobTypes.length;
+        const shifts = s.shifts.length;
+
+        document.getElementById("counts").innerHTML =
+          `Employees: <strong>${employees}</strong><br/>` +
+          `Locations: <strong>${locations}</strong><br/>` +
+          `Job types: <strong>${jobs}</strong><br/>` +
+          `Shifts: <strong>${shifts}</strong>`;
+
+        const lastSaved = s.meta.lastSavedAt ? new Date(s.meta.lastSavedAt).toLocaleString() : "Never";
+        const lastEdited = s.meta.lastEditedAt ? new Date(s.meta.lastEditedAt).toLocaleString() : "—";
+
+        document.getElementById("saveInfo").innerHTML =
+          `Last saved: <strong>${JanitorApp.escapeHtml(lastSaved)}</strong><br/>` +
+          `Last edited: <strong>${JanitorApp.escapeHtml(lastEdited)}</strong>`;
+      }
+
+      render();
+
+      window.addEventListener("janitor:discard", render);
+
+      document.getElementById("backupBtn").addEventListener("click", () => {
+        const json = JanitorStore.exportJSON();
+        JanitorApp.downloadText("schedule_manager_backup.json", json, "application/json");
+        JanitorApp.toast("Backup downloaded ✅", { type: "success" });
+      });
+
+      document.getElementById("wipeBtn").addEventListener("click", async () => {
+        const ok = await JanitorApp.confirmBox("Wipe this company’s schedule data and employee logins? Your manager account stays so you can sign back in.");
+        if (!ok) return;
+        await JanitorStore.wipeCompanyData({ includeEmployeeUsers: true });
+        JanitorApp.toast("Company data wiped.", { type: "warn" });
+        render();
+      });
+    })();
+  </script>
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+  }
+</script>
 </body>
 </html>

@@ -2,18 +2,13 @@
    Simple offline cache for Cyber Solutions LLC Schedule Manager
 */
 
-const CACHE_NAME = "csm-schedule-manager-cache-v8";
+const CACHE_NAME = "csm-schedule-manager-cache-v6";
 
 const ASSETS = [
   "./",
   "./login.html",
   "./index.html",
-  "./dashboard.html",
   "./employees.html",
-  "./job-sites.html",
-  "./schedule.html",
-  "./my-shifts.html",
-  "./requests.html",
   "./locations.html",
   "./jobs.html",
   "./shifts.html",
@@ -29,21 +24,10 @@ const ASSETS = [
   "./manifest.json",
   "./service-worker.js",
   "./assets/styles.css",
+  "./assets/config.example.js",
   "./assets/store.js",
   "./assets/app.js",
-  "./assets/pdf.js",
-  "./js/supabaseClient.js",
-  "./js/auth.js",
-  "./js/ui.js",
-  "./js/date.js",
-  "./js/pages/index.js",
-  "./js/pages/login.js",
-  "./js/pages/dashboard.js",
-  "./js/pages/employees.js",
-  "./js/pages/job-sites.js",
-  "./js/pages/schedule.js",
-  "./js/pages/my-shifts.js",
-  "./js/pages/requests.js"
+  "./assets/pdf.js"
 ];
 
 // Install: cache core assets
@@ -70,19 +54,6 @@ self.addEventListener("fetch", (event) => {
 
   // Only handle GET
   if (req.method !== "GET") return;
-
-  // Always fetch config fresh (deploy-time setting). Do not allow stale SW cache.
-  if (new URL(req.url).pathname.endsWith("/js/config.js")) {
-    event.respondWith(fetch(req, { cache: "no-store" }));
-    return;
-  }
-  if (
-    new URL(req.url).pathname.endsWith("/assets/config.js") ||
-    new URL(req.url).pathname.endsWith("/assets/config.example.js")
-  ) {
-    event.respondWith(fetch(req, { cache: "no-store" }));
-    return;
-  }
 
   event.respondWith(
     caches.match(req).then(cached => {

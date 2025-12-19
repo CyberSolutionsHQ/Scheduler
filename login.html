@@ -13,12 +13,37 @@
     <div class="title">
       <div>
         <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
-        <div class="sub">Sign in with company code, username, and PIN (or email + PIN for platform admins)</div>
+        <div class="sub">Sign in to continue</div>
       </div>
     </div>
   </header>
 
   <div class="container">
+    <section class="card" id="setupCard" style="display:none;">
+      <h2>One-time setup</h2>
+      <div class="small" style="margin-bottom:10px;">
+        A platform admin account is required before any companies can be onboarded.
+      </div>
+      <form id="setupForm" autocomplete="off">
+        <label for="setupKey">Master setup key</label>
+        <input id="setupKey" type="password" autocomplete="off" placeholder="Provided by the installer" />
+
+        <label for="setupUsername">Platform admin username</label>
+        <input id="setupUsername" placeholder="e.g., cybersolutionsllc228" autocomplete="username" autocapitalize="none" />
+
+        <label for="setupPin">Platform admin PIN</label>
+        <input id="setupPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
+
+        <div class="btnRow">
+          <button class="btn" id="setupBtn" type="submit">Create platform admin</button>
+          <button class="btn secondary" id="setupClearBtn" type="button">Clear</button>
+        </div>
+        <div class="small" style="margin-top:10px; opacity:.9;">
+          After setup completes, the platform admin can create company codes and manager accounts.
+        </div>
+      </form>
+    </section>
+
     <section class="card">
       <h2>Login</h2>
       <form id="loginForm" autocomplete="on">
@@ -36,63 +61,359 @@
           <button class="btn secondary" id="clearBtn" type="button">Clear</button>
         </div>
 
-        <div class="small" id="status" style="margin-top:10px; color:#ffdf9f;"></div>
         <div class="small" style="margin-top:10px;">
-          If you can’t sign in, ask your manager or platform admin to reset your credentials.
+          Company codes and manager accounts are created by the <strong>platform admin</strong>.
+          Employee logins are created by a manager in <strong>Users / Access</strong>.
         </div>
 
-        <!-- Hidden/manual platform admin recovery (append ?recovery=1) -->
-        <div class="small" id="recoveryHint" style="margin-top:12px; display:none;">
-          Platform admin recovery: <a href="#" id="recoveryToggle">Use recovery token</a>
+        <div class="small" style="margin-top:10px;">
+          <a href="#" id="recoverLink">Forgot username or PIN? (requires master setup key)</a>
         </div>
       </form>
     </section>
 
-    <section class="card" id="recoveryWrap" style="display:none;">
-      <h2>Recovery</h2>
-      <form id="recoveryForm" autocomplete="off">
-        <label for="recoveryToken">Recovery token</label>
-        <input id="recoveryToken" placeholder="Paste recovery token" autocomplete="one-time-code" autocapitalize="none" />
-        <div class="btnRow">
-          <button class="btn" type="submit">Continue</button>
+    <section class="card" id="recoverCard" style="display:none;">
+      <h2>Account recovery</h2>
+      <div class="small" style="margin-bottom:10px;">
+        Use the master setup key to look up accounts and reset a PIN. This does not delete company data.
+      </div>
+      <form id="recoverForm" autocomplete="off">
+        <label for="recoverKey">Master setup key</label>
+        <input id="recoverKey" type="password" autocomplete="off" placeholder="Required" />
+
+        <div class="btnRow" style="margin-top:12px;">
+          <button class="btn" id="unlockRecoverBtn" type="button">Unlock recovery</button>
+          <button class="btn secondary" id="recoverCancelBtn" type="button">Close</button>
+        </div>
+
+        <div id="recoverBody" style="display:none; margin-top:12px;">
+          <div class="hr"></div>
+
+          <label for="recoverCompany">Company</label>
+          <select id="recoverCompany"></select>
+
+          <label for="recoverUser">Username</label>
+          <select id="recoverUser"></select>
+
+          <label for="recoverPin">New 4-digit PIN</label>
+          <input id="recoverPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
+
+          <div class="btnRow" style="margin-top:12px;">
+            <button class="btn danger" type="submit">Reset PIN</button>
+            <button class="btn secondary" id="recoverClearBtn" type="button">Clear</button>
+          </div>
+
+          <div class="small" id="recoverHint" style="margin-top:10px; opacity:.9;"></div>
         </div>
       </form>
-
-      <form id="recoveryPinForm" autocomplete="off" style="display:none; margin-top:12px;">
-        <div class="hr"></div>
-        <label for="recoveryNewPin">New PIN</label>
-        <input id="recoveryNewPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
-
-        <label for="recoveryConfirmPin">Confirm new PIN</label>
-        <input id="recoveryConfirmPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
-
-        <div class="btnRow">
-          <button class="btn" type="submit">Set new PIN</button>
-        </div>
-      </form>
-
-      <div class="small" id="recoveryStatus" style="margin-top:10px; color:#ffdf9f;"></div>
-      <div class="small" style="margin-top:10px;">
-        This flow is time-limited and single-use. Do not save or share the token.
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>Setup</h2>
-      <div class="small">
-        Configure Supabase in <code>js/config.js</code> (URL + anon key) for GitHub Pages.
-      </div>
     </section>
   </div>
 
-  <script>
-    document.getElementById("clearBtn")?.addEventListener("click", () => {
-      document.getElementById("companyCode").value = "";
-      document.getElementById("username").value = "";
-      document.getElementById("pin").value = "";
-      document.getElementById("companyCode").focus();
-    });
+  <script src="assets/config.example.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/store.js"></script>
+  <script src="assets/app.js"></script>
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/+esm";
+
+    (() => {
+      const companyEl = document.getElementById("companyCode");
+      const userEl = document.getElementById("username");
+      const pinEl = document.getElementById("pin");
+
+      const setupCard = document.getElementById("setupCard");
+      const loginCard = document.getElementById("loginForm")?.closest(".card");
+      const setupKeyEl = document.getElementById("setupKey");
+      const setupUserEl = document.getElementById("setupUsername");
+      const setupPinEl = document.getElementById("setupPin");
+
+      const recoverLink = document.getElementById("recoverLink");
+      const recoverCard = document.getElementById("recoverCard");
+      const recoverKeyEl = document.getElementById("recoverKey");
+      const recoverBody = document.getElementById("recoverBody");
+      const recoverCompanyEl = document.getElementById("recoverCompany");
+      const recoverUserEl = document.getElementById("recoverUser");
+      const recoverPinEl = document.getElementById("recoverPin");
+      const recoverHint = document.getElementById("recoverHint");
+
+      const lastCompany = window.JanitorAuth?.getLastCompanyCode?.();
+      if (lastCompany) companyEl.value = lastCompany;
+
+      const defaultUsernamePlaceholder = userEl.getAttribute("placeholder") || "";
+      function normalizeCompanyCode(value) {
+        return String(value || "").trim().toUpperCase();
+      }
+      function normalizeUsername(value) {
+        return String(value || "").trim().toLowerCase();
+      }
+
+      companyEl.addEventListener("input", () => {
+        companyEl.value = normalizeCompanyCode(companyEl.value);
+        const cc = normalizeCompanyCode(companyEl.value);
+        if (cc === "PLATFORM") userEl.setAttribute("placeholder", "e.g., cybersolutionsllc228");
+        else userEl.setAttribute("placeholder", defaultUsernamePlaceholder);
+      });
+
+      document.getElementById("clearBtn").addEventListener("click", () => {
+        companyEl.value = "";
+        userEl.value = "";
+        pinEl.value = "";
+        userEl.setAttribute("placeholder", defaultUsernamePlaceholder);
+        companyEl.focus();
+      });
+
+      document.getElementById("setupClearBtn").addEventListener("click", () => {
+        setupKeyEl.value = "";
+        setupUserEl.value = "";
+        setupPinEl.value = "";
+        setupKeyEl.focus();
+      });
+
+      function getSupabaseClient() {
+        const cfg = window.APP_CONFIG || {};
+        const url = String(cfg.SUPABASE_URL || "").trim();
+        const key = String(cfg.SUPABASE_ANON_KEY || "").trim();
+        if (!url || !key) return null;
+        return createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true } });
+      }
+
+      async function platformAdminExistsInSupabase(supabase) {
+        const { data, error } = await supabase
+          .from("users")
+          .select("id, username, role, companyCode, active")
+          .eq("companyCode", "PLATFORM")
+          .eq("role", "platform_admin")
+          .eq("active", true)
+          .limit(1);
+
+        if (error) return { exists: false, error };
+        return { exists: Array.isArray(data) && data.length > 0, error: null };
+      }
+
+      async function boot() {
+        try {
+          const supabase = getSupabaseClient();
+          if (!supabase) throw new Error("Missing Supabase configuration (SUPABASE_URL / SUPABASE_ANON_KEY).");
+
+          const { exists, error } = await platformAdminExistsInSupabase(supabase);
+          if (error) throw new Error(error.message || "Platform admin check failed.");
+
+          if (exists) {
+            setupCard.style.display = "none";
+            if (loginCard) loginCard.style.display = "block";
+            companyEl.focus();
+            return;
+          }
+
+          // Only show One-time setup if Supabase confirms no platform admin exists.
+          setupCard.style.display = "block";
+          if (loginCard) loginCard.style.display = "none";
+          setupKeyEl.focus();
+        } catch (err) {
+          // Fail closed: do not show one-time setup if we cannot confirm platform admin absence.
+          setupCard.style.display = "none";
+          if (loginCard) loginCard.style.display = "block";
+          window.JanitorApp.toast(
+            err?.message || "Platform admin existence check failed.",
+            { type: "error", ms: 9000 },
+          );
+        }
+      }
+
+      document.getElementById("setupForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const setupKey = String(setupKeyEl.value || "").trim();
+        const username = String(setupUserEl.value || "").trim();
+        const pin = String(setupPinEl.value || "").trim();
+
+        try {
+          await window.JanitorAuth.createPlatformAdmin({ username, pin, setupKey });
+          window.JanitorAuth.goAfterLogin({ next: "admin.html" });
+        } catch (err) {
+          window.JanitorApp.toast(err?.message || "Setup failed.", { type: "error" });
+        }
+      });
+
+      document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const companyCode = normalizeCompanyCode(companyEl.value);
+        const username = normalizeUsername(userEl.value);
+        const pin = (pinEl.value || "").trim();
+
+        try {
+          const supabase = getSupabaseClient();
+          if (!supabase) throw new Error("Missing Supabase configuration (SUPABASE_URL / SUPABASE_ANON_KEY).");
+
+          const wantsEmailLogin = !companyCode && String(username || "").includes("@");
+          const email = wantsEmailLogin
+            ? String(userEl.value || "").trim()
+            : `${companyCode}+${username}@yourapp.local`;
+
+          const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email,
+            password: pin,
+          });
+          if (authError) {
+            const msg = String(authError.message || "").toLowerCase().includes("invalid login credentials")
+              ? "Invalid company code/username/PIN."
+              : authError.message;
+            throw new Error(msg);
+          }
+
+          const userId = authData?.user?.id || authData?.session?.user?.id || null;
+          if (!userId) throw new Error("Login failed.");
+
+          const { data: profile, error: profileError } = await supabase
+            .from("users")
+            .select("id, username, role, companyCode, active")
+            .eq("id", userId)
+            .single();
+          if (profileError) throw new Error(profileError.message);
+          if (!profile?.active) throw new Error("Account is inactive.");
+
+          // Compatibility session for existing pages (no tokens stored here).
+          try {
+            localStorage.setItem(
+              "csm_session_v1",
+              JSON.stringify({
+                companyCode: profile.companyCode,
+                username: profile.username,
+                userId: profile.id,
+                role: profile.role,
+                signedInAt: new Date().toISOString(),
+                provider: "supabase",
+              }),
+            );
+          } catch {
+            // ignore storage failures; Supabase session still exists
+          }
+
+          const next = window.JanitorApp.qs("next");
+          if (next && /^[a-z0-9._-]+\\.html([?#].*)?$/i.test(String(next))) {
+            location.href = String(next);
+            return;
+          }
+          if (profile.role === "platform_admin") location.href = "admin.html";
+          else if (profile.role === "employee") location.href = "my-schedule.html";
+          else location.href = "index.html";
+        } catch (err) {
+          window.JanitorApp.toast(err?.message || "Login failed.", { type: "error" });
+        }
+      });
+
+      recoverLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        recoverCard.style.display = recoverCard.style.display === "none" ? "block" : "none";
+        recoverKeyEl.focus();
+      });
+
+      document.getElementById("recoverCancelBtn").addEventListener("click", () => {
+        recoverCard.style.display = "none";
+        recoverKeyEl.value = "";
+        recoverBody.style.display = "none";
+        recoverCompanyEl.innerHTML = "";
+        recoverUserEl.innerHTML = "";
+        recoverPinEl.value = "";
+        recoverHint.textContent = "";
+      });
+
+      function escape(s) { return window.JanitorApp.escapeHtml(s); }
+      const normalizeCompany = (s) => String(s || "").trim().toUpperCase();
+
+      async function loadRecoveryCompanies() {
+        const setupKey = String(recoverKeyEl.value || "").trim();
+        const companies = await window.JanitorAuth.recoveryListCompanies({ setupKey });
+        recoverCompanyEl.innerHTML = "";
+        if (!companies.length) {
+          recoverCompanyEl.innerHTML = `<option value="">No companies found</option>`;
+          recoverCompanyEl.disabled = true;
+          return;
+        }
+        recoverCompanyEl.disabled = false;
+        companies.forEach(c => {
+          const label = `${c.companyCode}${c.companyName ? ` — ${c.companyName}` : ""}${c.isDisabled ? " (Disabled)" : ""}`;
+          recoverCompanyEl.insertAdjacentHTML("beforeend", `<option value="${escape(c.companyCode)}">${escape(label)}</option>`);
+        });
+        if (!recoverCompanyEl.value) recoverCompanyEl.value = companies[0].companyCode;
+      }
+
+      async function loadRecoveryUsers() {
+        const setupKey = String(recoverKeyEl.value || "").trim();
+        const companyCode = normalizeCompany(recoverCompanyEl.value);
+        if (!companyCode) {
+          recoverUserEl.innerHTML = `<option value="">No accounts</option>`;
+          recoverUserEl.disabled = true;
+          recoverHint.textContent = "No companies are available for recovery on this device.";
+          return;
+        }
+        const users = await window.JanitorAuth.recoveryListUsers({ setupKey, companyCode });
+        recoverUserEl.innerHTML = "";
+        if (!users.length) {
+          recoverUserEl.innerHTML = `<option value="">No accounts found</option>`;
+          recoverUserEl.disabled = true;
+          recoverHint.textContent = "No accounts found for this company code.";
+          return;
+        }
+        recoverUserEl.disabled = false;
+        users.forEach(u => {
+          const label = `${u.username} (${u.role}${u.active ? "" : ", inactive"})`;
+          recoverUserEl.insertAdjacentHTML("beforeend", `<option value="${escape(u.username)}">${escape(label)}</option>`);
+        });
+        recoverHint.textContent = "Select an account and set a new 4-digit PIN.";
+      }
+
+      document.getElementById("unlockRecoverBtn").addEventListener("click", async () => {
+        try {
+          await loadRecoveryCompanies();
+          await loadRecoveryUsers();
+          recoverBody.style.display = "block";
+          recoverCompanyEl.focus();
+        } catch (err) {
+          window.JanitorApp.toast(err?.message || "Recovery unlock failed.", { type: "error" });
+        }
+      });
+
+      recoverCompanyEl.addEventListener("change", async () => {
+        try {
+          await loadRecoveryUsers();
+        } catch (err) {
+          window.JanitorApp.toast(err?.message || "Could not load accounts.", { type: "error" });
+        }
+      });
+
+      document.getElementById("recoverClearBtn").addEventListener("click", () => {
+        recoverPinEl.value = "";
+        recoverPinEl.focus();
+      });
+
+      document.getElementById("recoverForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const setupKey = String(recoverKeyEl.value || "").trim();
+        const companyCode = normalizeCompany(recoverCompanyEl.value);
+        const username = String(recoverUserEl.value || "").trim();
+        const newPin = String(recoverPinEl.value || "").trim();
+        if (!companyCode) return window.JanitorApp.toast("Select a company.", { type: "warn" });
+        if (!username) return window.JanitorApp.toast("Select a username.", { type: "warn" });
+        if (!/^[0-9]{4}$/.test(newPin)) return window.JanitorApp.toast("PIN must be exactly 4 digits.", { type: "warn" });
+
+        const ok = await window.JanitorApp.confirmBox(`Reset PIN for "${username}" in company "${companyCode}"?`);
+        if (!ok) return;
+
+        try {
+          await window.JanitorAuth.recoveryResetPin({ setupKey, companyCode, username, newPin });
+          window.JanitorApp.toast("PIN reset. You can sign in now.", { type: "success" });
+          companyEl.value = companyCode;
+          userEl.value = username;
+          pinEl.value = "";
+          pinEl.focus();
+        } catch (err) {
+          window.JanitorApp.toast(err?.message || "Reset failed.", { type: "error" });
+        }
+      });
+
+      boot();
+    })();
   </script>
-  <script type="module" src="./js/pages/login.js"></script>
 </body>
 </html>
