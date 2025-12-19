@@ -16,9 +16,17 @@ function getEnv(name: string): string {
 
 type BootstrapBody = {
   token?: string;
+  email?: string;
+  authUserId?: string;
   username?: string;
   pin?: string;
 };
+
+function isUuid(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    value,
+  );
+}
 
 Deno.serve(async (req) => {
   const preflight = handleOptions(req);
@@ -34,20 +42,23 @@ Deno.serve(async (req) => {
       return json({ error: "forbidden" }, { status: 403, headers: corsHeaders });
     }
 
+    const companyCode = "PLATFORM";
+    const authUserIdFromBody = String(body.authUserId ?? "").trim();
     const { data: existingAdmins, error: existingError } = await supabaseAdmin
       .from("users")
       .select("id")
       .eq("role", "platform_admin")
+      .eq("companyCode", companyCode)
       .limit(1);
     if (existingError) throw new Error(existingError.message);
-    if ((existingAdmins ?? []).length > 0) {
+    const existingAdminId = existingAdmins?.[0]?.id ?? null;
+    if (existingAdminId && (!authUserIdFromBody || existingAdminId !== authUserIdFromBody)) {
       return json(
         { error: "platform_admin already exists" },
         { status: 409, headers: corsHeaders },
       );
     }
-
-    const companyCode = "PLATFORM";
+    const emailFromBody = String(body.email ?? "").trim();
     const username = normalizeUsername(String(body.username ?? ""));
     const pin = String(body.pin ?? "").trim();
     assertPin(pin, "pin");
@@ -58,21 +69,47 @@ Deno.serve(async (req) => {
       .select("id")
       .maybeSingle();
 
-    const email = internalEmail(companyCode, username);
-    const { data: authCreate, error: authError } = await supabaseAdmin.auth
-      .admin.createUser({
+    let authUserId: string;
+    let email: string;
+
+    if (authUserIdFromBody) {
+      if (!isUuid(authUserIdFromBody)) throw new Error("authUserId is invalid");
+
+      if (emailFromBody && (!emailFromBody.includes("@") || /\s/.test(emailFromBody))) {
+        throw new Error("email is invalid");
+      }
+
+      const { data: authUpdate, error: authUpdateError } = await supabaseAdmin.auth.admin
+        .updateUserById(authUserIdFromBody, {
+          ...(emailFromBody ? { email: emailFromBody } : {}),
+          password: pin,
+          email_confirm: true,
+        });
+
+      if (authUpdateError) throw new Error(authUpdateError.message);
+      authUserId = authUserIdFromBody;
+      email = authUpdate?.user?.email ?? emailFromBody;
+      if (!email) throw new Error("Failed to resolve auth user email");
+    } else {
+      email = emailFromBody || internalEmail(companyCode, username);
+      if (!email.includes("@") || /\s/.test(email)) {
+        throw new Error("email is invalid");
+      }
+
+      const { data: authCreate, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email,
         password: pin,
         email_confirm: true,
       });
-    if (authError || !authCreate.user) {
-      throw new Error(authError?.message ?? "Failed to create auth user");
-    }
 
-    const authUserId = authCreate.user.id;
+      authUserId = authCreate?.user?.id ?? "";
+      if (authError || !authUserId) {
+        throw new Error(authError?.message ?? "Failed to create auth user");
+      }
+    }
     const pinHash = await computePinHash(companyCode, username, pin);
 
-    const { error: insertError } = await supabaseAdmin.from("users").insert({
+    const { error: insertError } = await supabaseAdmin.from("users").upsert({
       id: authUserId,
       companyCode,
       username,
@@ -80,20 +117,30 @@ Deno.serve(async (req) => {
       role: "platform_admin",
       employeeId: null,
       active: true,
-    });
+    }, { onConflict: "id" });
 
     if (insertError) {
-      await supabaseAdmin.auth.admin.deleteUser(authUserId);
+      if (!authUserIdFromBody) {
+        await supabaseAdmin.auth.admin.deleteUser(authUserId);
+      }
       throw new Error(insertError.message);
     }
+
+    const { count: platformAdminCount, error: countError } = await supabaseAdmin
+      .from("users")
+      .select("id", { count: "exact", head: true })
+      .eq("role", "platform_admin")
+      .eq("companyCode", companyCode);
+    if (countError) throw new Error(countError.message);
 
     return json(
       {
         ok: true,
         companyCode,
         username,
-        pin,
+        email,
         authUserId,
+        platformAdminCount: platformAdminCount ?? 0,
       },
       { headers: corsHeaders },
     );
@@ -104,4 +151,3 @@ Deno.serve(async (req) => {
     );
   }
 });
-

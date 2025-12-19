@@ -1,9 +1,14 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/+esm";
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from "./config.js";
+import { SUPABASE_ANON_KEY, SUPABASE_PROJECT_REF, SUPABASE_URL } from "./config.js";
 
 function isUnsafeSupabaseUrl(url) {
   const u = String(url ?? "").toLowerCase();
   return u.includes("localhost") || u.includes("127.0.0.1") || u.includes(":54321");
+}
+
+function isLocalHostname(hostname) {
+  const h = String(hostname ?? "").toLowerCase();
+  return h === "localhost" || h === "127.0.0.1" || h === "[::1]";
 }
 
 function renderFatalConfigError(message) {
@@ -39,7 +44,7 @@ function renderFatalConfigError(message) {
 
 function enforceProductionSupabaseLock() {
   if (typeof location === "undefined") return;
-  if (location.hostname !== "cybersolutionshq.github.io") return;
+  if (isLocalHostname(location.hostname)) return;
 
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
     renderFatalConfigError("Missing Supabase configuration for production.");
@@ -50,9 +55,37 @@ function enforceProductionSupabaseLock() {
       "Refusing to run in production: SUPABASE_URL points to localhost.",
     );
   }
+
+  try {
+    const url = new URL(SUPABASE_URL);
+    if (url.protocol !== "https:") {
+      renderFatalConfigError("Refusing to run: SUPABASE_URL must be https.");
+    }
+    const expectedHost = `${String(SUPABASE_PROJECT_REF)}.supabase.co`.toLowerCase();
+    if (url.hostname.toLowerCase() !== expectedHost) {
+      renderFatalConfigError(
+        `Refusing to run: SUPABASE_URL must point to ${expectedHost}.`,
+      );
+    }
+  } catch {
+    renderFatalConfigError("Refusing to run: SUPABASE_URL is not a valid URL.");
+  }
 }
 
 enforceProductionSupabaseLock();
+
+function registerServiceWorker() {
+  if (typeof navigator === "undefined") return;
+  if (!("serviceWorker" in navigator)) return;
+  if (typeof location !== "undefined" && isLocalHostname(location.hostname)) return;
+
+  const swUrl = new URL("../service-worker.js", import.meta.url);
+  navigator.serviceWorker.register(swUrl.href).catch(() => {
+    // ignore
+  });
+}
+
+registerServiceWorker();
 
 export const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 

@@ -2,7 +2,7 @@
    Simple offline cache for Cyber Solutions LLC Schedule Manager
 */
 
-const CACHE_NAME = "csm-schedule-manager-cache-v7";
+const CACHE_NAME = "csm-schedule-manager-cache-v8";
 
 const ASSETS = [
   "./",
@@ -29,7 +29,6 @@ const ASSETS = [
   "./manifest.json",
   "./service-worker.js",
   "./assets/styles.css",
-  "./assets/config.example.js",
   "./assets/store.js",
   "./assets/app.js",
   "./assets/pdf.js",
@@ -74,6 +73,13 @@ self.addEventListener("fetch", (event) => {
 
   // Always fetch config fresh (deploy-time setting). Do not allow stale SW cache.
   if (new URL(req.url).pathname.endsWith("/js/config.js")) {
+    event.respondWith(fetch(req, { cache: "no-store" }));
+    return;
+  }
+  if (
+    new URL(req.url).pathname.endsWith("/assets/config.js") ||
+    new URL(req.url).pathname.endsWith("/assets/config.example.js")
+  ) {
     event.respondWith(fetch(req, { cache: "no-store" }));
     return;
   }
