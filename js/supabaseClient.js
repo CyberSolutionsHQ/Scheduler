@@ -31,7 +31,8 @@ function renderFatalConfigError(message) {
         <div style="margin-bottom:12px;">${String(message)}</div>
         <pre style="white-space:pre-wrap;background:#08101a;color:#cfe3ff;padding:12px;border-radius:8px;overflow:auto;">SUPABASE_URL: ${String(SUPABASE_URL)}</pre>
         <div style="margin-top:12px;">
-          Fix: update <code>js/config.js</code> to the cloud project URL + anon key, then hard refresh.
+          Fix: provide an anon key for production (without committing it). Recommended: GitHub Pages deploy via
+          <code>.github/workflows/deploy_github_pages.yml</code> with repo secret <code>SUPABASE_ANON_KEY</code>, then hard refresh.
         </div>
       </div>
     `;
