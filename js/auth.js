@@ -18,6 +18,13 @@ export function assertPin(value, field = "PIN") {
   return pin;
 }
 
+export function normalizeEmail(value) {
+  const email = String(value ?? "").trim();
+  if (!email) throw new Error("Email is required.");
+  if (!email.includes("@")) throw new Error("Email must include '@'.");
+  return email;
+}
+
 // Must match `internalEmail()` in `supabase/functions/_shared/admin.ts`.
 export function internalEmail(companyCode, username) {
   return `${normalizeCompanyCode(companyCode)}+${normalizeUsername(username)}@yourapp.local`;
@@ -28,6 +35,17 @@ export async function signInWithCompanyUsernamePin({ companyCode, username, pin 
   const email = internalEmail(companyCode, username);
   const password = assertPin(pin);
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export async function signInWithEmailPin({ email, pin }) {
+  const supabase = getSupabase();
+  const password = assertPin(pin);
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: normalizeEmail(email),
+    password,
+  });
   if (error) throw new Error(error.message);
   return data;
 }
@@ -46,7 +64,7 @@ export async function getCurrentUserProfile() {
 
   const { data, error } = await supabase
     .from("users")
-    .select('id, "companyCode", company_code, username, role, "employeeId", active')
+    .select('id, "companyCode", company_code, username, role, "employeeId", active, force_pin_change')
     .eq("id", userId)
     .single();
 
@@ -60,6 +78,7 @@ export async function getCurrentUserProfile() {
     role: data.role,
     employeeId: data.employeeId,
     active: data.active,
+    forcePinChange: Boolean(data.force_pin_change),
   };
 }
 
@@ -95,6 +114,12 @@ export async function requireAuth({ allowRoles } = {}) {
     return null;
   }
 
+  const isChangePinPage = /(^|\/)change-pin\.html$/i.test(location.pathname || "");
+  if (profile.forcePinChange && !isChangePinPage) {
+    location.href = `./change-pin.html?next=${encodeURIComponent(pageNameWithQuery())}`;
+    return null;
+  }
+
   if (Array.isArray(allowRoles) && allowRoles.length > 0 && !allowRoles.includes(profile.role)) {
     goToDashboard();
     return null;
@@ -102,4 +127,3 @@ export async function requireAuth({ allowRoles } = {}) {
 
   return profile;
 }
-

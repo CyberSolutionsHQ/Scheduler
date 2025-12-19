@@ -13,7 +13,7 @@
     <div class="title">
       <div>
         <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
-        <div class="sub">Sign in with company code, username, and PIN</div>
+        <div class="sub">Sign in with company code, username, and PIN (or email + PIN for platform admins)</div>
       </div>
     </div>
   </header>
@@ -40,7 +40,41 @@
         <div class="small" style="margin-top:10px;">
           If you can’t sign in, ask your manager or platform admin to reset your credentials.
         </div>
+
+        <!-- Hidden/manual platform admin recovery (append ?recovery=1) -->
+        <div class="small" id="recoveryHint" style="margin-top:12px; display:none;">
+          Platform admin recovery: <a href="#" id="recoveryToggle">Use recovery token</a>
+        </div>
       </form>
+    </section>
+
+    <section class="card" id="recoveryWrap" style="display:none;">
+      <h2>Recovery</h2>
+      <form id="recoveryForm" autocomplete="off">
+        <label for="recoveryToken">Recovery token</label>
+        <input id="recoveryToken" placeholder="Paste recovery token" autocomplete="one-time-code" autocapitalize="none" />
+        <div class="btnRow">
+          <button class="btn" type="submit">Continue</button>
+        </div>
+      </form>
+
+      <form id="recoveryPinForm" autocomplete="off" style="display:none; margin-top:12px;">
+        <div class="hr"></div>
+        <label for="recoveryNewPin">New PIN</label>
+        <input id="recoveryNewPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
+
+        <label for="recoveryConfirmPin">Confirm new PIN</label>
+        <input id="recoveryConfirmPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
+
+        <div class="btnRow">
+          <button class="btn" type="submit">Set new PIN</button>
+        </div>
+      </form>
+
+      <div class="small" id="recoveryStatus" style="margin-top:10px; color:#ffdf9f;"></div>
+      <div class="small" style="margin-top:10px;">
+        This flow is time-limited and single-use. Do not save or share the token.
+      </div>
     </section>
 
     <section class="card">
