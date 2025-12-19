@@ -439,3 +439,20 @@ Useful local URLs (per `supabase/config.toml`):
 - API: `http://127.0.0.1:54321`
 - Studio: `http://127.0.0.1:54323`
 
+---
+
+## 8) Hosted Bootstrap (first-time setup)
+
+Hosted Supabase needs an initial `platform_admin` account to use the UI flow that creates companies.
+Backend provides a one-time bootstrap Edge Function:
+- Function: `bootstrap_platform_admin`
+- Guard: requires secret `BOOTSTRAP_TOKEN` and refuses if a platform admin already exists.
+
+Example call (curl):
+```bash
+curl -sS -X POST \
+  "https://<project-ref>.functions.supabase.co/bootstrap_platform_admin" \
+  -H "content-type: application/json" \
+  -H "apikey: <anon_key>" \
+  -d '{"token":"<BOOTSTRAP_TOKEN>","username":"admin","pin":"1234"}'
+```
