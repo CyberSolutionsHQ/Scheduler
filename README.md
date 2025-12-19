@@ -6,7 +6,7 @@ This repo is deployed to GitHub Pages under `/Scheduler/`.
 
 To prevent the production site from ever accidentally pointing to local Supabase:
 
-- `js/config.js` is committed and must contain **only** the cloud `SUPABASE_URL` + project anon key.
+- `js/config.js` is committed and must contain **only** the cloud `SUPABASE_URL`. Do not commit keys.
 - `js/supabaseClient.js` hard-fails (with a visible full-page error) on any non-localhost site if:
   - `SUPABASE_URL` points at `localhost`/local dev ports, or
   - `SUPABASE_URL` is not `https://xwroayzhbbwbiuswtuvs.supabase.co`.

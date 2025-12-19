@@ -33,6 +33,8 @@ const recoveryPinFormEl = document.getElementById("recoveryPinForm");
 const recoveryNewPinEl = document.getElementById("recoveryNewPin");
 const recoveryConfirmPinEl = document.getElementById("recoveryConfirmPin");
 
+const loginCardEl = form?.closest("section") ?? null;
+
 function setStatus(text) {
   if (statusEl) statusEl.textContent = String(text ?? "");
 }
@@ -48,6 +50,24 @@ if (companyEl) {
 }
 
 let recoveryAccessToken = null;
+
+function setRecoveryLock(locked) {
+  if (loginCardEl) loginCardEl.style.display = locked ? "none" : "block";
+  const controls = form?.querySelectorAll?.("input, button, a") ?? [];
+  controls.forEach((el) => {
+    if ("disabled" in el) el.disabled = Boolean(locked);
+    if (el.tagName === "A") {
+      el.tabIndex = locked ? -1 : 0;
+      el.setAttribute("aria-disabled", locked ? "true" : "false");
+    }
+  });
+
+  if (locked) {
+    window.onbeforeunload = () => "Finish recovery first.";
+  } else if (window.onbeforeunload) {
+    window.onbeforeunload = null;
+  }
+}
 
 function toggleRecovery(show) {
   if (!recoveryWrapEl) return;
@@ -129,6 +149,8 @@ recoveryFormEl?.addEventListener("submit", async (e) => {
     if (recoveryTokenEl) recoveryTokenEl.value = "";
 
     if (recoveryPinFormEl) recoveryPinFormEl.style.display = "block";
+    if (recoveryFormEl) recoveryFormEl.style.display = "none";
+    setRecoveryLock(true);
     recoveryNewPinEl?.focus();
     setRecoveryStatus("Token accepted. Set a new PIN now.");
   } catch (err) {
@@ -173,6 +195,9 @@ recoveryPinFormEl?.addEventListener("submit", async (e) => {
     recoveryAccessToken = null;
     if (recoveryNewPinEl) recoveryNewPinEl.value = "";
     if (recoveryConfirmPinEl) recoveryConfirmPinEl.value = "";
+    setRecoveryLock(false);
+    if (recoveryPinFormEl) recoveryPinFormEl.style.display = "none";
+    if (recoveryFormEl) recoveryFormEl.style.display = "block";
 
     toast("PIN updated. Sign in with email + new PIN.", { type: "success" });
     setRecoveryStatus("PIN updated. Sign in with email + new PIN.");

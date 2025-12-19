@@ -9,23 +9,10 @@ begin;
 
 -- Required for gen_random_bytes(), crypt(), gen_salt(), digest()
 create extension if not exists pgcrypto;
--- Required to mint a short-lived signed PostgREST JWT for the recovery-only role.
-create extension if not exists pgjwt;
 
--- A minimal DB role used only by a short-lived recovery JWT.
-do $$
-begin
-  if not exists (select 1 from pg_roles where rolname = 'platform_admin_recovery') then
-    create role platform_admin_recovery nologin noinherit;
-  end if;
-
-  -- Allow PostgREST (authenticator) to SET ROLE to this JWT role.
-  if exists (select 1 from pg_roles where rolname = 'authenticator') then
-    grant platform_admin_recovery to authenticator;
-  end if;
-end $$;
-
-grant usage on schema public to platform_admin_recovery;
+-- Note: We intentionally do NOT create a new DB role in a migration.
+-- `CREATE ROLE` cannot run inside a transaction block, and migrations are applied transactionally.
+-- Instead, we mint a short-lived JWT with role `anon` plus a custom `recovery=true` claim.
 
 -- ------------------------------------------------------------------
 -- Users table support
@@ -60,7 +47,17 @@ revoke all on table public.platform_admin_reset_tokens from public;
 revoke all on table public.platform_admin_reset_tokens from anon;
 revoke all on table public.platform_admin_reset_tokens from authenticated;
 revoke all on table public.platform_admin_reset_tokens from service_role;
-revoke all on table public.platform_admin_reset_tokens from platform_admin_recovery;
+
+-- Allow access only for internal SECURITY DEFINER code paths.
+-- This prevents relying on BYPASSRLS and remains inaccessible from PostgREST roles.
+drop policy if exists platform_admin_reset_tokens_internal_only on public.platform_admin_reset_tokens;
+create policy platform_admin_reset_tokens_internal_only
+on public.platform_admin_reset_tokens
+as permissive
+for all
+to public
+using (current_user in ('postgres', 'supabase_admin'))
+with check (current_user in ('postgres', 'supabase_admin'));
 
 comment on table public.platform_admin_reset_tokens is
   'Break-glass: one-time, 15-minute platform_admin reset tokens (hashed at rest). Access only via SECURITY DEFINER RPCs.';
@@ -73,7 +70,7 @@ create or replace function public.create_platform_admin_reset_token(target_user_
 returns text
 language plpgsql
 security definer
-set search_path = public, auth
+set search_path = public, auth, extensions, pg_catalog
 as $$
 declare
   v_token text;
@@ -139,7 +136,7 @@ create or replace function public.consume_platform_admin_reset_token(plaintext_t
 returns jsonb
 language plpgsql
 security definer
-set search_path = public, auth
+set search_path = public, auth, extensions, pg_catalog
 as $$
 declare
   v_row record;
@@ -147,6 +144,13 @@ declare
   v_now timestamptz := now();
   v_exp int;
   v_access_token text;
+  v_header jsonb;
+  v_payload jsonb;
+  v_header_b64 text;
+  v_payload_b64 text;
+  v_signing_input text;
+  v_sig bytea;
+  v_sig_b64 text;
 begin
   if plaintext_token is null or length(trim(plaintext_token)) < 32 then
     raise exception 'invalid token' using errcode = '22023';
@@ -190,17 +194,37 @@ begin
 
   -- Short-lived JWT (10 minutes) scoped to a minimal DB role.
   v_exp := floor(extract(epoch from (v_now + interval '10 minutes')))::int;
-  v_access_token := sign(
-    json_build_object(
-      'aud', 'authenticated',
-      'role', 'platform_admin_recovery',
-      'sub', v_row.user_id::text,
-      'iat', floor(extract(epoch from v_now))::int,
-      'exp', v_exp,
-      'recovery', true
-    ),
-    v_jwt_secret
+
+  -- Mint a minimal HS256 JWT for PostgREST:
+  -- - role=anon (no direct table access)
+  -- - recovery=true claim gates the recovery-only PIN setter RPC
+  v_header := '{"alg":"HS256","typ":"JWT"}'::jsonb;
+  v_payload := jsonb_build_object(
+    'aud', 'authenticated',
+    'role', 'anon',
+    'sub', v_row.user_id::text,
+    'iat', floor(extract(epoch from v_now))::int,
+    'exp', v_exp,
+    'recovery', true
   );
+
+  v_header_b64 := regexp_replace(
+    translate(encode(convert_to(v_header::text, 'utf8'), 'base64'), '+/', '-_'),
+    '=',
+    '',
+    'g'
+  );
+  v_payload_b64 := regexp_replace(
+    translate(encode(convert_to(v_payload::text, 'utf8'), 'base64'), '+/', '-_'),
+    '=',
+    '',
+    'g'
+  );
+
+  v_signing_input := v_header_b64 || '.' || v_payload_b64;
+  v_sig := hmac(convert_to(v_signing_input, 'utf8'), convert_to(v_jwt_secret, 'utf8'), 'sha256');
+  v_sig_b64 := regexp_replace(translate(encode(v_sig, 'base64'), '+/', '-_'), '=', '', 'g');
+  v_access_token := v_signing_input || '.' || v_sig_b64;
 
   return jsonb_build_object(
     'token_type', 'bearer',
@@ -220,14 +244,14 @@ comment on function public.consume_platform_admin_reset_token(text) is
 
 -- ------------------------------------------------------------------
 -- RPC: platform_admin_recovery_set_pin(new_pin text) -> { ok: true }
--- Uses the short-lived recovery JWT (role=platform_admin_recovery) to set a new
+-- Uses the short-lived recovery JWT (role=anon + claim recovery=true) to set a new
 -- 4-digit PIN (auth password), update users.pinHash, and clear force_pin_change.
 -- ------------------------------------------------------------------
 create or replace function public.platform_admin_recovery_set_pin(new_pin text)
 returns jsonb
 language plpgsql
 security definer
-set search_path = public, auth
+set search_path = public, auth, extensions, pg_catalog
 as $$
 declare
   v_user_id uuid;
@@ -235,12 +259,16 @@ declare
   v_username text;
   v_pin_hash text;
 begin
-  if auth.role() is distinct from 'platform_admin_recovery' then
+  if auth.role() is distinct from 'anon' then
     raise exception 'forbidden' using errcode = '42501';
   end if;
 
   v_user_id := auth.uid();
   if v_user_id is null then
+    raise exception 'forbidden' using errcode = '42501';
+  end if;
+
+  if current_setting('request.jwt.claim.recovery', true) is distinct from 'true' then
     raise exception 'forbidden' using errcode = '42501';
   end if;
 
@@ -254,7 +282,8 @@ begin
   where u.id = v_user_id
     and u.role = 'platform_admin'
     and u.company_code = 'PLATFORM'
-    and u.active = true;
+    and u.active = true
+    and u.force_pin_change = true;
 
   if not found then
     raise exception 'forbidden' using errcode = '42501';
@@ -286,7 +315,7 @@ end;
 $$;
 
 revoke all on function public.platform_admin_recovery_set_pin(text) from public;
-grant execute on function public.platform_admin_recovery_set_pin(text) to platform_admin_recovery;
+grant execute on function public.platform_admin_recovery_set_pin(text) to anon;
 
 comment on function public.platform_admin_recovery_set_pin(text) is
   'Break-glass: recovery-JWT-only. Sets new PIN (auth password), updates users.pinHash, clears users.force_pin_change.';
@@ -300,7 +329,7 @@ create or replace function public.sync_my_pin_hash_and_clear_force_pin_change(ne
 returns jsonb
 language plpgsql
 security definer
-set search_path = public, auth
+set search_path = public, auth, extensions, pg_catalog
 as $$
 declare
   v_user_id uuid;
@@ -315,6 +344,16 @@ begin
 
   if new_pin is null or new_pin !~ '^[0-9]{4}$' then
     raise exception 'invalid pin' using errcode = '22023';
+  end if;
+
+  -- Prevent bypassing `force_pin_change`: require the PIN to match auth.users.
+  perform 1
+  from auth.users au
+  where au.id = v_user_id
+    and au.encrypted_password = crypt(new_pin, au.encrypted_password);
+
+  if not found then
+    raise exception 'forbidden' using errcode = '42501';
   end if;
 
   select u.company_code, u.username

@@ -7,5 +7,6 @@
 // Never use the service role key in the browser.
 export const SUPABASE_PROJECT_REF = "xwroayzhbbwbiuswtuvs";
 export const SUPABASE_URL = `https://${SUPABASE_PROJECT_REF}.supabase.co`;
-export const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3cm9heXpoYmJ3Yml1c3d0dXZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwMDgzNzksImV4cCI6MjA4MTU4NDM3OX0.vjfNyKk1mbEqIMqf9-jwyHrbIZEnWLy6Z8SgVuHhv5Q";
+// Do not commit keys (even anon/public keys) per security policy.
+// Set this locally for development/deploy, but keep it out of git history.
+export const SUPABASE_ANON_KEY = "";
