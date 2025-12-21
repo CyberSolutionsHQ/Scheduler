@@ -43,6 +43,16 @@ function renderFatalConfigError(message) {
   throw new Error(String(message));
 }
 
+function projectRefFromUrl() {
+  if (!SUPABASE_URL) return "";
+  try {
+    const host = new URL(SUPABASE_URL).hostname || "";
+    return host.split(".")[0] || "";
+  } catch {
+    return "";
+  }
+}
+
 function enforceProductionSupabaseLock() {
   if (typeof location === "undefined") return;
   if (isLocalHostname(location.hostname)) return;
@@ -62,11 +72,14 @@ function enforceProductionSupabaseLock() {
     if (url.protocol !== "https:") {
       renderFatalConfigError("Refusing to run: SUPABASE_URL must be https.");
     }
-    const expectedHost = `${String(SUPABASE_PROJECT_REF)}.supabase.co`.toLowerCase();
-    if (url.hostname.toLowerCase() !== expectedHost) {
-      renderFatalConfigError(
-        `Refusing to run: SUPABASE_URL must point to ${expectedHost}.`,
-      );
+    const projectRef = String(SUPABASE_PROJECT_REF || projectRefFromUrl()).trim();
+    if (projectRef) {
+      const expectedHost = `${projectRef}.supabase.co`.toLowerCase();
+      if (url.hostname.toLowerCase() !== expectedHost) {
+        renderFatalConfigError(
+          `Refusing to run: SUPABASE_URL must point to ${expectedHost}.`,
+        );
+      }
     }
   } catch {
     renderFatalConfigError("Refusing to run: SUPABASE_URL is not a valid URL.");
@@ -76,6 +89,8 @@ function enforceProductionSupabaseLock() {
 enforceProductionSupabaseLock();
 
 function registerServiceWorker() {
+  const ENABLE_OFFLINE = false;
+  if (!ENABLE_OFFLINE) return;
   if (typeof navigator === "undefined") return;
   if (!("serviceWorker" in navigator)) return;
   if (typeof location !== "undefined" && isLocalHostname(location.hostname)) return;

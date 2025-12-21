@@ -73,21 +73,27 @@ export function renderAppHeader({
   if (!header) return;
 
   const role = profile?.role || "";
-  const companyCode = profile?.companyCode || profile?.company_code || "";
+  const companyCode = profile?.companyCode || "";
   const username = profile?.username || "";
 
   const links = [];
   if (role === "platform_admin") {
     links.push({ href: "./dashboard.html", label: "Dashboard" });
-    links.push({ href: "./requests.html", label: "Requests" });
+    links.push({ href: "./admin.html", label: "Admin Tools" });
+    links.push({ href: "./requests.html", label: "Reset Requests" });
+    links.push({ href: "./employee-requests.html", label: "Change Requests" });
+    links.push({ href: "./account.html", label: "Account" });
   } else if (role === "manager") {
     links.push({ href: "./dashboard.html", label: "Dashboard" });
     links.push({ href: "./employees.html", label: "Employees" });
-    links.push({ href: "./job-sites.html", label: "Job Sites" });
     links.push({ href: "./schedule.html", label: "Schedule" });
-    links.push({ href: "./requests.html", label: "Requests" });
+    links.push({ href: "./users.html", label: "Users" });
+    links.push({ href: "./requests.html", label: "Reset Requests" });
+    links.push({ href: "./employee-requests.html", label: "Change Requests" });
+    links.push({ href: "./account.html", label: "Account" });
   } else if (role === "employee") {
     links.push({ href: "./my-shifts.html", label: "My Shifts" });
+    links.push({ href: "./account.html", label: "Account" });
   }
 
   links.push({ href: "#logout", label: "Logout", id: "logoutLink" });
@@ -113,4 +119,3 @@ export function renderAppHeader({
     </nav>
   `;
 }
-

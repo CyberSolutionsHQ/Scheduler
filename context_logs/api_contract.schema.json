@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://context-logs.local/schemas/api_contract.schema.json",
+  "title": "api_contract.json (Phase 4 Output) — Backend→Frontend Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "client", "auth", "entities", "endpoints", "realtime", "errors"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "phase", "generated_at", "agent", "final_state_path"],
+      "properties": {
+        "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$" },
+        "phase": { "const": 4 },
+        "generated_at": { "type": "string", "format": "date-time" },
+        "agent": { "type": "string", "minLength": 1 },
+        "final_state_path": { "type": "string", "minLength": 1 }
+      }
+    },
+    "client": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supabase_url_env", "supabase_anon_key_env", "schema", "tables"],
+      "properties": {
+        "supabase_url_env": { "type": "string", "minLength": 1 },
+        "supabase_anon_key_env": { "type": "string", "minLength": 1 },
+        "schema": { "type": "string", "minLength": 1 },
+        "tables": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+        }
+      }
+    },
+    "auth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "roles", "session_storage", "login"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["supabase_auth", "custom_users_table", "hybrid"] },
+        "roles": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "session_storage": { "type": "string", "enum": ["memory_only", "supabase_default", "custom"] },
+        "login": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "inputs", "outputs"],
+          "properties": {
+            "type": { "type": "string", "enum": ["email_password", "otp", "username_pin", "custom"] },
+            "inputs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "outputs": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          }
+        }
+      }
+    },
+    "entities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tables", "types"],
+      "properties": {
+        "tables": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/entity_table" }
+        },
+        "types": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/entity_type" }
+        }
+      }
+    },
+    "endpoints": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/endpoint" }
+    },
+    "realtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "channels"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "table", "events", "filter_hint"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "table": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+              "events": { "type": "array", "items": { "type": "string", "enum": ["INSERT", "UPDATE", "DELETE"] } },
+              "filter_hint": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message", "recovery_hint"],
+        "properties": {
+          "code": { "type": "string", "minLength": 1 },
+          "message": { "type": "string", "minLength": 1 },
+          "recovery_hint": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "entity_field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "nullable"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "type": { "type": "string", "minLength": 1 },
+        "nullable": { "type": "boolean" }
+      }
+    },
+    "entity_table": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "primary_key", "fields", "tenant_filter_hint"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "primary_key": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" } },
+        "fields": { "type": "array", "items": { "$ref": "#/$defs/entity_field" } },
+        "tenant_filter_hint": { "type": ["string", "null"] }
+      }
+    },
+    "entity_type": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "fields"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "fields": { "type": "array", "items": { "$ref": "#/$defs/entity_field" } }
+      }
+    },
+    "endpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "kind", "path", "method", "auth_required", "input", "output", "notes"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "enum": ["edge_function", "rpc", "direct_table"] },
+        "path": { "type": "string", "minLength": 1 },
+        "method": { "type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"] },
+        "auth_required": { "type": "boolean" },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["shape", "example"],
+          "properties": {
+            "shape": { "type": "string", "minLength": 1 },
+            "example": { "type": ["object", "array", "string", "number", "boolean", "null"] }
+          }
+        },
+        "output": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["shape", "example"],
+          "properties": {
+            "shape": { "type": "string", "minLength": 1 },
+            "example": { "type": ["object", "array", "string", "number", "boolean", "null"] }
+          }
+        },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

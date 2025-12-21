@@ -1,5 +1,5 @@
 import { getSupabase } from "../supabaseClient.js";
-import { requireAuth, signOut } from "../auth.js";
+import { handleAuthError, requireAuth, signOut } from "../auth.js";
 import { renderAppHeader, toast } from "../ui.js";
 
 const supabase = (() => {
@@ -131,10 +131,15 @@ function normalizeCompanyCode(value) {
       if (!cb) return;
       const id = cb.getAttribute("data-id");
       try {
-        const { error } = await supabase.from("employees").update({ active: cb.checked }).eq("id", id);
+        const { error } = await supabase
+          .from("employees")
+          .update({ active: cb.checked })
+          .eq("id", id)
+          .eq("companyCode", companyCode);
         if (error) throw new Error(error.message);
         toast("Updated.", { type: "success" });
       } catch (err) {
+        if (await handleAuthError(err)) return;
         cb.checked = !cb.checked;
         toast(err instanceof Error ? err.message : "Update failed.", { type: "error" });
       }
@@ -147,11 +152,16 @@ function normalizeCompanyCode(value) {
       const ok = window.confirm("Delete this employee?");
       if (!ok) return;
       try {
-        const { error } = await supabase.from("employees").delete().eq("id", id);
+        const { error } = await supabase
+          .from("employees")
+          .delete()
+          .eq("id", id)
+          .eq("companyCode", companyCode);
         if (error) throw new Error(error.message);
         toast("Deleted.", { type: "success" });
         await refresh();
       } catch (err) {
+        if (await handleAuthError(err)) return;
         toast(err instanceof Error ? err.message : "Delete failed.", { type: "error" });
       }
     });
@@ -175,6 +185,7 @@ function normalizeCompanyCode(value) {
         form.reset();
         await refresh();
       } catch (err) {
+        if (await handleAuthError(err)) return;
         toast(err instanceof Error ? err.message : "Create failed.", { type: "error" });
       }
     });
@@ -182,6 +193,7 @@ function normalizeCompanyCode(value) {
     await loadCompaniesIfNeeded();
     await refresh();
   } catch (err) {
+    if (await handleAuthError(err)) return;
     toast(err instanceof Error ? err.message : "Failed to load employees.", { type: "error" });
   }
 })();

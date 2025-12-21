@@ -1,0 +1,250 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://context-logs.local/schemas/manifest.schema.json",
+  "title": "manifest.json (Phase 1 Output) — As-Is Intent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "source", "storage_scan", "required_tables", "required_views", "required_functions", "hardcoded_constants", "data_flows"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "phase", "generated_at", "repo_root", "agent"],
+      "properties": {
+        "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$" },
+        "phase": { "const": 1 },
+        "generated_at": { "type": "string", "format": "date-time" },
+        "repo_root": { "type": "string", "minLength": 1 },
+        "agent": { "type": "string", "minLength": 1 }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["files_indexed", "entrypoints", "languages", "frameworks"],
+      "properties": {
+        "files_indexed": { "type": "integer", "minimum": 0 },
+        "entrypoints": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "languages": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "frameworks": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "storage_scan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["localstorage", "indexeddb", "filesystem", "in_memory", "other"],
+      "properties": {
+        "localstorage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["keys", "patterns"],
+          "properties": {
+            "keys": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "patterns": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          }
+        },
+        "indexeddb": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["databases", "patterns"],
+          "properties": {
+            "databases": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "patterns": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          }
+        },
+        "filesystem": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["paths", "patterns"],
+          "properties": {
+            "paths": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "patterns": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          }
+        },
+        "in_memory": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "other": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "required_tables": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/table_requirement" }
+    },
+    "required_views": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/view_requirement" }
+    },
+    "required_functions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/function_requirement" }
+    },
+    "hardcoded_constants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "value_type", "value_preview", "locations"],
+        "properties": {
+          "key": { "type": "string", "minLength": 1 },
+          "value_type": { "type": "string", "enum": ["string", "number", "boolean", "json", "other"] },
+          "value_preview": { "type": "string" },
+          "locations": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/location" }
+          }
+        }
+      }
+    },
+    "data_flows": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/data_flow" }
+    }
+  },
+  "$defs": {
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "line_start", "line_end"],
+      "properties": {
+        "file": { "type": "string", "minLength": 1 },
+        "line_start": { "type": "integer", "minimum": 1 },
+        "line_end": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "column_requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type_hint", "nullable", "default_hint", "constraints", "references", "usage"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "type_hint": { "type": "string", "minLength": 1 },
+        "nullable": { "type": "boolean" },
+        "default_hint": { "type": ["string", "null"] },
+        "constraints": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "references": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["table", "column", "on_update", "on_delete"],
+          "properties": {
+            "table": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+            "column": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+            "on_update": { "type": "string", "enum": ["NO ACTION", "RESTRICT", "CASCADE", "SET NULL", "SET DEFAULT"] },
+            "on_delete": { "type": "string", "enum": ["NO ACTION", "RESTRICT", "CASCADE", "SET NULL", "SET DEFAULT"] }
+          }
+        },
+        "usage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["read_paths", "write_paths", "locations"],
+          "properties": {
+            "read_paths": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "write_paths": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "locations": { "type": "array", "items": { "$ref": "#/$defs/location" } }
+          }
+        }
+      }
+    },
+    "rls_policy_hint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "command", "using_hint", "check_hint"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "command": { "type": "string", "enum": ["SELECT", "INSERT", "UPDATE", "DELETE", "ALL"] },
+        "using_hint": { "type": ["string", "null"] },
+        "check_hint": { "type": ["string", "null"] }
+      }
+    },
+    "index_hint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "columns", "unique", "method"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "columns": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" } },
+        "unique": { "type": "boolean" },
+        "method": { "type": "string", "enum": ["btree", "hash", "gin", "gist", "brin"] }
+      }
+    },
+    "table_requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "purpose", "columns", "primary_key", "uniques", "indexes", "rls", "rls_policies_hint"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "purpose": { "type": "string", "minLength": 1 },
+        "columns": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/column_requirement" } },
+        "primary_key": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+        },
+        "uniques": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+          }
+        },
+        "indexes": { "type": "array", "items": { "$ref": "#/$defs/index_hint" } },
+        "rls": { "type": "boolean" },
+        "rls_policies_hint": { "type": "array", "items": { "$ref": "#/$defs/rls_policy_hint" } }
+      }
+    },
+    "view_requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "purpose", "sql_hint", "depends_on_tables"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "purpose": { "type": "string", "minLength": 1 },
+        "sql_hint": { "type": "string", "minLength": 1 },
+        "depends_on_tables": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" } }
+      }
+    },
+    "function_requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "purpose", "language", "signature_hint", "returns_hint", "depends_on"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "purpose": { "type": "string", "minLength": 1 },
+        "language": { "type": "string", "enum": ["sql", "plpgsql", "javascript", "typescript", "other"] },
+        "signature_hint": { "type": "string", "minLength": 1 },
+        "returns_hint": { "type": "string", "minLength": 1 },
+        "depends_on": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "data_flow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "actor", "trigger", "reads", "writes", "files"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "actor": { "type": "string", "enum": ["platform_admin", "manager", "employee", "system", "unknown"] },
+        "trigger": { "type": "string", "minLength": 1 },
+        "reads": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/io_ref" }
+        },
+        "writes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/io_ref" }
+        },
+        "files": { "type": "array", "items": { "$ref": "#/$defs/location" } }
+      }
+    },
+    "io_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["table", "columns"],
+      "properties": {
+        "table": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "columns": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" } }
+      }
+    }
+  }
+}

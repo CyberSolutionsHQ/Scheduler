@@ -1,0 +1,3305 @@
+{
+  "meta": {
+    "schema_version": "1.0.0",
+    "phase": 1,
+    "generated_at": "2025-12-20T08:01:09.903449+00:00",
+    "repo_root": "/home/krovo/Schedule Manager",
+    "agent": "codex"
+  },
+  "source": {
+    "files_indexed": 53,
+    "entrypoints": [
+      "index.html",
+      "login.html",
+      "dashboard.html",
+      "admin.html",
+      "service-worker.js",
+      "assets/app.js"
+    ],
+    "languages": [
+      "html",
+      "css",
+      "javascript",
+      "json"
+    ],
+    "frameworks": [
+      "Supabase",
+      "Vanilla JS"
+    ]
+  },
+  "storage_scan": {
+    "localstorage": {
+      "keys": [
+        "janitor_scheduler_v1",
+        "csm_session_v1",
+        "csm_users_v1",
+        "csm_last_company_v1",
+        "csm_auth_v1"
+      ],
+      "patterns": [
+        "localStorage.getItem",
+        "localStorage.setItem",
+        "localStorage.removeItem",
+        "sessionStorage.getItem",
+        "sessionStorage.setItem",
+        "sessionStorage.removeItem"
+      ]
+    },
+    "indexeddb": {
+      "databases": [
+        "janitor_scheduler_db"
+      ],
+      "patterns": [
+        "indexedDB.open",
+        "db.createObjectStore",
+        "objectStore.get",
+        "objectStore.put",
+        "objectStore.delete"
+      ]
+    },
+    "filesystem": {
+      "paths": [],
+      "patterns": []
+    },
+    "in_memory": [
+      "JanitorStore._draft/_saved",
+      "recoveryAccessToken"
+    ],
+    "other": [
+      "Cache Storage: csm-schedule-manager-cache-v7"
+    ]
+  },
+  "required_tables": [
+    {
+      "name": "companies",
+      "purpose": "Tenant companies and platform tenant metadata.",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "dashboard:list_companies"
+            ],
+            "write_paths": [
+              "dashboard:create_company"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/dashboard.js",
+                "line_start": 55,
+                "line_end": 60
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "dashboard:list_companies"
+            ],
+            "write_paths": [
+              "dashboard:create_company",
+              "dashboard:terminate_company"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/dashboard.js",
+                "line_start": 55,
+                "line_end": 60
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_name",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "dashboard:list_companies"
+            ],
+            "write_paths": [
+              "dashboard:create_company"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/dashboard.js",
+                "line_start": 55,
+                "line_end": 60
+              }
+            ]
+          }
+        },
+        {
+          "name": "is_disabled",
+          "type_hint": "boolean",
+          "nullable": false,
+          "default_hint": "false",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "dashboard:list_companies"
+            ],
+            "write_paths": [
+              "dashboard:terminate_company"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/dashboard.js",
+                "line_start": 55,
+                "line_end": 60
+              }
+            ]
+          }
+        },
+        {
+          "name": "support_enabled",
+          "type_hint": "boolean",
+          "nullable": false,
+          "default_hint": "false",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "dashboard:list_companies"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/dashboard.js",
+                "line_start": 55,
+                "line_end": 60
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "dashboard:list_companies"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/dashboard.js",
+                "line_start": 55,
+                "line_end": 60
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [
+        [
+          "company_code"
+        ]
+      ],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "platform_admin_only",
+          "command": "ALL",
+          "using_hint": "role = 'platform_admin'",
+          "check_hint": "role = 'platform_admin'"
+        }
+      ]
+    },
+    {
+      "name": "users",
+      "purpose": "Application users with roles and optional employee linkage.",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "auth:get_current_user_profile",
+              "requests:load_users"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/auth.js",
+                "line_start": 65,
+                "line_end": 68
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "auth:get_current_user_profile",
+              "requests:load_users"
+            ],
+            "write_paths": [
+              "edge:create_company_with_manager"
+            ],
+            "locations": [
+              {
+                "file": "js/auth.js",
+                "line_start": 65,
+                "line_end": 68
+              }
+            ]
+          }
+        },
+        {
+          "name": "username",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "auth:get_current_user_profile",
+              "requests:load_users"
+            ],
+            "write_paths": [
+              "edge:create_employee_login",
+              "edge:reset_user_pin"
+            ],
+            "locations": [
+              {
+                "file": "js/auth.js",
+                "line_start": 65,
+                "line_end": 68
+              }
+            ]
+          }
+        },
+        {
+          "name": "role",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "auth:get_current_user_profile",
+              "requests:load_users"
+            ],
+            "write_paths": [
+              "edge:create_company_with_manager"
+            ],
+            "locations": [
+              {
+                "file": "js/auth.js",
+                "line_start": 65,
+                "line_end": 68
+              }
+            ]
+          }
+        },
+        {
+          "name": "employee_id",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "auth:get_current_user_profile",
+              "requests:load_users"
+            ],
+            "write_paths": [
+              "edge:create_employee_login"
+            ],
+            "locations": [
+              {
+                "file": "js/auth.js",
+                "line_start": 65,
+                "line_end": 68
+              }
+            ]
+          }
+        },
+        {
+          "name": "active",
+          "type_hint": "boolean",
+          "nullable": false,
+          "default_hint": "true",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "auth:get_current_user_profile",
+              "requests:load_users"
+            ],
+            "write_paths": [
+              "edge:terminate_company",
+              "edge:reset_user_pin"
+            ],
+            "locations": [
+              {
+                "file": "js/auth.js",
+                "line_start": 65,
+                "line_end": 68
+              }
+            ]
+          }
+        },
+        {
+          "name": "pin_hash",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [],
+            "write_paths": [
+              "edge:reset_user_pin",
+              "rpc:sync_my_pin_hash"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "force_pin_change",
+          "type_hint": "boolean",
+          "nullable": false,
+          "default_hint": "false",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "auth:get_current_user_profile"
+            ],
+            "write_paths": [
+              "rpc:sync_my_pin_hash"
+            ],
+            "locations": [
+              {
+                "file": "js/auth.js",
+                "line_start": 65,
+                "line_end": 68
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [],
+            "write_paths": [
+              "edge:create_company_with_manager"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "updated_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [],
+            "write_paths": [
+              "edge:reset_user_pin"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [
+        [
+          "company_code",
+          "username"
+        ]
+      ],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "tenant_isolation",
+          "command": "ALL",
+          "using_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'",
+          "check_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'"
+        }
+      ]
+    },
+    {
+      "name": "employees",
+      "purpose": "Employee records scoped to a company.",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "employees:list",
+              "schedule:load_dropdowns"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/employees.js",
+                "line_start": 79,
+                "line_end": 82
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "employees:list",
+              "schedule:load_dropdowns"
+            ],
+            "write_paths": [
+              "employees:create"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/employees.js",
+                "line_start": 79,
+                "line_end": 82
+              }
+            ]
+          }
+        },
+        {
+          "name": "name",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "employees:list",
+              "schedule:load_dropdowns"
+            ],
+            "write_paths": [
+              "employees:create",
+              "employees:update"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/employees.js",
+                "line_start": 79,
+                "line_end": 82
+              }
+            ]
+          }
+        },
+        {
+          "name": "contact",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "employees:list"
+            ],
+            "write_paths": [
+              "employees:create",
+              "employees:update"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/employees.js",
+                "line_start": 79,
+                "line_end": 82
+              }
+            ]
+          }
+        },
+        {
+          "name": "active",
+          "type_hint": "boolean",
+          "nullable": false,
+          "default_hint": "true",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "employees:list"
+            ],
+            "write_paths": [
+              "employees:update"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/employees.js",
+                "line_start": 79,
+                "line_end": 82
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "employees:list"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/employees.js",
+                "line_start": 79,
+                "line_end": 82
+              }
+            ]
+          }
+        },
+        {
+          "name": "updated_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "employees:list"
+            ],
+            "write_paths": [
+              "employees:update"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/employees.js",
+                "line_start": 79,
+                "line_end": 82
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "tenant_isolation",
+          "command": "ALL",
+          "using_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'",
+          "check_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'"
+        }
+      ]
+    },
+    {
+      "name": "job_sites",
+      "purpose": "Job site/location records for scheduling.",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "job_sites:list",
+              "schedule:load_dropdowns",
+              "my_shifts:list"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/job-sites.js",
+                "line_start": 79,
+                "line_end": 83
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "job_sites:list",
+              "schedule:load_dropdowns"
+            ],
+            "write_paths": [
+              "job_sites:create"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/job-sites.js",
+                "line_start": 79,
+                "line_end": 83
+              }
+            ]
+          }
+        },
+        {
+          "name": "name",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "job_sites:list",
+              "schedule:load_dropdowns",
+              "my_shifts:list"
+            ],
+            "write_paths": [
+              "job_sites:create",
+              "job_sites:update"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/job-sites.js",
+                "line_start": 79,
+                "line_end": 83
+              }
+            ]
+          }
+        },
+        {
+          "name": "address",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "job_sites:list",
+              "my_shifts:list"
+            ],
+            "write_paths": [
+              "job_sites:create",
+              "job_sites:update"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/job-sites.js",
+                "line_start": 79,
+                "line_end": 83
+              }
+            ]
+          }
+        },
+        {
+          "name": "active",
+          "type_hint": "boolean",
+          "nullable": false,
+          "default_hint": "true",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "job_sites:list"
+            ],
+            "write_paths": [
+              "job_sites:update"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/job-sites.js",
+                "line_start": 79,
+                "line_end": 83
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "job_sites:list"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/job-sites.js",
+                "line_start": 79,
+                "line_end": 83
+              }
+            ]
+          }
+        },
+        {
+          "name": "updated_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "job_sites:list"
+            ],
+            "write_paths": [
+              "job_sites:update"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/job-sites.js",
+                "line_start": 79,
+                "line_end": 83
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "tenant_isolation",
+          "command": "ALL",
+          "using_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'",
+          "check_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'"
+        }
+      ]
+    },
+    {
+      "name": "schedules",
+      "purpose": "Weekly schedule headers per company.",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:get_or_fetch"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 115,
+                "line_end": 133
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:get_or_fetch"
+            ],
+            "write_paths": [
+              "schedule:create_week"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 115,
+                "line_end": 133
+              }
+            ]
+          }
+        },
+        {
+          "name": "week_start_date",
+          "type_hint": "date",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:get_or_fetch"
+            ],
+            "write_paths": [
+              "schedule:create_week"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 115,
+                "line_end": 133
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:get_or_fetch"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 115,
+                "line_end": 133
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [
+        [
+          "company_code",
+          "week_start_date"
+        ]
+      ],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "tenant_isolation",
+          "command": "ALL",
+          "using_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'",
+          "check_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'"
+        }
+      ]
+    },
+    {
+      "name": "shifts",
+      "purpose": "Shift assignments tied to schedules, employees, and job sites.",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:list_shifts",
+              "my_shifts:list"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 137,
+                "line_end": 145
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:list_shifts"
+            ],
+            "write_paths": [
+              "schedule:add_shift"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 137,
+                "line_end": 145
+              }
+            ]
+          }
+        },
+        {
+          "name": "schedule_id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:list_shifts"
+            ],
+            "write_paths": [
+              "schedule:add_shift"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 137,
+                "line_end": 145
+              }
+            ]
+          }
+        },
+        {
+          "name": "date",
+          "type_hint": "date",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:list_shifts",
+              "my_shifts:list"
+            ],
+            "write_paths": [
+              "schedule:add_shift"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 137,
+                "line_end": 145
+              }
+            ]
+          }
+        },
+        {
+          "name": "start",
+          "type_hint": "time",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:list_shifts",
+              "my_shifts:list"
+            ],
+            "write_paths": [
+              "schedule:add_shift"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 137,
+                "line_end": 145
+              }
+            ]
+          }
+        },
+        {
+          "name": "end",
+          "type_hint": "time",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:list_shifts",
+              "my_shifts:list"
+            ],
+            "write_paths": [
+              "schedule:add_shift"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 137,
+                "line_end": 145
+              }
+            ]
+          }
+        },
+        {
+          "name": "notes",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:list_shifts",
+              "my_shifts:list"
+            ],
+            "write_paths": [
+              "schedule:update_shift"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 137,
+                "line_end": 145
+              }
+            ]
+          }
+        },
+        {
+          "name": "loc_id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:list_shifts",
+              "my_shifts:list"
+            ],
+            "write_paths": [
+              "schedule:add_shift"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 137,
+                "line_end": 145
+              }
+            ]
+          }
+        },
+        {
+          "name": "emp_id",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:list_shifts"
+            ],
+            "write_paths": [
+              "schedule:add_shift"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 137,
+                "line_end": 145
+              }
+            ]
+          }
+        },
+        {
+          "name": "crew_id",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:list_shifts"
+            ],
+            "write_paths": [
+              "schedule:add_shift"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 137,
+                "line_end": 145
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:list_shifts"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 137,
+                "line_end": 145
+              }
+            ]
+          }
+        },
+        {
+          "name": "updated_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "schedule:list_shifts"
+            ],
+            "write_paths": [
+              "schedule:update_shift"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/schedule.js",
+                "line_start": 137,
+                "line_end": 145
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "tenant_isolation",
+          "command": "ALL",
+          "using_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'",
+          "check_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'"
+        }
+      ]
+    },
+    {
+      "name": "credential_reset_requests",
+      "purpose": "Credential reset requests for manager/admin approval.",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "requests:list_pending"
+            ],
+            "write_paths": [
+              "requests:resolve"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/requests.js",
+                "line_start": 65,
+                "line_end": 69
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "requests:list_pending"
+            ],
+            "write_paths": [
+              "requests:resolve"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/requests.js",
+                "line_start": 65,
+                "line_end": 69
+              }
+            ]
+          }
+        },
+        {
+          "name": "request_type",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "requests:list_pending"
+            ],
+            "write_paths": [
+              "requests:resolve"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/requests.js",
+                "line_start": 65,
+                "line_end": 69
+              }
+            ]
+          }
+        },
+        {
+          "name": "status",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "requests:list_pending"
+            ],
+            "write_paths": [
+              "requests:resolve"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/requests.js",
+                "line_start": 65,
+                "line_end": 69
+              }
+            ]
+          }
+        },
+        {
+          "name": "requested_by_user_id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "requests:list_pending"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/requests.js",
+                "line_start": 65,
+                "line_end": 69
+              }
+            ]
+          }
+        },
+        {
+          "name": "target_user_id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "requests:list_pending"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/requests.js",
+                "line_start": 65,
+                "line_end": 69
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "requests:list_pending"
+            ],
+            "write_paths": [],
+            "locations": [
+              {
+                "file": "js/pages/requests.js",
+                "line_start": 65,
+                "line_end": 69
+              }
+            ]
+          }
+        },
+        {
+          "name": "resolved_at",
+          "type_hint": "timestamp",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "requests:list_pending"
+            ],
+            "write_paths": [
+              "requests:resolve"
+            ],
+            "locations": [
+              {
+                "file": "js/pages/requests.js",
+                "line_start": 65,
+                "line_end": 69
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "tenant_isolation",
+          "command": "ALL",
+          "using_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'",
+          "check_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'"
+        }
+      ]
+    },
+    {
+      "name": "requests",
+      "purpose": "Local-first credential change requests (offline mode).",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:requests"
+            ],
+            "write_paths": [
+              "local_store:requests"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:requests"
+            ],
+            "write_paths": [
+              "local_store:requests"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "type",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:requests"
+            ],
+            "write_paths": [
+              "local_store:requests"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "status",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:requests"
+            ],
+            "write_paths": [
+              "local_store:requests"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "requester_user_id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:requests"
+            ],
+            "write_paths": [
+              "local_store:requests"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "target_user_id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:requests"
+            ],
+            "write_paths": [
+              "local_store:requests"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "proposed_username",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:requests"
+            ],
+            "write_paths": [
+              "local_store:requests"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "proposed_pin",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:requests"
+            ],
+            "write_paths": [
+              "local_store:requests"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:requests"
+            ],
+            "write_paths": [
+              "local_store:requests"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "handled_at",
+          "type_hint": "timestamp",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:requests"
+            ],
+            "write_paths": [
+              "local_store:requests"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "handled_by",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:requests"
+            ],
+            "write_paths": [
+              "local_store:requests"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "decision_note",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:requests"
+            ],
+            "write_paths": [
+              "local_store:requests"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "tenant_isolation",
+          "command": "ALL",
+          "using_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'",
+          "check_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'"
+        }
+      ]
+    },
+    {
+      "name": "locations",
+      "purpose": "Local-first job location records (offline mode).",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:locations"
+            ],
+            "write_paths": [
+              "local_store:locations"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:locations"
+            ],
+            "write_paths": [
+              "local_store:locations"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "name",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:locations"
+            ],
+            "write_paths": [
+              "local_store:locations"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "address",
+          "type_hint": "text",
+          "nullable": true,
+          "default_hint": null,
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:locations"
+            ],
+            "write_paths": [
+              "local_store:locations"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "active",
+          "type_hint": "boolean",
+          "nullable": false,
+          "default_hint": "true",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:locations"
+            ],
+            "write_paths": [
+              "local_store:locations"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:locations"
+            ],
+            "write_paths": [
+              "local_store:locations"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "updated_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:locations"
+            ],
+            "write_paths": [
+              "local_store:locations"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "tenant_isolation",
+          "command": "ALL",
+          "using_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'",
+          "check_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'"
+        }
+      ]
+    },
+    {
+      "name": "job_types",
+      "purpose": "Local-first job type catalog.",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:job_types"
+            ],
+            "write_paths": [
+              "local_store:job_types"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:job_types"
+            ],
+            "write_paths": [
+              "local_store:job_types"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "name",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:job_types"
+            ],
+            "write_paths": [
+              "local_store:job_types"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "active",
+          "type_hint": "boolean",
+          "nullable": false,
+          "default_hint": "true",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:job_types"
+            ],
+            "write_paths": [
+              "local_store:job_types"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:job_types"
+            ],
+            "write_paths": [
+              "local_store:job_types"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "updated_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:job_types"
+            ],
+            "write_paths": [
+              "local_store:job_types"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "tenant_isolation",
+          "command": "ALL",
+          "using_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'",
+          "check_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'"
+        }
+      ]
+    },
+    {
+      "name": "crews",
+      "purpose": "Local-first crew definitions.",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:crews"
+            ],
+            "write_paths": [
+              "local_store:crews"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:crews"
+            ],
+            "write_paths": [
+              "local_store:crews"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "name",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:crews"
+            ],
+            "write_paths": [
+              "local_store:crews"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "active",
+          "type_hint": "boolean",
+          "nullable": false,
+          "default_hint": "true",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:crews"
+            ],
+            "write_paths": [
+              "local_store:crews"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:crews"
+            ],
+            "write_paths": [
+              "local_store:crews"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "updated_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:crews"
+            ],
+            "write_paths": [
+              "local_store:crews"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "tenant_isolation",
+          "command": "ALL",
+          "using_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'",
+          "check_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'"
+        }
+      ]
+    },
+    {
+      "name": "crew_members",
+      "purpose": "Local-first crew membership mapping.",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:crew_members"
+            ],
+            "write_paths": [
+              "local_store:crew_members"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:crew_members"
+            ],
+            "write_paths": [
+              "local_store:crew_members"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "crew_id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:crew_members"
+            ],
+            "write_paths": [
+              "local_store:crew_members"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "employee_id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:crew_members"
+            ],
+            "write_paths": [
+              "local_store:crew_members"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:crew_members"
+            ],
+            "write_paths": [
+              "local_store:crew_members"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [
+        [
+          "crew_id",
+          "employee_id"
+        ]
+      ],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "tenant_isolation",
+          "command": "ALL",
+          "using_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'",
+          "check_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'"
+        }
+      ]
+    },
+    {
+      "name": "shift_jobs",
+      "purpose": "Local-first mapping of shifts to job types.",
+      "columns": [
+        {
+          "name": "id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:shift_jobs"
+            ],
+            "write_paths": [
+              "local_store:shift_jobs"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "company_code",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:shift_jobs"
+            ],
+            "write_paths": [
+              "local_store:shift_jobs"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "shift_id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:shift_jobs"
+            ],
+            "write_paths": [
+              "local_store:shift_jobs"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "job_type_id",
+          "type_hint": "text",
+          "nullable": false,
+          "default_hint": null,
+          "constraints": [
+            "not null"
+          ],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:shift_jobs"
+            ],
+            "write_paths": [
+              "local_store:shift_jobs"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        },
+        {
+          "name": "created_at",
+          "type_hint": "timestamp",
+          "nullable": false,
+          "default_hint": "new Date().toISOString()",
+          "constraints": [],
+          "references": null,
+          "usage": {
+            "read_paths": [
+              "local_store:shift_jobs"
+            ],
+            "write_paths": [
+              "local_store:shift_jobs"
+            ],
+            "locations": [
+              {
+                "file": "assets/store.js",
+                "line_start": 75,
+                "line_end": 94
+              }
+            ]
+          }
+        }
+      ],
+      "primary_key": [
+        "id"
+      ],
+      "uniques": [
+        [
+          "shift_id",
+          "job_type_id"
+        ]
+      ],
+      "indexes": [],
+      "rls": true,
+      "rls_policies_hint": [
+        {
+          "name": "tenant_isolation",
+          "command": "ALL",
+          "using_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'",
+          "check_hint": "company_code = auth.jwt() ->> 'company_code' OR role = 'platform_admin'"
+        }
+      ]
+    }
+  ],
+  "required_views": [],
+  "required_functions": [
+    {
+      "name": "create_company_with_manager",
+      "purpose": "Create a company and initial manager account.",
+      "language": "typescript",
+      "signature_hint": "create_company_with_manager(company_name text, company_code text, manager_username text, manager_pin text)",
+      "returns_hint": "company_code, manager_username, manager_pin",
+      "depends_on": [
+        "companies",
+        "users"
+      ]
+    },
+    {
+      "name": "terminate_company",
+      "purpose": "Disable a company and deactivate its users.",
+      "language": "typescript",
+      "signature_hint": "terminate_company(company_code text)",
+      "returns_hint": "status",
+      "depends_on": [
+        "companies",
+        "users"
+      ]
+    },
+    {
+      "name": "reset_user_pin",
+      "purpose": "Reset a user's PIN for credential recovery.",
+      "language": "typescript",
+      "signature_hint": "reset_user_pin(company_code text, username text, new_pin text)",
+      "returns_hint": "status",
+      "depends_on": [
+        "users"
+      ]
+    },
+    {
+      "name": "create_employee_login",
+      "purpose": "Create or replace an employee login with username and PIN.",
+      "language": "typescript",
+      "signature_hint": "create_employee_login(company_code text, employee_id text, username text, pin text)",
+      "returns_hint": "user record",
+      "depends_on": [
+        "users",
+        "employees"
+      ]
+    },
+    {
+      "name": "sync_my_pin_hash_and_clear_force_pin_change",
+      "purpose": "Sync user PIN hash and clear force_pin_change after self-service update.",
+      "language": "sql",
+      "signature_hint": "sync_my_pin_hash_and_clear_force_pin_change(new_pin text)",
+      "returns_hint": "void",
+      "depends_on": [
+        "users"
+      ]
+    },
+    {
+      "name": "consume_platform_admin_reset_token",
+      "purpose": "Exchange a platform admin recovery token for a short-lived access token.",
+      "language": "sql",
+      "signature_hint": "consume_platform_admin_reset_token(plaintext_token text)",
+      "returns_hint": "access_token text",
+      "depends_on": []
+    },
+    {
+      "name": "platform_admin_recovery_set_pin",
+      "purpose": "Set platform admin PIN during recovery flow.",
+      "language": "sql",
+      "signature_hint": "platform_admin_recovery_set_pin(new_pin text)",
+      "returns_hint": "void",
+      "depends_on": [
+        "users"
+      ]
+    }
+  ],
+  "hardcoded_constants": [
+    {
+      "key": "APP_KEY",
+      "value_type": "string",
+      "value_preview": "janitor_scheduler_v1",
+      "locations": [
+        {
+          "file": "assets/store.js",
+          "line_start": 10,
+          "line_end": 14
+        }
+      ]
+    },
+    {
+      "key": "DB_NAME",
+      "value_type": "string",
+      "value_preview": "janitor_scheduler_db",
+      "locations": [
+        {
+          "file": "assets/store.js",
+          "line_start": 10,
+          "line_end": 14
+        }
+      ]
+    },
+    {
+      "key": "DB_STORE",
+      "value_type": "string",
+      "value_preview": "kv",
+      "locations": [
+        {
+          "file": "assets/store.js",
+          "line_start": 10,
+          "line_end": 14
+        }
+      ]
+    },
+    {
+      "key": "SESSION_KEY",
+      "value_type": "string",
+      "value_preview": "csm_session_v1",
+      "locations": [
+        {
+          "file": "assets/store.js",
+          "line_start": 10,
+          "line_end": 14
+        }
+      ]
+    },
+    {
+      "key": "LEGACY_USERS_KEY",
+      "value_type": "string",
+      "value_preview": "csm_users_v1",
+      "locations": [
+        {
+          "file": "assets/store.js",
+          "line_start": 283,
+          "line_end": 285
+        }
+      ]
+    },
+    {
+      "key": "ROLE_ENUM",
+      "value_type": "json",
+      "value_preview": "[\"platform_admin\",\"manager\",\"employee\"]",
+      "locations": [
+        {
+          "file": "assets/store.js",
+          "line_start": 436,
+          "line_end": 436
+        }
+      ]
+    },
+    {
+      "key": "REQUEST_STATUS_ENUM",
+      "value_type": "json",
+      "value_preview": "[\"pending\",\"approved\",\"denied\"]",
+      "locations": [
+        {
+          "file": "assets/store.js",
+          "line_start": 1770,
+          "line_end": 1770
+        }
+      ]
+    },
+    {
+      "key": "REQUEST_TYPE_ENUM",
+      "value_type": "json",
+      "value_preview": "[\"manager_change_credentials\",\"employee_change_credentials\",\"admin_change_credentials\"]",
+      "locations": [
+        {
+          "file": "assets/store.js",
+          "line_start": 1771,
+          "line_end": 1775
+        }
+      ]
+    },
+    {
+      "key": "SUPABASE_AUTH_STORAGE_KEY",
+      "value_type": "string",
+      "value_preview": "csm_auth_v1",
+      "locations": [
+        {
+          "file": "js/supabaseClient.js",
+          "line_start": 93,
+          "line_end": 101
+        }
+      ]
+    },
+    {
+      "key": "SUPABASE_JS_CDN",
+      "value_type": "string",
+      "value_preview": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/+esm",
+      "locations": [
+        {
+          "file": "js/supabaseClient.js",
+          "line_start": 1,
+          "line_end": 1
+        }
+      ]
+    },
+    {
+      "key": "CLIENT_INFO_HEADER",
+      "value_type": "string",
+      "value_preview": "schedule-manager-web",
+      "locations": [
+        {
+          "file": "js/supabaseClient.js",
+          "line_start": 93,
+          "line_end": 101
+        }
+      ]
+    },
+    {
+      "key": "CACHE_NAME",
+      "value_type": "string",
+      "value_preview": "csm-schedule-manager-cache-v7",
+      "locations": [
+        {
+          "file": "service-worker.js",
+          "line_start": 5,
+          "line_end": 5
+        }
+      ]
+    },
+    {
+      "key": "PLATFORM_COMPANY_CODE",
+      "value_type": "string",
+      "value_preview": "PLATFORM",
+      "locations": [
+        {
+          "file": "assets/store.js",
+          "line_start": 446,
+          "line_end": 447
+        }
+      ]
+    },
+    {
+      "key": "assets/app.js",
+      "value_type": "other",
+      "value_preview": "REDACTED",
+      "locations": [
+        {
+          "file": "assets/app.js",
+          "line_start": 51,
+          "line_end": 51
+        }
+      ]
+    },
+    {
+      "key": "js/config.js",
+      "value_type": "other",
+      "value_preview": "REDACTED",
+      "locations": [
+        {
+          "file": "js/config.js",
+          "line_start": 1,
+          "line_end": 12
+        }
+      ]
+    }
+  ],
+  "data_flows": [
+    {
+      "name": "Login",
+      "actor": "unknown",
+      "trigger": "Submit login form with company code/username + PIN",
+      "reads": [
+        {
+          "table": "users",
+          "columns": [
+            "id",
+            "company_code",
+            "username",
+            "role",
+            "employee_id",
+            "active",
+            "force_pin_change"
+          ]
+        }
+      ],
+      "writes": [],
+      "files": [
+        {
+          "file": "js/pages/login.js",
+          "line_start": 97,
+          "line_end": 124
+        },
+        {
+          "file": "js/auth.js",
+          "line_start": 42,
+          "line_end": 83
+        }
+      ]
+    },
+    {
+      "name": "Platform Admin Recovery",
+      "actor": "platform_admin",
+      "trigger": "Submit recovery token and new PIN",
+      "reads": [],
+      "writes": [
+        {
+          "table": "users",
+          "columns": [
+            "pin_hash",
+            "force_pin_change"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "js/pages/login.js",
+          "line_start": 127,
+          "line_end": 206
+        }
+      ]
+    },
+    {
+      "name": "Create Company",
+      "actor": "platform_admin",
+      "trigger": "Submit Create Company form",
+      "reads": [],
+      "writes": [
+        {
+          "table": "companies",
+          "columns": [
+            "company_code",
+            "company_name"
+          ]
+        },
+        {
+          "table": "users",
+          "columns": [
+            "company_code",
+            "username",
+            "role",
+            "pin_hash",
+            "active"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "js/pages/dashboard.js",
+          "line_start": 124,
+          "line_end": 138
+        }
+      ]
+    },
+    {
+      "name": "Terminate Company",
+      "actor": "platform_admin",
+      "trigger": "Click Terminate company",
+      "reads": [
+        {
+          "table": "companies",
+          "columns": [
+            "company_code",
+            "is_disabled"
+          ]
+        }
+      ],
+      "writes": [
+        {
+          "table": "companies",
+          "columns": [
+            "is_disabled"
+          ]
+        },
+        {
+          "table": "users",
+          "columns": [
+            "active"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "js/pages/dashboard.js",
+          "line_start": 105,
+          "line_end": 118
+        }
+      ]
+    },
+    {
+      "name": "Manage Employees",
+      "actor": "manager",
+      "trigger": "Employees page list/create/update/delete",
+      "reads": [
+        {
+          "table": "employees",
+          "columns": [
+            "id",
+            "company_code",
+            "name",
+            "contact",
+            "active",
+            "created_at",
+            "updated_at"
+          ]
+        },
+        {
+          "table": "companies",
+          "columns": [
+            "company_code",
+            "company_name"
+          ]
+        }
+      ],
+      "writes": [
+        {
+          "table": "employees",
+          "columns": [
+            "company_code",
+            "name",
+            "contact",
+            "active"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "js/pages/employees.js",
+          "line_start": 47,
+          "line_end": 177
+        }
+      ]
+    },
+    {
+      "name": "Manage Job Sites",
+      "actor": "manager",
+      "trigger": "Job Sites page list/create/update/delete",
+      "reads": [
+        {
+          "table": "job_sites",
+          "columns": [
+            "id",
+            "company_code",
+            "name",
+            "address",
+            "active",
+            "created_at",
+            "updated_at"
+          ]
+        },
+        {
+          "table": "companies",
+          "columns": [
+            "company_code",
+            "company_name"
+          ]
+        }
+      ],
+      "writes": [
+        {
+          "table": "job_sites",
+          "columns": [
+            "company_code",
+            "name",
+            "address",
+            "active"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "js/pages/job-sites.js",
+          "line_start": 47,
+          "line_end": 177
+        }
+      ]
+    },
+    {
+      "name": "Schedule Week & Shifts",
+      "actor": "manager",
+      "trigger": "Create week and add/edit/delete shifts",
+      "reads": [
+        {
+          "table": "schedules",
+          "columns": [
+            "id",
+            "company_code",
+            "week_start_date",
+            "created_at"
+          ]
+        },
+        {
+          "table": "employees",
+          "columns": [
+            "id",
+            "company_code",
+            "name",
+            "active"
+          ]
+        },
+        {
+          "table": "job_sites",
+          "columns": [
+            "id",
+            "company_code",
+            "name",
+            "active"
+          ]
+        },
+        {
+          "table": "shifts",
+          "columns": [
+            "id",
+            "company_code",
+            "date",
+            "start",
+            "end",
+            "notes",
+            "schedule_id",
+            "loc_id",
+            "emp_id"
+          ]
+        }
+      ],
+      "writes": [
+        {
+          "table": "schedules",
+          "columns": [
+            "company_code",
+            "week_start_date"
+          ]
+        },
+        {
+          "table": "shifts",
+          "columns": [
+            "company_code",
+            "schedule_id",
+            "date",
+            "start",
+            "end",
+            "notes",
+            "loc_id",
+            "emp_id",
+            "crew_id"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "js/pages/schedule.js",
+          "line_start": 90,
+          "line_end": 305
+        }
+      ]
+    },
+    {
+      "name": "View My Shifts",
+      "actor": "employee",
+      "trigger": "Open My Shifts page",
+      "reads": [
+        {
+          "table": "shifts",
+          "columns": [
+            "date",
+            "start",
+            "end",
+            "notes",
+            "schedule_id",
+            "loc_id"
+          ]
+        },
+        {
+          "table": "job_sites",
+          "columns": [
+            "name",
+            "address"
+          ]
+        },
+        {
+          "table": "schedules",
+          "columns": [
+            "week_start_date"
+          ]
+        }
+      ],
+      "writes": [],
+      "files": [
+        {
+          "file": "js/pages/my-shifts.js",
+          "line_start": 25,
+          "line_end": 80
+        }
+      ]
+    },
+    {
+      "name": "Resolve Credential Reset Requests",
+      "actor": "manager",
+      "trigger": "Approve or deny credential reset",
+      "reads": [
+        {
+          "table": "credential_reset_requests",
+          "columns": [
+            "id",
+            "request_type",
+            "status",
+            "requested_by_user_id",
+            "target_user_id",
+            "created_at"
+          ]
+        },
+        {
+          "table": "users",
+          "columns": [
+            "id",
+            "company_code",
+            "username",
+            "role",
+            "employee_id",
+            "active"
+          ]
+        }
+      ],
+      "writes": [
+        {
+          "table": "credential_reset_requests",
+          "columns": [
+            "status",
+            "resolved_at"
+          ]
+        },
+        {
+          "table": "users",
+          "columns": [
+            "username",
+            "pin_hash",
+            "active"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "js/pages/requests.js",
+          "line_start": 47,
+          "line_end": 158
+        }
+      ]
+    },
+    {
+      "name": "Change PIN",
+      "actor": "unknown",
+      "trigger": "Submit Change PIN form",
+      "reads": [
+        {
+          "table": "users",
+          "columns": [
+            "id",
+            "force_pin_change"
+          ]
+        }
+      ],
+      "writes": [
+        {
+          "table": "users",
+          "columns": [
+            "pin_hash",
+            "force_pin_change"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "js/pages/change-pin.js",
+          "line_start": 34,
+          "line_end": 57
+        }
+      ]
+    }
+  ]
+}

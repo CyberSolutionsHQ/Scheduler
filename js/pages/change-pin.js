@@ -1,5 +1,5 @@
 import { getSupabase } from "../supabaseClient.js";
-import { assertPin, requireAuth, signOut } from "../auth.js";
+import { assertPin, handleAuthError, requireAuth, signOut } from "../auth.js";
 import { qs, toast } from "../ui.js";
 
 const statusEl = document.getElementById("status");
@@ -20,7 +20,7 @@ function setStatus(text) {
 
     if (profileLineEl) {
       const who = profile.role === "platform_admin" ? "Platform Admin" : profile.username;
-      profileLineEl.textContent = `${who} • ${profile.companyCode || profile.company_code || ""}`;
+      profileLineEl.textContent = `${who} • ${profile.companyCode || ""}`;
     }
 
     document.getElementById("logoutBtn")?.addEventListener("click", async () => {
@@ -55,15 +55,16 @@ function setStatus(text) {
         const next = qs("next");
         location.href = next ? `./${String(next).replace(/^\\//, "")}` : "./dashboard.html";
       } catch (err) {
+        if (await handleAuthError(err)) return;
         const msg = err instanceof Error ? err.message : "PIN update failed.";
         toast(msg, { type: "error" });
         setStatus(msg);
       }
     });
   } catch (err) {
+    if (await handleAuthError(err)) return;
     const msg = err instanceof Error ? err.message : "Failed to load Change PIN.";
     toast(msg, { type: "error" });
     setStatus(msg);
   }
 })();
-

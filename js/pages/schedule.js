@@ -1,5 +1,5 @@
 import { getSupabase } from "../supabaseClient.js";
-import { requireAuth, signOut } from "../auth.js";
+import { handleAuthError, requireAuth, signOut } from "../auth.js";
 import { addDays, getMonday, toISODate } from "../date.js";
 import { renderAppHeader, toast } from "../ui.js";
 
@@ -33,7 +33,7 @@ function normalizeCompanyCode(value) {
   const shiftForm = document.getElementById("shiftForm");
   const shiftsEl = document.getElementById("shifts");
   const employeeSelect = document.getElementById("employeeId");
-  const jobSiteSelect = document.getElementById("jobSiteId");
+  const locIdInput = document.getElementById("locId");
 
   try {
     if (!supabase) throw new Error("Supabase is not configured. Set values in js/config.js.");
@@ -48,7 +48,7 @@ function normalizeCompanyCode(value) {
     wireLogout();
 
     let companyCode = profile.companyCode;
-    let company_code = profile.company_code || profile.companyCode;
+    let company_code = profile.companyCode;
 
     const monday = getMonday(new Date());
     weekEl.value = toISODate(monday);
@@ -81,7 +81,9 @@ function normalizeCompanyCode(value) {
       company_code = "";
     }
 
-    async function loadDropdowns() {
+    const employeesById = new Map();
+
+    async function loadEmployees() {
       if (profile.role === "platform_admin" && !companyCode) return;
 
       let employeesQ = supabase
@@ -89,26 +91,18 @@ function normalizeCompanyCode(value) {
         .select('id, "companyCode", name, active')
         .eq("active", true)
         .order("name");
-      let sitesQ = supabase
-        .from("job_sites")
-        .select('id, "companyCode", name, active')
-        .eq("active", true)
-        .order("name");
 
       if (companyCode) {
         employeesQ = employeesQ.eq("companyCode", companyCode);
-        sitesQ = sitesQ.eq("companyCode", companyCode);
       }
 
-      const [employees, sites] = await Promise.all([employeesQ, sitesQ]);
+      const [employees] = await Promise.all([employeesQ]);
       if (employees.error) throw new Error(employees.error.message);
-      if (sites.error) throw new Error(sites.error.message);
 
+      employeesById.clear();
+      (employees.data || []).forEach((emp) => employeesById.set(emp.id, emp));
       employeeSelect.innerHTML = employees.data
         .map((e) => `<option value="${e.id}">${e.name}</option>`)
-        .join("");
-      jobSiteSelect.innerHTML = sites.data
-        .map((s) => `<option value="${s.id}">${s.name}</option>`)
         .join("");
     }
 
@@ -135,17 +129,14 @@ function normalizeCompanyCode(value) {
     }
 
     async function loadShifts({ scheduleId }) {
-      const { data, error } = await supabase
+      let q = supabase
         .from("shifts")
-        .select(`
-          id, companyCode, date, start, end, notes, schedule_id,
-          job_site:job_sites!shifts_company_code_loc_fk(id, name, address),
-          employee:employees!shifts_company_code_emp_fk(id, name),
-          schedule:schedules!shifts_schedule_fk_v2(id, week_start_date)
-        `)
+        .select("id, companyCode, date, start, end, notes, schedule_id, locId, empId")
         .eq("schedule_id", scheduleId)
         .order("date")
         .order("start");
+      if (companyCode) q = q.eq("companyCode", companyCode);
+      const { data, error } = await q;
       if (error) throw new Error(error.message);
       return data || [];
     }
@@ -177,7 +168,9 @@ function normalizeCompanyCode(value) {
                   <div class="item">
                     <div class="meta">
                       <strong>${s.start}–${s.end}</strong>
-                      <div class="muted">${s.employee?.name || "—"} • ${s.job_site?.name || "—"}</div>
+                      <div class="muted">
+                        ${employeesById.get(s.empId)?.name || "—"} • ${s.locId || "—"}
+                      </div>
                       ${s.notes ? `<div class="small" style="margin-top:6px;">${s.notes}</div>` : ""}
                     </div>
                     <div class="actions">
@@ -210,7 +203,7 @@ function normalizeCompanyCode(value) {
       const weekStart = toISODate(getMonday(new Date(weekEl.value)));
       weekEl.value = weekStart;
 
-      await loadDropdowns();
+      await loadEmployees();
       schedule = await getOrFetchSchedule({ weekStart });
 
       const hasSchedule = Boolean(schedule?.id);
@@ -234,6 +227,7 @@ function normalizeCompanyCode(value) {
         toast("Week created.", { type: "success" });
         await refresh();
       } catch (err) {
+        if (await handleAuthError(err)) return;
         toast(err instanceof Error ? err.message : "Create failed.", { type: "error" });
       }
     });
@@ -249,11 +243,12 @@ function normalizeCompanyCode(value) {
       const end = String(document.getElementById("end")?.value || "").trim();
       const notes = String(document.getElementById("notes")?.value || "").trim();
       const empId = String(employeeSelect.value || "").trim();
-      const locId = String(jobSiteSelect.value || "").trim();
+      const locId = String(locIdInput?.value || "").trim();
 
       try {
         if (!date) throw new Error("Date is required.");
         if (!start || !end) throw new Error("Start and end time are required.");
+        if (!locId) throw new Error("Location ID is required.");
 
         const { error } = await supabase.from("shifts").insert([
           {
@@ -277,6 +272,7 @@ function normalizeCompanyCode(value) {
 
         await refresh();
       } catch (err) {
+        if (await handleAuthError(err)) return;
         toast(err instanceof Error ? err.message : "Create failed.", { type: "error" });
       }
     });
@@ -291,19 +287,28 @@ function normalizeCompanyCode(value) {
         if (action === "delete") {
           const ok = window.confirm("Delete this shift?");
           if (!ok) return;
-          const { error } = await supabase.from("shifts").delete().eq("id", id);
+          const { error } = await supabase
+            .from("shifts")
+            .delete()
+            .eq("id", id)
+            .eq("companyCode", companyCode);
           if (error) throw new Error(error.message);
           toast("Deleted.", { type: "success" });
           await refresh();
         } else if (action === "notes") {
           const notes = window.prompt("Notes (blank to clear):", "");
           if (notes === null) return;
-          const { error } = await supabase.from("shifts").update({ notes }).eq("id", id);
+          const { error } = await supabase
+            .from("shifts")
+            .update({ notes })
+            .eq("id", id)
+            .eq("companyCode", companyCode);
           if (error) throw new Error(error.message);
           toast("Updated.", { type: "success" });
           await refresh();
         }
       } catch (err) {
+        if (await handleAuthError(err)) return;
         toast(err instanceof Error ? err.message : "Action failed.", { type: "error" });
       }
     });
@@ -315,7 +320,7 @@ function normalizeCompanyCode(value) {
 
     await refresh();
   } catch (err) {
+    if (await handleAuthError(err)) return;
     toast(err instanceof Error ? err.message : "Failed to load schedule.", { type: "error" });
   }
 })();
-

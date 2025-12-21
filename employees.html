@@ -1,416 +1,45 @@
 <!doctype html>
 <html lang="en">
 <head>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0e1520">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1520">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Employees • Cyber Solutions LLC Schedule Manager</title>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-  <header class="header">
-    <div class="title">
-      <div>
-        <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
-        <div class="sub">Employees • Add / remove employees • Tap <strong>Save</strong> to commit changes.</div>
-      </div>
-    </div>
-
-    <nav class="nav">
-      <a href="index.html">Home</a>
-      <a class="active" href="employees.html">Employees</a>
-      <a href="locations.html">Locations</a>
-      <a href="jobs.html">Jobs</a>
-      <a href="shifts.html">Shifts</a>
-      <a href="crews.html">Crews</a>
-      <a href="export.html">Export PDFs</a>
-      <a href="users.html">Users / Access</a>
-      <a href="employee-requests.html">Employee Requests <span class="badge" data-badge="employeeRequests" style="display:none;"></span></a>
-      <a href="account.html">My Account</a>
-      <a href="settings.html">Settings</a>
-    </nav>
-  </header>
+  <header class="header" id="appHeader"></header>
 
   <div class="container">
+    <section class="card" id="companyPicker" style="display:none;"></section>
+
     <section class="card">
       <h2>Add employee</h2>
+      <form id="createForm" autocomplete="off">
+        <label for="name">Name</label>
+        <input id="name" placeholder="e.g., Kayla" autocomplete="name" />
 
-      <div class="row two">
-        <div>
-          <label for="empName">Name</label>
-          <input id="empName" placeholder="e.g., Kayla" autocomplete="name" />
+        <label for="contact">Contact (optional)</label>
+        <input id="contact" placeholder="Phone or email" autocomplete="email" />
+
+        <label class="checkboxLine">
+          <input id="active" type="checkbox" checked />
+          Active
+        </label>
+
+        <div class="btnRow">
+          <button class="btn" type="submit">Add employee</button>
         </div>
-        <div>
-          <label for="empContact">Phone / Email (optional)</label>
-          <input id="empContact" placeholder="e.g., 555-1234 or email" autocomplete="email" />
-        </div>
-      </div>
-
-      <div class="btnRow">
-        <button class="btn" id="addBtn" type="button">➕ Add employee</button>
-        <button class="btn secondary" id="clearBtn" type="button">Clear</button>
-      </div>
-
-      <div class="small" style="margin-top:10px;">
-        Note: Changes are not permanent until you tap <strong>Save</strong>.
-      </div>
+      </form>
     </section>
 
     <section class="card">
-      <h2>Employee list</h2>
-      <div class="small" id="countLine">Loading…</div>
+      <h2>Employees</h2>
       <div id="list" class="list"></div>
     </section>
-
-    <section class="card" id="manageCard" style="display:none;">
-      <h2>Manage employee</h2>
-      <div class="small" id="manageHint">—</div>
-
-      <div class="row two">
-        <div>
-          <label for="manageName">Name</label>
-          <input id="manageName" autocomplete="name" />
-        </div>
-        <div>
-          <label for="manageContact">Phone / Email (optional)</label>
-          <input id="manageContact" autocomplete="email" />
-        </div>
-      </div>
-
-      <div class="row two">
-        <div>
-          <label for="manageActive">Status</label>
-          <select id="manageActive">
-            <option value="1">Active</option>
-            <option value="0">Inactive</option>
-          </select>
-        </div>
-        <div>
-          <label>Employee ID</label>
-          <input id="manageId" disabled />
-        </div>
-      </div>
-
-      <div class="hr"></div>
-
-      <div>
-        <label>Crew membership (multi-select)</label>
-        <div id="crewChecks" class="checkboxPills"></div>
-        <div class="small" id="crewEmpty" style="display:none; margin-top:8px;">
-          No crews yet. Create crews first, then assign membership here.
-        </div>
-      </div>
-
-      <div class="btnRow" style="margin-top:12px;">
-        <button class="btn" id="saveManageBtn" type="button">Save changes</button>
-        <button class="btn secondary" id="closeManageBtn" type="button">Close</button>
-        <button class="btn danger" id="deleteManageBtn" type="button">Delete</button>
-      </div>
-      <div class="small" style="margin-top:10px;">
-        Note: After saving changes here, tap <strong>Save</strong> at the bottom to commit permanently.
-      </div>
-    </section>
-
-    <!-- Save bar -->
-    <div id="saveBar"></div>
   </div>
 
-  <script src="assets/config.example.js"></script>
-  <script src="assets/config.js"></script>
-  <script src="assets/store.js"></script>
-  <script src="assets/app.js"></script>
-  <script>
-    (async () => {
-      await JanitorApp.init({ pageTitle: "Employees • Cyber Solutions LLC Schedule Manager" });
-
-      const nameEl = document.getElementById("empName");
-      const contactEl = document.getElementById("empContact");
-      const listEl = document.getElementById("list");
-      const countLine = document.getElementById("countLine");
-
-      const manageCard = document.getElementById("manageCard");
-      const manageHint = document.getElementById("manageHint");
-      const manageName = document.getElementById("manageName");
-      const manageContact = document.getElementById("manageContact");
-      const manageActive = document.getElementById("manageActive");
-      const manageId = document.getElementById("manageId");
-      const crewChecks = document.getElementById("crewChecks");
-      const crewEmpty = document.getElementById("crewEmpty");
-      const saveManageBtn = document.getElementById("saveManageBtn");
-      const closeManageBtn = document.getElementById("closeManageBtn");
-      const deleteManageBtn = document.getElementById("deleteManageBtn");
-
-      let selectedEmpId = "";
-      let manageDirty = false;
-
-      function getEmployee(empId, s) {
-        return (s.employees || []).find(e => e.id === empId) || null;
-      }
-
-      function crewNamesForEmployee(empId, s) {
-        const crewById = Object.fromEntries((s.crews || []).map(c => [c.id, c]));
-        const crewIds = (s.crewMembers || []).filter(cm => cm.empId === empId).map(cm => cm.crewId);
-        return Array.from(new Set(crewIds))
-          .map(id => crewById[id]?.name)
-          .filter(Boolean)
-          .sort((a,b) => String(a).localeCompare(String(b)));
-      }
-
-      function renderList() {
-        const s = JanitorStore.getDraft();
-        const emps = [...s.employees].sort((a,b) => a.name.localeCompare(b.name));
-
-        countLine.textContent = `${emps.length} employee(s)`;
-
-        listEl.innerHTML = "";
-        if (emps.length === 0) {
-          listEl.innerHTML = `<div class="small">No employees yet. Add one above.</div>`;
-          return;
-        }
-
-        for (const e of emps) {
-          const div = document.createElement("div");
-          div.className = "item";
-          div.setAttribute("data-emp-row", e.id);
-
-          const crewNames = crewNamesForEmployee(e.id, s);
-          const shown = crewNames.slice(0, 4);
-          const extra = crewNames.length - shown.length;
-          const tags = shown.map(n => `<span class="tag">${JanitorApp.escapeHtml(n)}</span>`).join("") +
-            (extra > 0 ? `<span class="tag">+${extra} more</span>` : "");
-          const crewLine = crewNames.length
-            ? `<div class="tags" style="margin-top:6px;">${tags}</div>`
-            : `<div class="muted">Crews: none</div>`;
-
-          div.innerHTML = `
-            <div class="meta">
-              <strong>${JanitorApp.escapeHtml(e.name)}</strong>
-              ${e.contact ? `<div class="muted">${JanitorApp.escapeHtml(e.contact)}</div>` : `<div class="muted">No contact info</div>`}
-              ${crewLine}
-              <span class="pill">ID: ${JanitorApp.escapeHtml(e.id)}</span>
-            </div>
-            <div class="actions">
-              <button class="btn secondary" type="button" data-manage="${JanitorApp.escapeHtml(e.id)}">Manage</button>
-              <button class="btn danger" type="button" data-del="${JanitorApp.escapeHtml(e.id)}">Delete</button>
-            </div>
-          `;
-
-          if (e.id === selectedEmpId) {
-            div.style.boxShadow = "0 0 0 1px rgba(122,209,255,0.18) inset, var(--shadow)";
-            div.style.borderColor = "rgba(122,209,255,0.35)";
-          }
-          listEl.appendChild(div);
-        }
-      }
-
-      function renderManage() {
-        const s = JanitorStore.getDraft();
-        const emp = selectedEmpId ? getEmployee(selectedEmpId, s) : null;
-
-        if (!emp) {
-          manageCard.style.display = "none";
-          return;
-        }
-
-        manageCard.style.display = "block";
-        manageHint.innerHTML = `Managing: <strong>${JanitorApp.escapeHtml(emp.name)}</strong>`;
-        manageName.value = emp.name || "";
-        manageContact.value = emp.contact || "";
-        manageActive.value = emp.active === false ? "0" : "1";
-        manageId.value = emp.id || "";
-
-        const crews = (s.crews || []).slice().sort((a,b) => (a.name || "").localeCompare(b.name || ""));
-        const memberCrewIds = new Set((s.crewMembers || []).filter(cm => cm.empId === emp.id).map(cm => cm.crewId));
-
-        crewChecks.innerHTML = "";
-        crewEmpty.style.display = crews.length ? "none" : "block";
-
-        if (crews.length) {
-          crewChecks.innerHTML = crews.map(c => {
-            const label = `${c.name}${c.active === false ? " (Inactive)" : ""}`;
-            return `
-              <label>
-                <input type="checkbox" value="${JanitorApp.escapeHtml(c.id)}" ${memberCrewIds.has(c.id) ? "checked" : ""} />
-                ${JanitorApp.escapeHtml(label)}
-              </label>
-            `;
-          }).join("");
-        }
-
-        manageDirty = false;
-      }
-
-      async function selectEmployee(empId, { scroll = true } = {}) {
-        empId = String(empId || "");
-        const s = JanitorStore.getDraft();
-        const exists = empId && (s.employees || []).some(e => e.id === empId);
-        if (!exists) {
-          selectedEmpId = "";
-          manageDirty = false;
-          renderList();
-          renderManage();
-          return;
-        }
-
-        if (selectedEmpId && selectedEmpId !== empId && manageDirty) {
-          const ok = await JanitorApp.confirmBox("You have unsaved changes in Manage. Discard them and switch employees?");
-          if (!ok) return;
-        }
-
-        selectedEmpId = empId;
-        renderList();
-        renderManage();
-
-        if (scroll) {
-          manageCard.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }
-
-      function clearForm() {
-        nameEl.value = "";
-        contactEl.value = "";
-        nameEl.focus();
-      }
-
-      document.getElementById("addBtn").addEventListener("click", () => {
-        try {
-          const emp = JanitorStore.addEmployee({
-            name: nameEl.value,
-            contact: contactEl.value
-          });
-          JanitorApp.toast("Employee added (tap Save) ✅", { type: "success" });
-          JanitorApp.markDirty();
-          clearForm();
-          renderList();
-          // Immediately open Manage for the new employee
-          selectEmployee(emp.id, { scroll: true });
-        } catch (e) {
-          JanitorApp.toast(e.message || "Could not add employee.", { type: "error" });
-        }
-      });
-
-      document.getElementById("clearBtn").addEventListener("click", clearForm);
-
-      listEl.addEventListener("click", async (ev) => {
-        const manageBtn = ev.target.closest("button[data-manage]");
-        if (manageBtn) {
-          const id = manageBtn.getAttribute("data-manage");
-          await selectEmployee(id, { scroll: true });
-          return;
-        }
-
-        const btn = ev.target.closest("button[data-del]");
-        if (!btn) return;
-        const id = btn.getAttribute("data-del");
-
-        const ok = await JanitorApp.confirmBox("Delete this employee? (Shifts for them will also be removed when you Save.)");
-        if (!ok) return;
-
-        try {
-          JanitorStore.deleteEmployee(id, { cascade: true });
-          JanitorApp.toast("Employee deleted (tap Save) ⚠️", { type: "warn" });
-          JanitorApp.markDirty();
-          if (id === selectedEmpId) selectedEmpId = "";
-          manageDirty = false;
-          renderList();
-          renderManage();
-        } catch (e) {
-          JanitorApp.toast(e.message || "Delete failed.", { type: "error" });
-        }
-      });
-
-      function setManageDirty() { manageDirty = true; }
-      manageName.addEventListener("input", setManageDirty);
-      manageContact.addEventListener("input", setManageDirty);
-      manageActive.addEventListener("change", setManageDirty);
-      crewChecks.addEventListener("change", setManageDirty);
-
-      saveManageBtn.addEventListener("click", () => {
-        const s = JanitorStore.getDraft();
-        const emp = selectedEmpId ? getEmployee(selectedEmpId, s) : null;
-        if (!emp) return;
-
-        const nextName = manageName.value;
-        const nextContact = manageContact.value;
-        const nextActive = manageActive.value === "1";
-
-        const crews = (s.crews || []).slice();
-        const desiredCrewIds = new Set(
-          Array.from(crewChecks.querySelectorAll('input[type="checkbox"]'))
-            .filter(cb => cb.checked)
-            .map(cb => cb.value)
-            .filter(id => crews.some(c => c.id === id))
-        );
-        const currentCrewIds = new Set((s.crewMembers || []).filter(cm => cm.empId === emp.id).map(cm => cm.crewId));
-
-        try {
-          JanitorStore.updateEmployee(emp.id, { name: nextName, contact: nextContact, active: nextActive });
-
-          for (const crewId of desiredCrewIds) {
-            if (!currentCrewIds.has(crewId)) JanitorStore.addCrewMember({ crewId, empId: emp.id });
-          }
-          for (const crewId of currentCrewIds) {
-            if (!desiredCrewIds.has(crewId)) JanitorStore.removeCrewMember({ crewId, empId: emp.id });
-          }
-
-          JanitorApp.toast("Employee updated (tap Save) ✅", { type: "success" });
-          JanitorApp.markDirty();
-          manageDirty = false;
-          renderList();
-          renderManage();
-        } catch (e) {
-          JanitorApp.toast(e.message || "Could not save changes.", { type: "error" });
-        }
-      });
-
-      closeManageBtn.addEventListener("click", async () => {
-        if (manageDirty) {
-          const ok = await JanitorApp.confirmBox("Discard unsaved changes in Manage?");
-          if (!ok) return;
-        }
-        selectedEmpId = "";
-        manageDirty = false;
-        renderList();
-        renderManage();
-      });
-
-      deleteManageBtn.addEventListener("click", async () => {
-        const s = JanitorStore.getDraft();
-        const emp = selectedEmpId ? getEmployee(selectedEmpId, s) : null;
-        if (!emp) return;
-
-        const ok = await JanitorApp.confirmBox("Delete this employee? (Shifts for them will also be removed when you Save.)");
-        if (!ok) return;
-
-        try {
-          JanitorStore.deleteEmployee(emp.id, { cascade: true });
-          JanitorApp.toast("Employee deleted (tap Save) ⚠️", { type: "warn" });
-          JanitorApp.markDirty();
-          selectedEmpId = "";
-          manageDirty = false;
-          renderList();
-          renderManage();
-        } catch (e) {
-          JanitorApp.toast(e.message || "Delete failed.", { type: "error" });
-        }
-      });
-
-      // Re-render if user discards changes
-      window.addEventListener("janitor:discard", () => {
-        manageDirty = false;
-        renderList();
-        renderManage();
-      });
-
-      renderList();
-      renderManage();
-    })();
-  </script>
-  <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js");
-  }
-</script>
+  <script type="module" src="./js/pages/employees.js"></script>
 </body>
 </html>

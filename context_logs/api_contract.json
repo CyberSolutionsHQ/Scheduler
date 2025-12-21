@@ -1,0 +1,1282 @@
+{
+  "version": "1.0.0",
+  "base_url": "SUPABASE_URL",
+  "auth": {
+    "token_type": "supabase_jwt",
+    "header": "Authorization: Bearer <token>",
+    "claims_used": [
+      "sub (auth.uid)"
+    ],
+    "user_lookup": "public.users",
+    "tenant_key": "company_code (generated from companyCode)",
+    "role_column": "role",
+    "session": "Supabase Auth signInWithPassword",
+    "logout": "stateless client signOut; revoke by clearing refresh token",
+    "rate_limit": "Recommend per-IP rate limit for /auth/login"
+  },
+  "tenant_key": "company_code (generated from companyCode)",
+  "auth_strategy": {
+    "type": "supabase_auth",
+    "login": {
+      "type": "edge_function",
+      "name": "auth_login",
+      "path": "/functions/v1/auth_login"
+    }
+  },
+  "edge_functions": [
+    {
+      "name": "auth_login",
+      "path": "/functions/v1/auth_login"
+    },
+    {
+      "name": "bootstrap_platform_admin",
+      "path": "/functions/v1/bootstrap_platform_admin"
+    },
+    {
+      "name": "create_company_with_manager",
+      "path": "/functions/v1/create_company_with_manager"
+    },
+    {
+      "name": "create_manager_account",
+      "path": "/functions/v1/create_manager_account"
+    },
+    {
+      "name": "set_company_status",
+      "path": "/functions/v1/set_company_status"
+    },
+    {
+      "name": "terminate_company",
+      "path": "/functions/v1/terminate_company"
+    },
+    {
+      "name": "update_admin_credentials",
+      "path": "/functions/v1/update_admin_credentials"
+    },
+    {
+      "name": "create_employee_login",
+      "path": "/functions/v1/create_employee_login"
+    },
+    {
+      "name": "reset_user_pin",
+      "path": "/functions/v1/reset_user_pin"
+    },
+    {
+      "name": "submit_change_request",
+      "path": "/functions/v1/submit_change_request"
+    },
+    {
+      "name": "submit_credential_reset_request",
+      "path": "/functions/v1/submit_credential_reset_request"
+    },
+    {
+      "name": "resolve_credential_reset_request",
+      "path": "/functions/v1/resolve_credential_reset_request"
+    },
+    {
+      "name": "approve_request",
+      "path": "/functions/v1/approve_request"
+    },
+    {
+      "name": "deny_request",
+      "path": "/functions/v1/deny_request"
+    }
+  ],
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/functions/v1/auth_login",
+      "description": "Login with companyCode+username+pin or email+pin; returns Supabase session and profile.",
+      "auth_required": false,
+      "roles_allowed": [
+        "public"
+      ],
+      "request_schema": {
+        "companyCode": "string (required if username provided)",
+        "username": "string (required if companyCode provided)",
+        "email": "string (optional alternative)",
+        "pin": "string (4 digits)"
+      },
+      "response_schema": {
+        "success": {
+          "session": {
+            "access_token": "string",
+            "refresh_token": "string",
+            "expires_in": "number",
+            "token_type": "string",
+            "user_id": "uuid"
+          },
+          "profile": {
+            "id": "uuid",
+            "companyCode": "string",
+            "username": "string",
+            "role": "platform_admin|manager|employee",
+            "employeeId": "uuid|null",
+            "active": "boolean",
+            "forcePinChange": "boolean"
+          }
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "companyCode",
+            "username",
+            "role",
+            "employeeId",
+            "active",
+            "force_pin_change"
+          ]
+        },
+        {
+          "table": "public.companies",
+          "columns": [
+            "companyCode",
+            "isDisabled"
+          ]
+        },
+        {
+          "table": "auth.users",
+          "columns": [
+            "id",
+            "email",
+            "encrypted_password"
+          ]
+        }
+      ],
+      "rls_notes": "Uses service role for public.users/companies lookups; validates active user and company not disabled.",
+      "errors": [
+        "E_AUTH_INVALID",
+        "E_FORBIDDEN",
+        "E_NOT_FOUND",
+        "E_COMPANY_DISABLED",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/bootstrap_platform_admin",
+      "description": "Bootstrap initial platform admin using a one-time token.",
+      "auth_required": false,
+      "roles_allowed": [
+        "bootstrap_token"
+      ],
+      "request_schema": {
+        "token": "string",
+        "username": "string",
+        "pin": "string (4 digits)"
+      },
+      "response_schema": {
+        "success": {
+          "ok": true,
+          "companyCode": "PLATFORM",
+          "username": "string",
+          "pin": "string",
+          "authUserId": "uuid"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.companies",
+          "columns": [
+            "companyCode",
+            "companyName",
+            "isDisabled",
+            "supportEnabled"
+          ]
+        },
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "companyCode",
+            "username",
+            "pinHash",
+            "role",
+            "employeeId",
+            "active"
+          ]
+        },
+        {
+          "table": "auth.users",
+          "columns": [
+            "id",
+            "email",
+            "encrypted_password"
+          ]
+        }
+      ],
+      "rls_notes": "Uses service role; validates bootstrap token; manual checks only.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_CONFLICT",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/create_company_with_manager",
+      "description": "Platform admin creates a company and initial manager.",
+      "auth_required": true,
+      "roles_allowed": [
+        "platform_admin"
+      ],
+      "request_schema": {
+        "companyName": "string",
+        "companyCode": "string",
+        "managerUsername": "string",
+        "managerPin": "string (4 digits)"
+      },
+      "response_schema": {
+        "success": {
+          "companyId": "uuid",
+          "companyCode": "string",
+          "managerUsername": "string",
+          "managerPin": "string"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.companies",
+          "columns": [
+            "companyCode",
+            "companyName",
+            "isDisabled",
+            "supportEnabled"
+          ]
+        },
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "companyCode",
+            "username",
+            "pinHash",
+            "role",
+            "employeeId",
+            "active"
+          ]
+        },
+        {
+          "table": "auth.users",
+          "columns": [
+            "id",
+            "email",
+            "encrypted_password"
+          ]
+        }
+      ],
+      "rls_notes": "Uses service role; manual role and tenant checks.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_CONFLICT",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/create_manager_account",
+      "description": "Platform admin creates an additional manager for an existing company.",
+      "auth_required": true,
+      "roles_allowed": [
+        "platform_admin"
+      ],
+      "request_schema": {
+        "companyCode": "string",
+        "managerUsername": "string",
+        "managerPin": "string (4 digits)"
+      },
+      "response_schema": {
+        "success": {
+          "ok": true,
+          "companyCode": "string",
+          "managerUsername": "string",
+          "managerPin": "string",
+          "managerUserId": "uuid"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.companies",
+          "columns": [
+            "companyCode",
+            "isDisabled"
+          ]
+        },
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "companyCode",
+            "username",
+            "pinHash",
+            "role",
+            "employeeId",
+            "active"
+          ]
+        },
+        {
+          "table": "auth.users",
+          "columns": [
+            "id",
+            "email",
+            "encrypted_password"
+          ]
+        }
+      ],
+      "rls_notes": "Uses service role; manual role and tenant checks.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_CONFLICT",
+        "E_NOT_FOUND",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/set_company_status",
+      "description": "Platform admin enables/disables a company; optionally reactivates users.",
+      "auth_required": true,
+      "roles_allowed": [
+        "platform_admin"
+      ],
+      "request_schema": {
+        "companyCode": "string",
+        "isDisabled": "boolean",
+        "reactivateUsers": "boolean (optional)"
+      },
+      "response_schema": {
+        "success": {
+          "ok": true,
+          "companyCode": "string",
+          "isDisabled": "boolean",
+          "reactivateUsers": "boolean"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.companies",
+          "columns": [
+            "companyCode",
+            "isDisabled"
+          ]
+        },
+        {
+          "table": "public.users",
+          "columns": [
+            "companyCode",
+            "active"
+          ]
+        }
+      ],
+      "rls_notes": "Uses service role; manual role checks; tenant boundary enforced by companyCode.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_NOT_FOUND",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/terminate_company",
+      "description": "Platform admin disables a company and deactivates users (legacy alias).",
+      "auth_required": true,
+      "roles_allowed": [
+        "platform_admin"
+      ],
+      "request_schema": {
+        "companyCode": "string"
+      },
+      "response_schema": {
+        "success": {
+          "ok": true
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.companies",
+          "columns": [
+            "companyCode",
+            "isDisabled"
+          ]
+        },
+        {
+          "table": "public.users",
+          "columns": [
+            "companyCode",
+            "active"
+          ]
+        }
+      ],
+      "rls_notes": "Uses service role; manual role checks.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_NOT_FOUND",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/update_admin_credentials",
+      "description": "Platform admin updates own username and/or PIN directly.",
+      "auth_required": true,
+      "roles_allowed": [
+        "platform_admin"
+      ],
+      "request_schema": {
+        "newUsername": "string (optional)",
+        "newPin": "string (optional, 4 digits)"
+      },
+      "response_schema": {
+        "success": {
+          "ok": true,
+          "username": "string",
+          "companyCode": "string"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "companyCode",
+            "username",
+            "pinHash",
+            "active"
+          ]
+        },
+        {
+          "table": "auth.users",
+          "columns": [
+            "id",
+            "email",
+            "encrypted_password"
+          ]
+        }
+      ],
+      "rls_notes": "Uses service role; manual role checks; requires newPin when changing username.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_CONFLICT",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/create_employee_login",
+      "description": "Manager creates/updates employee login (username + PIN).",
+      "auth_required": true,
+      "roles_allowed": [
+        "manager"
+      ],
+      "request_schema": {
+        "companyCode": "string",
+        "employeeId": "uuid",
+        "username": "string",
+        "pin": "string (4 digits)"
+      },
+      "response_schema": {
+        "success": {
+          "username": "string",
+          "pin": "string"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.companies",
+          "columns": [
+            "companyCode",
+            "isDisabled"
+          ]
+        },
+        {
+          "table": "public.employees",
+          "columns": [
+            "id",
+            "companyCode"
+          ]
+        },
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "companyCode",
+            "username",
+            "pinHash",
+            "role",
+            "employeeId",
+            "active"
+          ]
+        },
+        {
+          "table": "auth.users",
+          "columns": [
+            "id",
+            "email",
+            "encrypted_password"
+          ]
+        }
+      ],
+      "rls_notes": "Uses service role; manual role and tenant checks.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_NOT_FOUND",
+        "E_CONFLICT",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/reset_user_pin",
+      "description": "Manager or platform admin resets a user's PIN (manager -> employee, admin -> manager).",
+      "auth_required": true,
+      "roles_allowed": [
+        "manager",
+        "platform_admin"
+      ],
+      "request_schema": {
+        "companyCode": "string",
+        "username": "string",
+        "newPin": "string (4 digits)"
+      },
+      "response_schema": {
+        "success": {
+          "ok": true
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "companyCode",
+            "username",
+            "role",
+            "pinHash",
+            "active"
+          ]
+        },
+        {
+          "table": "public.companies",
+          "columns": [
+            "companyCode",
+            "isDisabled"
+          ]
+        },
+        {
+          "table": "auth.users",
+          "columns": [
+            "id",
+            "encrypted_password"
+          ]
+        }
+      ],
+      "rls_notes": "Uses service role; manual role and tenant checks.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_NOT_FOUND",
+        "E_VALIDATION",
+        "E_COMPANY_DISABLED"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/submit_change_request",
+      "description": "Employee or manager submits a credential change request for self (username and/or PIN).",
+      "auth_required": true,
+      "roles_allowed": [
+        "employee",
+        "manager"
+      ],
+      "request_schema": {
+        "proposedUsername": "string (optional)",
+        "proposedPin": "string (optional, 4 digits)"
+      },
+      "response_schema": {
+        "success": {
+          "ok": true,
+          "requestId": "uuid",
+          "type": "request_type"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "companyCode",
+            "role",
+            "active"
+          ]
+        },
+        {
+          "table": "public.requests",
+          "columns": [
+            "companyCode",
+            "type",
+            "status",
+            "requesterUserId",
+            "targetUserId",
+            "proposedUsername",
+            "proposedPin"
+          ]
+        }
+      ],
+      "rls_notes": "Uses user JWT and RLS insert checks; companyCode must equal current_company_code().",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/submit_credential_reset_request",
+      "description": "Employee submits a forgot-credentials request to managers.",
+      "auth_required": true,
+      "roles_allowed": [
+        "employee"
+      ],
+      "request_schema": {
+        "requestType": "username|pin|both"
+      },
+      "response_schema": {
+        "success": {
+          "ok": true,
+          "requestId": "uuid"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "companyCode",
+            "role",
+            "active"
+          ]
+        },
+        {
+          "table": "public.credential_reset_requests",
+          "columns": [
+            "company_code",
+            "requested_by_user_id",
+            "target_user_id",
+            "request_type",
+            "status"
+          ]
+        }
+      ],
+      "rls_notes": "Uses user JWT and RLS insert checks; company_code must equal current_company_code().",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/resolve_credential_reset_request",
+      "description": "Manager or platform admin approves/denies a credential reset request and updates credentials if approved.",
+      "auth_required": true,
+      "roles_allowed": [
+        "manager",
+        "platform_admin"
+      ],
+      "request_schema": {
+        "requestId": "uuid",
+        "approve": "boolean",
+        "newUsername": "string (optional)",
+        "newPin": "string (optional, 4 digits)"
+      },
+      "response_schema": {
+        "success": {
+          "ok": true
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.credential_reset_requests",
+          "columns": [
+            "id",
+            "company_code",
+            "request_type",
+            "status",
+            "resolved_at"
+          ]
+        },
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "companyCode",
+            "username",
+            "role",
+            "pinHash",
+            "active"
+          ]
+        },
+        {
+          "table": "auth.users",
+          "columns": [
+            "id",
+            "email",
+            "encrypted_password"
+          ]
+        }
+      ],
+      "rls_notes": "Uses service role; manual role and tenant checks; managers limited to employee targets within company.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_NOT_FOUND",
+        "E_VALIDATION",
+        "E_CONFLICT",
+        "E_REQUEST_NOT_PENDING"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/approve_request",
+      "description": "Approve a credential change request (manager or platform admin).",
+      "auth_required": true,
+      "roles_allowed": [
+        "manager",
+        "platform_admin"
+      ],
+      "request_schema": {
+        "requestId": "uuid",
+        "decisionNote": "string (optional)"
+      },
+      "response_schema": {
+        "success": {
+          "ok": true
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.requests",
+          "columns": [
+            "id",
+            "companyCode",
+            "type",
+            "status",
+            "requesterUserId",
+            "targetUserId",
+            "proposedUsername",
+            "proposedPin",
+            "decisionNote",
+            "handledAt",
+            "handledBy"
+          ]
+        },
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "companyCode",
+            "username",
+            "pinHash",
+            "active"
+          ]
+        },
+        {
+          "table": "auth.users",
+          "columns": [
+            "id",
+            "email",
+            "encrypted_password"
+          ]
+        }
+      ],
+      "rls_notes": "Uses service role; manual role checks per request.type and companyCode.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_NOT_FOUND",
+        "E_VALIDATION",
+        "E_CONFLICT",
+        "E_REQUEST_NOT_PENDING"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/functions/v1/deny_request",
+      "description": "Deny a credential change request (manager or platform admin).",
+      "auth_required": true,
+      "roles_allowed": [
+        "manager",
+        "platform_admin"
+      ],
+      "request_schema": {
+        "requestId": "uuid",
+        "decisionNote": "string (optional)"
+      },
+      "response_schema": {
+        "success": {
+          "ok": true
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.requests",
+          "columns": [
+            "id",
+            "companyCode",
+            "type",
+            "status",
+            "decisionNote",
+            "handledAt",
+            "handledBy"
+          ]
+        }
+      ],
+      "rls_notes": "Uses service role; manual role checks per request.type and companyCode.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_NOT_FOUND",
+        "E_VALIDATION",
+        "E_REQUEST_NOT_PENDING"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/sync_my_pin_hash_and_clear_force_pin_change",
+      "description": "Sync current user's pinHash after updating auth password; clears force_pin_change.",
+      "auth_required": true,
+      "roles_allowed": [
+        "authenticated"
+      ],
+      "request_schema": {
+        "new_pin": "string (4 digits)"
+      },
+      "response_schema": {
+        "success": {
+          "ok": true
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "company_code",
+            "username",
+            "pinHash",
+            "force_pin_change"
+          ]
+        },
+        {
+          "table": "auth.users",
+          "columns": [
+            "id",
+            "encrypted_password"
+          ]
+        }
+      ],
+      "rls_notes": "Security definer function; validates auth.uid and current auth password.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/rest/v1/users",
+      "description": "Fetch user profiles (self, manager company, or platform admin).",
+      "auth_required": true,
+      "roles_allowed": [
+        "employee",
+        "manager",
+        "platform_admin"
+      ],
+      "request_schema": {
+        "filters": "id=eq.<uuid> or companyCode=eq.<code>"
+      },
+      "response_schema": {
+        "success": {
+          "data": "array of users"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.users",
+          "columns": [
+            "id",
+            "companyCode",
+            "username",
+            "role",
+            "employeeId",
+            "active",
+            "force_pin_change"
+          ]
+        }
+      ],
+      "rls_notes": "RLS enforced; employees see self; managers see company; platform admins see all.",
+      "errors": [
+        "E_FORBIDDEN"
+      ]
+    },
+    {
+      "method": "GET,POST,PATCH,DELETE",
+      "path": "/rest/v1/employees",
+      "description": "CRUD employees within a company.",
+      "auth_required": true,
+      "roles_allowed": [
+        "manager",
+        "platform_admin",
+        "employee (GET self only)"
+      ],
+      "request_schema": {
+        "GET": "filters: companyCode=eq.<code> or id=eq.<uuid>",
+        "POST": {
+          "companyCode": "string",
+          "name": "string",
+          "contact": "string",
+          "active": "boolean"
+        },
+        "PATCH": {
+          "id": "uuid",
+          "name": "string (optional)",
+          "contact": "string (optional)",
+          "active": "boolean (optional)"
+        },
+        "DELETE": {
+          "id": "uuid"
+        }
+      },
+      "response_schema": {
+        "success": {
+          "data": "array of employees"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.employees",
+          "columns": [
+            "id",
+            "companyCode",
+            "name",
+            "contact",
+            "active",
+            "createdAt",
+            "updatedAt"
+          ]
+        }
+      ],
+      "rls_notes": "RLS enforced; managers/platform admins can CRUD within company; employees can read self only.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "GET,POST",
+      "path": "/rest/v1/schedules",
+      "description": "List or create weekly schedules.",
+      "auth_required": true,
+      "roles_allowed": [
+        "employee (GET only)",
+        "manager",
+        "platform_admin"
+      ],
+      "request_schema": {
+        "GET": "filters: company_code=eq.<code> or week_start_date=eq.<date>",
+        "POST": {
+          "company_code": "string",
+          "week_start_date": "date"
+        }
+      },
+      "response_schema": {
+        "success": {
+          "data": "array of schedules"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.schedules",
+          "columns": [
+            "id",
+            "company_code",
+            "week_start_date",
+            "created_at"
+          ]
+        }
+      ],
+      "rls_notes": "RLS enforced; managers/platform admins can CRUD within company; employees can read company schedules.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "GET,POST,PATCH,DELETE",
+      "path": "/rest/v1/shifts",
+      "description": "CRUD shifts within a schedule.",
+      "auth_required": true,
+      "roles_allowed": [
+        "manager",
+        "platform_admin",
+        "employee (GET own only)"
+      ],
+      "request_schema": {
+        "GET": "filters: schedule_id=eq.<uuid> or employee_id=eq.<uuid>",
+        "POST": {
+          "companyCode": "string",
+          "schedule_id": "uuid",
+          "date": "date",
+          "start": "time",
+          "end": "time",
+          "notes": "string",
+          "locId": "uuid",
+          "empId": "uuid (optional)",
+          "crewId": "uuid (optional)"
+        },
+        "PATCH": {
+          "id": "uuid",
+          "notes": "string (optional)",
+          "empId": "uuid (optional)",
+          "crewId": "uuid (optional)"
+        },
+        "DELETE": {
+          "id": "uuid"
+        }
+      },
+      "response_schema": {
+        "success": {
+          "data": "array of shifts"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.shifts",
+          "columns": [
+            "id",
+            "companyCode",
+            "date",
+            "start",
+            "end",
+            "notes",
+            "locId",
+            "empId",
+            "crewId",
+            "schedule_id"
+          ]
+        }
+      ],
+      "rls_notes": "RLS enforced; managers/platform admins can CRUD within company; employees can read own shifts.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "GET,POST,PATCH",
+      "path": "/rest/v1/credential_reset_requests",
+      "description": "Create and review forgot-credentials requests.",
+      "auth_required": true,
+      "roles_allowed": [
+        "employee",
+        "manager",
+        "platform_admin"
+      ],
+      "request_schema": {
+        "GET": "filters: status=eq.pending or requested_by_user_id=eq.<uuid>",
+        "POST": {
+          "company_code": "string",
+          "requested_by_user_id": "uuid",
+          "target_user_id": "uuid",
+          "request_type": "username|pin|both",
+          "status": "pending"
+        },
+        "PATCH": {
+          "id": "uuid",
+          "status": "approved|denied",
+          "resolved_at": "timestamptz"
+        }
+      },
+      "response_schema": {
+        "success": {
+          "data": "array of requests"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.credential_reset_requests",
+          "columns": [
+            "id",
+            "company_code",
+            "requested_by_user_id",
+            "target_user_id",
+            "request_type",
+            "status",
+            "created_at",
+            "resolved_at"
+          ]
+        }
+      ],
+      "rls_notes": "RLS enforced; employees can create/read own; managers read/update company; platform admins read/update all.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "GET,POST",
+      "path": "/rest/v1/requests",
+      "description": "Create or list credential change requests (manager/employee self-request; platform admin review).",
+      "auth_required": true,
+      "roles_allowed": [
+        "employee",
+        "manager",
+        "platform_admin"
+      ],
+      "request_schema": {
+        "GET": "filters: status=eq.pending or requesterUserId=eq.<uuid>",
+        "POST": {
+          "companyCode": "string",
+          "type": "employee_change_credentials|manager_change_credentials|admin_change_credentials",
+          "status": "pending",
+          "requesterUserId": "uuid",
+          "targetUserId": "uuid",
+          "proposedUsername": "string",
+          "proposedPin": "string"
+        }
+      },
+      "response_schema": {
+        "success": {
+          "data": "array of requests"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.requests",
+          "columns": [
+            "id",
+            "companyCode",
+            "type",
+            "status",
+            "requesterUserId",
+            "targetUserId",
+            "proposedUsername",
+            "proposedPin",
+            "createdAt"
+          ]
+        }
+      ],
+      "rls_notes": "RLS enforced; employees/managers can insert self requests; platform admins can read manager/admin requests.",
+      "errors": [
+        "E_FORBIDDEN",
+        "E_VALIDATION"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/rest/v1/companies",
+      "description": "List companies for platform admin overview.",
+      "auth_required": true,
+      "roles_allowed": [
+        "platform_admin"
+      ],
+      "request_schema": {
+        "filters": "companyCode=eq.<code>"
+      },
+      "response_schema": {
+        "success": {
+          "data": "array of companies"
+        },
+        "error": {
+          "error": "string"
+        }
+      },
+      "db_access": [
+        {
+          "table": "public.companies",
+          "columns": [
+            "id",
+            "companyCode",
+            "companyName",
+            "isDisabled",
+            "supportEnabled",
+            "createdAt"
+          ]
+        }
+      ],
+      "rls_notes": "RLS enforced for authenticated; platform admins can read all.",
+      "errors": [
+        "E_FORBIDDEN"
+      ]
+    }
+  ],
+  "errors": [
+    "E_AUTH_INVALID",
+    "E_FORBIDDEN",
+    "E_NOT_FOUND",
+    "E_VALIDATION",
+    "E_CONFLICT",
+    "E_COMPANY_DISABLED",
+    "E_REQUEST_NOT_PENDING",
+    "E_SCHEMA_MISMATCH",
+    "E_INTERNAL"
+  ]
+}

@@ -1,5 +1,5 @@
 import { getSupabase } from "../supabaseClient.js";
-import { requireAuth, signOut } from "../auth.js";
+import { handleAuthError, requireAuth, signOut } from "../auth.js";
 import { renderAppHeader, toast } from "../ui.js";
 
 const supabase = (() => {
@@ -22,22 +22,23 @@ function wireLogout() {
   });
 }
 
-async function loadManagerCounts() {
-  const out = { employees: 0, jobSites: 0, pendingRequests: 0 };
+async function loadManagerCounts({ companyCode }) {
+  const out = { employees: 0, pendingRequests: 0 };
   const opts = { head: true, count: "exact" };
 
-  const [employees, jobSites, requests] = await Promise.all([
-    supabase.from("employees").select("*", opts),
-    supabase.from("job_sites").select("*", opts),
-    supabase.from("credential_reset_requests").select("*", opts).eq("status", "pending"),
+  const [employees, requests] = await Promise.all([
+    supabase.from("employees").select("*", opts).eq("companyCode", companyCode),
+    supabase
+      .from("credential_reset_requests")
+      .select("*", opts)
+      .eq("company_code", companyCode)
+      .eq("status", "pending"),
   ]);
 
   if (employees.error) throw new Error(employees.error.message);
-  if (jobSites.error) throw new Error(jobSites.error.message);
   if (requests.error) throw new Error(requests.error.message);
 
   out.employees = employees.count ?? 0;
-  out.jobSites = jobSites.count ?? 0;
   out.pendingRequests = requests.count ?? 0;
   return out;
 }
@@ -117,6 +118,7 @@ async function renderPlatformAdmin() {
       toast("Company terminated.", { type: "success" });
       await refresh();
     } catch (err) {
+      if (await handleAuthError(err)) return;
       toast(err instanceof Error ? err.message : "Terminate failed.", { type: "error" });
     }
   });
@@ -144,6 +146,7 @@ async function renderPlatformAdmin() {
       form.reset();
       await refresh();
     } catch (err) {
+      if (await handleAuthError(err)) return;
       toast(err instanceof Error ? err.message : "Create failed.", { type: "error" });
     }
   });
@@ -158,10 +161,9 @@ async function renderManager() {
   if (managerCard) managerCard.style.display = "block";
 
   const countsEl = document.getElementById("counts");
-  const counts = await loadManagerCounts();
+  const counts = await loadManagerCounts({ companyCode: profile.companyCode });
   countsEl.innerHTML =
     `Employees: <strong>${counts.employees}</strong><br/>` +
-    `Job sites: <strong>${counts.jobSites}</strong><br/>` +
     `Pending requests: <strong>${counts.pendingRequests}</strong>`;
 }
 
@@ -186,6 +188,7 @@ async function renderManager() {
     if (profile.role === "platform_admin") await renderPlatformAdmin();
     else await renderManager();
   } catch (err) {
+    if (await handleAuthError(err)) return;
     toast(err instanceof Error ? err.message : "Failed to load dashboard.", { type: "error" });
   }
 })();

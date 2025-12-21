@@ -1,5 +1,5 @@
 import { getSupabase } from "../supabaseClient.js";
-import { requireAuth, signOut, assertPin, normalizeUsername } from "../auth.js";
+import { handleAuthError, requireAuth, signOut, assertPin, normalizeUsername } from "../auth.js";
 import { renderAppHeader, toast } from "../ui.js";
 
 const supabase = (() => {
@@ -31,6 +31,7 @@ function labelRequestType(type) {
 (async () => {
   const listEl = document.getElementById("list");
   const metaEl = document.getElementById("meta");
+  const companyPicker = document.getElementById("companyPicker");
 
   try {
     if (!supabase) throw new Error("Supabase is not configured. Set values in js/config.js.");
@@ -44,14 +45,42 @@ function labelRequestType(type) {
     });
     wireLogout();
 
+    let companyCode = profile.role === "platform_admin" ? "" : profile.companyCode;
+
+    async function loadCompaniesIfNeeded() {
+      if (profile.role !== "platform_admin") return;
+      companyPicker.style.display = "block";
+      const { data, error } = await supabase
+        .from("companies")
+        .select('"companyCode", "companyName"')
+        .order("companyCode");
+      if (error) throw new Error(error.message);
+
+      companyPicker.innerHTML = `
+        <label for="companySelect">Company</label>
+        <select id="companySelect">
+          <option value="">Select a company…</option>
+          ${data.map((c) => `<option value="${c.companyCode}">${c.companyCode} — ${c.companyName}</option>`).join("")}
+        </select>
+      `;
+
+      const select = document.getElementById("companySelect");
+      select.addEventListener("change", async () => {
+        companyCode = String(select.value || "").trim().toUpperCase();
+        await refresh();
+      });
+    }
+
     async function loadUsersByIds(ids) {
       const uniq = [...new Set(ids.filter(Boolean))];
       if (!uniq.length) return new Map();
 
-      const { data, error } = await supabase
+      let q = supabase
         .from("users")
         .select('id, "companyCode", username, role, "employeeId", active')
         .in("id", uniq);
+      if (companyCode) q = q.eq("companyCode", companyCode);
+      const { data, error } = await q;
       if (error) throw new Error(error.message);
 
       const map = new Map();
@@ -62,11 +91,19 @@ function labelRequestType(type) {
     async function refresh() {
       listEl.innerHTML = `<div class="small">Loading…</div>`;
 
-      const { data, error } = await supabase
+      if (profile.role === "platform_admin" && !companyCode) {
+        listEl.innerHTML = `<div class="small">Select a company to view requests.</div>`;
+        metaEl.textContent = "Pending: —";
+        return;
+      }
+
+      let q = supabase
         .from("credential_reset_requests")
-        .select("*")
+        .select("id, company_code, requested_by_user_id, target_user_id, request_type, status, created_at")
         .eq("status", "pending")
         .order("created_at", { ascending: false });
+      if (companyCode) q = q.eq("company_code", companyCode);
+      const { data, error } = await q;
       if (error) throw new Error(error.message);
 
       const rows = data || [];
@@ -109,52 +146,31 @@ function labelRequestType(type) {
       listEl.dataset.rows = JSON.stringify(rows);
     }
 
-    async function resolveRequest({ row, target, approve }) {
-      if (!target) throw new Error("Target user is not visible (RLS) or does not exist.");
+    async function resolveRequest({ row, approve }) {
+      let newUsername = "";
+      let newPin = "";
 
       if (approve) {
         if (row.request_type === "pin") {
-          const newPin = assertPin(window.prompt("New 4-digit PIN:", "") || "", "New PIN");
-          const { data, error } = await supabase.functions.invoke("reset_user_pin", {
-            body: { companyCode: target.companyCode, username: target.username, newPin },
-          });
-          if (error) throw new Error(error.message);
-          if (data?.error) throw new Error(data.error);
-        } else if (row.request_type === "username" || row.request_type === "both") {
-          if (profile.role !== "manager") {
-            throw new Error("Username changes for employees must be handled by a manager (Edge Function).");
-          }
-          if (target.role !== "employee") {
-            throw new Error("Username changes are only implemented for employee accounts.");
-          }
-          if (!target.employeeId) throw new Error("Target employeeId is missing.");
-
-          const newUsername = normalizeUsername(window.prompt("New username:", "") || "");
-          const newPin = assertPin(window.prompt("New 4-digit PIN:", "") || "", "New PIN");
-
-          const { data, error } = await supabase.functions.invoke("create_employee_login", {
-            body: {
-              companyCode: target.companyCode,
-              employeeId: target.employeeId,
-              username: newUsername,
-              pin: newPin,
-            },
-          });
-          if (error) throw new Error(error.message);
-          if (data?.error) throw new Error(data.error);
-        } else {
-          throw new Error("Unsupported request type.");
+          newPin = assertPin(window.prompt("New 4-digit PIN:", "") || "", "New PIN");
+        } else if (row.request_type === "username") {
+          newUsername = normalizeUsername(window.prompt("New username:", "") || "");
+        } else if (row.request_type === "both") {
+          newUsername = normalizeUsername(window.prompt("New username:", "") || "");
+          newPin = assertPin(window.prompt("New 4-digit PIN:", "") || "", "New PIN");
         }
       }
 
-      const { error: updateError } = await supabase
-        .from("credential_reset_requests")
-        .update({
-          status: approve ? "approved" : "denied",
-          resolved_at: new Date().toISOString(),
-        })
-        .eq("id", row.id);
-      if (updateError) throw new Error(updateError.message);
+      const { data, error } = await supabase.functions.invoke("resolve_credential_reset_request", {
+        body: {
+          requestId: row.id,
+          approve,
+          newUsername: newUsername || undefined,
+          newPin: newPin || undefined,
+        },
+      });
+      if (error) throw new Error(error.message);
+      if (data?.error) throw new Error(data.error);
     }
 
     listEl.addEventListener("click", async (e) => {
@@ -172,23 +188,21 @@ function labelRequestType(type) {
         const ok = window.confirm(action === "approve" ? "Approve this request?" : "Deny this request?");
         if (!ok) return;
 
-        await resolveRequest({
-          row,
-          target: users[row.target_user_id] || null,
-          approve: action === "approve",
-        });
+        await resolveRequest({ row, approve: action === "approve" });
         toast(action === "approve" ? "Approved." : "Denied.", { type: "success" });
         await refresh();
       } catch (err) {
+        if (await handleAuthError(err)) return;
         toast(err instanceof Error ? err.message : "Action failed.", { type: "error" });
       }
     });
 
     document.getElementById("refreshBtn")?.addEventListener("click", () => refresh());
 
+    await loadCompaniesIfNeeded();
     await refresh();
   } catch (err) {
+    if (await handleAuthError(err)) return;
     toast(err instanceof Error ? err.message : "Failed to load requests.", { type: "error" });
   }
 })();
-

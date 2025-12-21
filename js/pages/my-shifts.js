@@ -1,5 +1,5 @@
 import { getSupabase } from "../supabaseClient.js";
-import { requireAuth, signOut } from "../auth.js";
+import { handleAuthError, requireAuth, signOut } from "../auth.js";
 import { addDays, toISODate } from "../date.js";
 import { renderAppHeader, toast } from "../ui.js";
 
@@ -44,13 +44,13 @@ function wireLogout() {
 
     rangeEl.textContent = `${start.toLocaleDateString()} → ${end.toLocaleDateString()}`;
 
+    if (!profile.employeeId) throw new Error("Employee profile is missing a linked employeeId.");
+
     const { data, error } = await supabase
       .from("shifts")
-      .select(`
-        id, date, start, end, notes,
-        job_site:job_sites!shifts_company_code_loc_fk(id, name, address),
-        schedule:schedules!shifts_schedule_fk_v2(id, week_start_date)
-      `)
+      .select("id, date, start, end, notes, locId, empId, companyCode")
+      .eq("empId", profile.employeeId)
+      .eq("companyCode", profile.companyCode)
       .gte("date", toISODate(start))
       .lte("date", toISODate(end))
       .order("date")
@@ -66,12 +66,12 @@ function wireLogout() {
     listEl.innerHTML = rows
       .map((s) => {
         const when = new Date(`${s.date}T00:00:00`).toLocaleDateString();
-        const site = s.job_site?.name || "—";
+        const site = s.locId || "—";
         return `
           <div class="item">
             <div class="meta">
               <strong>${when} • ${s.start}–${s.end}</strong>
-              <div class="muted">${site}</div>
+              <div class="muted">Location: ${site}</div>
               ${s.notes ? `<div class="small" style="margin-top:6px;">${s.notes}</div>` : ""}
             </div>
           </div>
@@ -79,7 +79,7 @@ function wireLogout() {
       })
       .join("");
   } catch (err) {
+    if (await handleAuthError(err)) return;
     toast(err instanceof Error ? err.message : "Failed to load shifts.", { type: "error" });
   }
 })();
-

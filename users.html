@@ -5,288 +5,42 @@
   <meta name="theme-color" content="#0e1520">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Users / Access • Cyber Solutions LLC Schedule Manager</title>
+  <title>Users • Cyber Solutions LLC Schedule Manager</title>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-  <header class="header">
-    <div class="title">
-      <div>
-        <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
-        <div class="sub">Users / Access (manager-only)</div>
-      </div>
-    </div>
-
-    <nav class="nav">
-      <a href="index.html">Home</a>
-      <a href="employees.html">Employees</a>
-      <a href="locations.html">Locations</a>
-      <a href="jobs.html">Jobs</a>
-      <a href="shifts.html">Shifts</a>
-      <a href="crews.html">Crews</a>
-      <a href="export.html">Export PDFs</a>
-      <a class="active" href="users.html">Users / Access</a>
-      <a href="employee-requests.html">Employee Requests <span class="badge" data-badge="employeeRequests" style="display:none;"></span></a>
-      <a href="account.html">My Account</a>
-      <a href="settings.html">Settings</a>
-    </nav>
-  </header>
+  <header class="header" id="appHeader"></header>
 
   <div class="container">
-    <section class="card">
+    <section class="card" id="companyPicker" style="display:none;"></section>
+
+    <section class="card" id="createCard">
       <h2>Create employee login</h2>
       <form id="createForm" autocomplete="off">
         <label for="empSelect">Employee</label>
         <select id="empSelect"></select>
 
         <label for="newUsername">Username</label>
-        <input id="newUsername" placeholder="e.g., jsmith" autocomplete="username" autocapitalize="none" />
+        <input id="newUsername" autocomplete="username" autocapitalize="none" />
 
         <label for="newPin">4-digit PIN</label>
-        <input id="newPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
+        <input id="newPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
 
         <div class="btnRow">
           <button class="btn" type="submit">Create login</button>
-          <button class="btn secondary" id="clearBtn" type="button">Clear</button>
         </div>
-        <div class="small" id="createHint" style="margin-top:10px; opacity:.9;"></div>
+        <div class="small" id="createHint" style="margin-top:10px;"></div>
       </form>
     </section>
 
     <section class="card">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-        <h2 style="margin:0;">Accounts</h2>
-        <button class="btn secondary" id="logoutBtn" type="button">Sign out</button>
-      </div>
-      <div class="small" id="companyLine" style="margin-top:8px;"></div>
+      <h2>Accounts</h2>
+      <div class="small" id="meta" style="margin-top:8px;"></div>
       <div class="hr"></div>
       <div id="usersList" class="list"></div>
     </section>
   </div>
 
-  <script src="assets/config.example.js"></script>
-  <script src="assets/config.js"></script>
-  <script src="assets/store.js"></script>
-  <script src="assets/app.js"></script>
-  <script>
-    (async () => {
-      await JanitorApp.init({ pageTitle: "Users / Access • Cyber Solutions LLC Schedule Manager", wireSaveBar: false });
-
-      const session = JanitorAuth.getSession();
-      const companyCode = String(session?.companyCode || "").trim().toUpperCase();
-
-      const empSelect = document.getElementById("empSelect");
-      const usernameEl = document.getElementById("newUsername");
-      const pinEl = document.getElementById("newPin");
-      const usersList = document.getElementById("usersList");
-      const companyLine = document.getElementById("companyLine");
-      const createHint = document.getElementById("createHint");
-
-      companyLine.textContent = companyCode ? `Company code: ${companyCode}` : "Company code: (not set)";
-      createHint.innerHTML = "Employee logins are created here and take effect immediately (no extra Save step).";
-
-      document.getElementById("logoutBtn").addEventListener("click", () => JanitorAuth.signOut());
-
-      const normalizeUsername = (s) => String(s || "").trim().toLowerCase();
-
-      function pinOk(pin) {
-        return /^[0-9]{4}$/.test(String(pin || "").trim());
-      }
-
-      function escape(s) { return JanitorApp.escapeHtml(s); }
-
-      function stateForCompany() {
-        const s = JanitorStore.getSaved();
-        const users = Array.isArray(s.users) ? s.users : [];
-        const employees = Array.isArray(s.employees) ? s.employees : [];
-        const companyUsers = users.filter(u => String(u.companyCode || "").toUpperCase() === companyCode);
-        return { s, users, employees, companyUsers };
-      }
-
-      function renderEmployeeSelect() {
-        const { employees, companyUsers } = stateForCompany();
-        const usedEmpIds = new Set(companyUsers.filter(u => u.role === "employee" && u.employeeId).map(u => u.employeeId));
-
-        const opts = employees
-          .filter(e => e && e.id && e.name)
-          .filter(e => e.active !== false)
-          .sort((a,b) => String(a.name).localeCompare(String(b.name)))
-          .map(e => {
-            const already = usedEmpIds.has(e.id);
-            const suffix = already ? " (already has login)" : "";
-            return { id: e.id, name: `${e.name}${suffix}`, disabled: already };
-          });
-
-        empSelect.innerHTML = "";
-        if (!opts.length) {
-          empSelect.innerHTML = `<option value="">No active employees found</option>`;
-          empSelect.disabled = true;
-          return;
-        }
-
-        empSelect.disabled = false;
-        empSelect.insertAdjacentHTML("beforeend", `<option value="">Select an employee…</option>`);
-        for (const o of opts) {
-          const opt = document.createElement("option");
-          opt.value = o.id;
-          opt.textContent = o.name;
-          opt.disabled = !!o.disabled;
-          empSelect.appendChild(opt);
-        }
-      }
-
-      function badge(text, type = "pill") {
-        return `<span class="${type}">${escape(text)}</span>`;
-      }
-
-      function renderUsers() {
-        const { companyUsers, employees } = stateForCompany();
-        const empById = Object.fromEntries(employees.map(e => [e.id, e]));
-
-        usersList.innerHTML = "";
-
-        if (!companyCode) {
-          usersList.innerHTML = `<div class="small">Missing company code in session. Please sign out and sign in again.</div>`;
-          return;
-        }
-
-        if (!companyUsers.length) {
-          usersList.innerHTML = `<div class="small">No accounts exist for this company yet.</div>`;
-          return;
-        }
-
-        const sorted = companyUsers.slice().sort((a,b) => {
-          const ar = String(a.role || "");
-          const br = String(b.role || "");
-          if (ar !== br) return ar.localeCompare(br);
-          return String(a.username || "").localeCompare(String(b.username || ""));
-        });
-
-        for (const u of sorted) {
-          const isEmployee = String(u.role || "") === "employee";
-          const active = u.active !== false;
-          const linkedEmp = isEmployee && u.employeeId ? empById[u.employeeId] : null;
-
-          const row = document.createElement("div");
-          row.className = "item";
-
-          const status = active ? badge("Active") : badge("Deactivated", "pill danger");
-          const role = badge(String(u.role || "employee"));
-          const linkLine = isEmployee
-            ? (linkedEmp?.name
-              ? `<div class="small">Employee: <strong>${escape(linkedEmp.name)}</strong></div>`
-              : `<div class="small" style="color:#ffb4b4;">Employee: <strong>Not linked</strong> (employee users should be linked)</div>`)
-            : `<div class="small">Employee: —</div>`;
-
-          const actions = isEmployee
-            ? `
-              <div class="btnRow" style="margin-top:10px;">
-                <button class="btn secondary" type="button" data-action="resetPin" data-user-id="${escape(u.id)}">Reset PIN</button>
-                <button class="btn ${active ? "danger" : "secondary"}" type="button" data-action="toggleActive" data-user-id="${escape(u.id)}">
-                  ${active ? "Deactivate" : "Activate"}
-                </button>
-              </div>
-            `
-            : "";
-
-          row.innerHTML = `
-            <div class="meta">
-              <strong>${escape(u.username || "—")}</strong>
-              <div class="muted">${status} ${role}</div>
-              ${linkLine}
-              ${actions}
-            </div>
-          `;
-
-          usersList.appendChild(row);
-        }
-      }
-
-      async function renderAll() {
-        renderEmployeeSelect();
-        renderUsers();
-      }
-
-      document.getElementById("clearBtn").addEventListener("click", () => {
-        empSelect.value = "";
-        usernameEl.value = "";
-        pinEl.value = "";
-        empSelect.focus();
-      });
-
-      document.getElementById("createForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        if (!companyCode) return JanitorApp.toast("Missing company code. Please sign out and sign in again.", { type: "error" });
-
-        const employeeId = String(empSelect.value || "");
-        const username = normalizeUsername(usernameEl.value);
-        const pin = String(pinEl.value || "").trim();
-
-        if (!employeeId) return JanitorApp.toast("Select an employee.", { type: "warn" });
-        if (!username) return JanitorApp.toast("Username is required.", { type: "warn" });
-        if (!pinOk(pin)) return JanitorApp.toast("PIN must be exactly 4 digits.", { type: "warn" });
-
-        try {
-          const pinHash = await JanitorAuth.hashPin({ companyCode, username, pin });
-          JanitorStore.addUser({
-            companyCode,
-            username,
-            pinHash,
-            role: "employee",
-            employeeId,
-          });
-          await JanitorStore.save();
-          JanitorApp.toast("Employee login created.", { type: "success" });
-          usernameEl.value = "";
-          pinEl.value = "";
-          empSelect.value = "";
-          await renderAll();
-        } catch (err) {
-          JanitorApp.toast(err?.message || "Failed to create login.", { type: "error" });
-        }
-      });
-
-      usersList.addEventListener("click", async (e) => {
-        const btn = e.target.closest("button[data-action][data-user-id]");
-        if (!btn) return;
-        const action = btn.dataset.action;
-        const userId = btn.dataset.userId;
-        if (!action || !userId) return;
-
-        const { companyUsers } = stateForCompany();
-        const user = companyUsers.find(u => String(u.id || "") === String(userId));
-        if (!user) return JanitorApp.toast("User not found.", { type: "error" });
-
-        try {
-          if (action === "resetPin") {
-            const nextPin = window.prompt(`Set a new 4-digit PIN for "${user.username}":`, "");
-            if (nextPin === null) return;
-            if (!pinOk(nextPin)) return JanitorApp.toast("PIN must be exactly 4 digits.", { type: "warn" });
-            const pinHash = await JanitorAuth.hashPin({ companyCode, username: user.username, pin: nextPin });
-            JanitorStore.updateUser(userId, { pinHash });
-            await JanitorStore.save();
-            JanitorApp.toast("PIN updated.", { type: "success" });
-            await renderAll();
-            return;
-          }
-
-          if (action === "toggleActive") {
-            const next = user.active === false;
-            const ok = await JanitorApp.confirmBox(`${next ? "Activate" : "Deactivate"} account "${user.username}"?`);
-            if (!ok) return;
-            JanitorStore.updateUser(userId, { active: next });
-            await JanitorStore.save();
-            JanitorApp.toast(next ? "Account activated." : "Account deactivated.", { type: "success" });
-            await renderAll();
-          }
-        } catch (err) {
-          JanitorApp.toast(err?.message || "Update failed.", { type: "error" });
-        }
-      });
-
-      await renderAll();
-      window.addEventListener("janitor:discard", renderAll);
-    })();
-  </script>
+  <script type="module" src="./js/pages/users.js"></script>
 </body>
 </html>

@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://context-logs.local/schemas/live_schema.schema.json",
+  "title": "live_schema.json (Phase 2 Output) — Cloud Reality",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "project", "introspection", "tables", "views", "functions", "extensions"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "phase", "generated_at", "agent"],
+      "properties": {
+        "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$" },
+        "phase": { "const": 2 },
+        "generated_at": { "type": "string", "format": "date-time" },
+        "agent": { "type": "string", "minLength": 1 }
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supabase_project_ref", "db_host_hint", "schema_names"],
+      "properties": {
+        "supabase_project_ref": { "type": "string", "minLength": 1 },
+        "db_host_hint": { "type": "string", "minLength": 1 },
+        "schema_names": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "introspection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["queries_run", "captured_at"],
+      "properties": {
+        "queries_run": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "captured_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "tables": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/live_table" }
+    },
+    "views": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/live_view" }
+    },
+    "functions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/live_function" }
+    },
+    "extensions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "$defs": {
+    "live_column": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "data_type", "udt_name", "nullable", "default", "is_identity", "comment"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "data_type": { "type": "string", "minLength": 1 },
+        "udt_name": { "type": "string", "minLength": 1 },
+        "nullable": { "type": "boolean" },
+        "default": { "type": ["string", "null"] },
+        "is_identity": { "type": "boolean" },
+        "comment": { "type": ["string", "null"] }
+      }
+    },
+    "live_fk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "columns", "ref_table", "ref_columns", "on_update", "on_delete"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "columns": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" } },
+        "ref_table": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "ref_columns": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" } },
+        "on_update": { "type": "string", "enum": ["NO ACTION", "RESTRICT", "CASCADE", "SET NULL", "SET DEFAULT"] },
+        "on_delete": { "type": "string", "enum": ["NO ACTION", "RESTRICT", "CASCADE", "SET NULL", "SET DEFAULT"] }
+      }
+    },
+    "live_index": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "columns", "unique", "method"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "columns": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" } },
+        "unique": { "type": "boolean" },
+        "method": { "type": "string", "minLength": 1 }
+      }
+    },
+    "live_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "command", "roles", "using", "check"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "command": { "type": "string", "minLength": 1 },
+        "roles": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "using": { "type": ["string", "null"] },
+        "check": { "type": ["string", "null"] }
+      }
+    },
+    "live_table": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "name", "rls_enabled", "columns", "primary_key", "uniques", "foreign_keys", "indexes", "policies"],
+      "properties": {
+        "schema": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "rls_enabled": { "type": "boolean" },
+        "columns": { "type": "array", "items": { "$ref": "#/$defs/live_column" } },
+        "primary_key": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" } },
+        "uniques": {
+          "type": "array",
+          "items": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" } }
+        },
+        "foreign_keys": { "type": "array", "items": { "$ref": "#/$defs/live_fk" } },
+        "indexes": { "type": "array", "items": { "$ref": "#/$defs/live_index" } },
+        "policies": { "type": "array", "items": { "$ref": "#/$defs/live_policy" } }
+      }
+    },
+    "live_view": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "name", "definition"],
+      "properties": {
+        "schema": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "definition": { "type": "string", "minLength": 1 }
+      }
+    },
+    "live_function": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "name", "arguments", "return_type", "language", "definition"],
+      "properties": {
+        "schema": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "arguments": { "type": "string" },
+        "return_type": { "type": "string", "minLength": 1 },
+        "language": { "type": "string", "minLength": 1 },
+        "definition": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

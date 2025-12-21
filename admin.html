@@ -5,609 +5,82 @@
   <meta name="theme-color" content="#0e1520">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin • Cyber Solutions LLC Schedule Manager</title>
+  <title>Admin Tools • Cyber Solutions LLC Schedule Manager</title>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-  <header class="header">
-    <div class="title">
-      <div>
-        <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
-        <div class="sub">Platform admin</div>
-      </div>
-    </div>
-
-    <nav class="nav">
-      <a href="#myAdminAccountCard">My Admin Account</a>
-      <a href="#managerRequestsCard">Manager Requests <span class="badge" data-badge="managerRequests" style="display:none;"></span></a>
-      <a href="#createCompanyCard">Create Company</a>
-      <a href="#companiesCard">Companies</a>
-      <a href="#manageManagerCard">Manage Manager</a>
-    </nav>
-  </header>
+  <header class="header" id="appHeader"></header>
 
   <div class="container">
     <section class="card">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-        <h2 style="margin:0;">Admin portal</h2>
-        <button class="btn secondary" id="logoutBtn" type="button">Sign out</button>
-      </div>
-      <div class="small" style="margin-top:8px;">
-        Create companies and manager accounts. Company codes can be disabled (soft termination).
-      </div>
-    </section>
-
-    <section class="card" id="myAdminAccountCard">
-      <h2>My Admin Account</h2>
-      <div class="small" id="adminAccountMeta">Loading…</div>
-      <div class="hr"></div>
+      <h2>Platform admin account</h2>
       <form id="adminAccountForm" autocomplete="off">
-        <label for="adminNewUsername">New username (optional)</label>
-        <input id="adminNewUsername" placeholder="Leave blank to keep current username" autocomplete="username" autocapitalize="none" />
+        <label for="adminUsername">New username (optional)</label>
+        <input id="adminUsername" autocomplete="username" autocapitalize="none" />
 
-        <label for="adminNewPin">New 4-digit PIN (optional)</label>
-        <input id="adminNewPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
+        <label for="adminPin">New 4-digit PIN (optional)</label>
+        <input id="adminPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
 
         <div class="btnRow" style="margin-top:12px;">
-          <button class="btn" type="submit">Save</button>
-          <button class="btn secondary" id="adminAccountClearBtn" type="button">Clear</button>
-        </div>
-        <div class="small" style="margin-top:10px;">
-          Note: Changing your username requires setting a new PIN (for secure hashing). Your current session stays active until you sign out.
+          <button class="btn" type="submit">Update credentials</button>
         </div>
       </form>
+      <div class="small" style="margin-top:10px;">
+        Changing your username requires setting a new PIN.
+      </div>
     </section>
 
-    <section class="card" id="managerRequestsCard">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-        <h2 style="margin:0;">Manager Requests</h2>
-        <button class="btn secondary" id="refreshManagerRequestsBtn" type="button">Refresh</button>
-      </div>
-      <div class="small" style="margin-top:8px;">
-        Managers can request username/PIN changes. Approve or deny here.
-      </div>
-      <div class="hr"></div>
-      <div id="managerRequestsList" class="list"></div>
-    </section>
-
-    <section class="card" id="createCompanyCard">
+    <section class="card">
       <h2>Create company + manager</h2>
       <form id="createCompanyForm" autocomplete="off">
         <label for="companyName">Company name</label>
-        <input id="companyName" placeholder="e.g., ACME Services" autocomplete="organization" />
+        <input id="companyName" autocomplete="organization" />
 
         <label for="companyCode">Company code</label>
-        <input id="companyCode" placeholder="3–10 chars (A–Z, 0–9)" autocapitalize="characters" />
-
-        <div class="hr"></div>
+        <input id="companyCode" autocapitalize="characters" />
 
         <label for="managerUsername">Manager username</label>
-        <input id="managerUsername" placeholder="e.g., manager1" autocomplete="username" autocapitalize="none" />
+        <input id="managerUsername" autocomplete="username" autocapitalize="none" />
 
         <label for="managerPin">Manager 4-digit PIN</label>
-        <input id="managerPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
+        <input id="managerPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
 
         <div class="btnRow" style="margin-top:12px;">
           <button class="btn" type="submit">Create</button>
-          <button class="btn secondary" id="clearCreateBtn" type="button">Clear</button>
         </div>
+        <div class="small" id="createCompanyResult" style="margin-top:10px;"></div>
       </form>
-
-      <div class="hr"></div>
-      <div id="credsCard" style="display:none;">
-        <h2 style="margin-top:0;">Credentials card</h2>
-        <div class="item">
-          <div class="meta">
-            <div class="small" id="credsText">—</div>
-            <div class="btnRow" style="margin-top:10px;">
-              <button class="btn secondary" id="copyCredsBtn" type="button">Copy</button>
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
 
-    <section class="card" id="companiesCard">
+    <section class="card">
+      <h2>Create additional manager</h2>
+      <form id="createManagerForm" autocomplete="off">
+        <label for="managerCompanyCode">Company code</label>
+        <select id="managerCompanyCode"></select>
+
+        <label for="newManagerUsername">Manager username</label>
+        <input id="newManagerUsername" autocomplete="username" autocapitalize="none" />
+
+        <label for="newManagerPin">Manager 4-digit PIN</label>
+        <input id="newManagerPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+
+        <div class="btnRow" style="margin-top:12px;">
+          <button class="btn" type="submit">Create manager</button>
+        </div>
+        <div class="small" id="createManagerResult" style="margin-top:10px;"></div>
+      </form>
+    </section>
+
+    <section class="card">
       <h2>Companies</h2>
       <div class="small" style="margin-top:-6px;">
-        Disabled companies cannot sign in. Data is retained (soft disable).
+        Disable or terminate companies. Disabling can optionally reactivate users.
       </div>
-      <div class="small" id="legacyHint" style="margin-top:8px; display:none; color:#ffdf9f;"></div>
       <div class="hr"></div>
       <div id="companiesList" class="list"></div>
     </section>
-
-    <section class="card" id="manageManagerCard">
-      <h2>Manage manager account</h2>
-      <form id="resetPinForm" autocomplete="off">
-        <label for="resetCompany">Company</label>
-        <select id="resetCompany"></select>
-
-        <label for="resetManager">Manager username</label>
-        <select id="resetManager"></select>
-
-        <label for="resetNewUsername">New username (optional)</label>
-        <input id="resetNewUsername" placeholder="Leave blank to keep current username" autocomplete="username" autocapitalize="none" />
-
-        <label for="resetPin">New 4-digit PIN (optional)</label>
-        <input id="resetPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
-
-        <div class="btnRow" style="margin-top:12px;">
-          <button class="btn" type="submit">Update manager</button>
-          <button class="btn secondary" id="resetClearBtn" type="button">Clear</button>
-        </div>
-      </form>
-    </section>
   </div>
 
-  <script src="assets/config.example.js"></script>
-  <script src="assets/config.js"></script>
-  <script src="assets/store.js"></script>
-  <script src="assets/app.js"></script>
-  <script>
-    (async () => {
-      await JanitorApp.init({ pageTitle: "Admin • Cyber Solutions LLC Schedule Manager", wireSaveBar: false });
-
-      const session = JanitorAuth.getSession();
-      if (!session || session.role !== "platform_admin") return;
-
-      const companyNameEl = document.getElementById("companyName");
-      const companyCodeEl = document.getElementById("companyCode");
-      const managerUsernameEl = document.getElementById("managerUsername");
-      const managerPinEl = document.getElementById("managerPin");
-      const credsCard = document.getElementById("credsCard");
-      const credsText = document.getElementById("credsText");
-      const copyCredsBtn = document.getElementById("copyCredsBtn");
-      const companiesList = document.getElementById("companiesList");
-      const legacyHint = document.getElementById("legacyHint");
-      const resetCompanyEl = document.getElementById("resetCompany");
-      const resetManagerEl = document.getElementById("resetManager");
-      const resetNewUsernameEl = document.getElementById("resetNewUsername");
-      const resetPinEl = document.getElementById("resetPin");
-      const adminAccountMetaEl = document.getElementById("adminAccountMeta");
-      const adminNewUsernameEl = document.getElementById("adminNewUsername");
-      const adminNewPinEl = document.getElementById("adminNewPin");
-      const managerRequestsListEl = document.getElementById("managerRequestsList");
-      const refreshManagerRequestsBtn = document.getElementById("refreshManagerRequestsBtn");
-
-      document.getElementById("logoutBtn").addEventListener("click", () => JanitorAuth.signOut());
-
-      const normalizeCompany = (s) => String(s || "").trim().toUpperCase();
-      const normalizeUsername = (s) => String(s || "").trim().toLowerCase();
-      const pinOk = (p) => /^[0-9]{4}$/.test(String(p || "").trim());
-
-      companyCodeEl.addEventListener("input", () => {
-        companyCodeEl.value = normalizeCompany(companyCodeEl.value);
-      });
-
-      function escape(s) { return JanitorApp.escapeHtml(s); }
-
-      function getAll() {
-        const s = JanitorStore.getSaved({ scope: "all" });
-        const companies = (s.companies || []).filter(c => String(c.companyCode || "").toUpperCase() !== "PLATFORM");
-        const users = (s.users || []);
-        return { s, companies, users };
-      }
-
-      function renderAdminAccount() {
-        const { users } = getAll();
-        const me = users.find(u => String(u.id || "") === String(session.userId || "")) || null;
-        const currentUsername = normalizeUsername(me?.username || session.username);
-        adminAccountMetaEl.textContent =
-          `Company code: ${normalizeCompany(session.companyCode)} • Username: ${currentUsername || "—"}`;
-      }
-
-      async function renderManagerRequests() {
-        managerRequestsListEl.innerHTML = `<div class="small">Loading…</div>`;
-        try {
-          await JanitorStore.resetDraftToSaved();
-          const pending = JanitorStore.listPendingRequestsForAdmin();
-          const { users } = getAll();
-
-          managerRequestsListEl.innerHTML = "";
-          if (!pending.length) {
-            managerRequestsListEl.innerHTML = `<div class="small">No pending manager requests.</div>`;
-            JanitorApp.updateRequestBadges?.();
-            return;
-          }
-
-          for (const r of pending) {
-            const manager = users.find(u => String(u.id || "") === String(r.targetUserId || "")) || null;
-            const row = document.createElement("div");
-            row.className = "item";
-            row.innerHTML = `
-              <div class="meta">
-                <strong>${escape(normalizeCompany(r.companyCode))}</strong>
-                <div class="muted">Manager: ${escape(normalizeUsername(manager?.username || "")) || "—"}</div>
-                <div class="small" style="margin-top:6px;">
-                  Requested username: <strong>${escape(normalizeUsername(r.proposedUsername || "")) || "—"}</strong><br/>
-                  Requested PIN: <strong>${r.proposedPin ? "••••" : "—"}</strong><br/>
-                  Created: <strong>${escape(new Date(r.createdAt).toLocaleString())}</strong>
-                </div>
-              </div>
-              <div class="actions">
-                <button class="btn" type="button" data-action="approve" data-id="${escape(r.id)}">Approve</button>
-                <button class="btn danger" type="button" data-action="deny" data-id="${escape(r.id)}">Deny</button>
-              </div>
-            `;
-            managerRequestsListEl.appendChild(row);
-          }
-
-          JanitorApp.updateRequestBadges?.();
-        } catch (err) {
-          managerRequestsListEl.innerHTML = `<div class="small" style="color:#ffdf9f;">${escape(err?.message || "Failed to load requests.")}</div>`;
-        }
-      }
-
-      function renderCompanies() {
-        const { s, companies, users } = getAll();
-        const unassignedEmployeesCount = (s.employees || []).filter(e => !normalizeCompany(e.companyCode)).length;
-        if (unassignedEmployeesCount) {
-          legacyHint.style.display = "block";
-          legacyHint.textContent = `Legacy data detected: ${unassignedEmployeesCount} employee(s) are not assigned to a company code yet.`;
-        } else {
-          legacyHint.style.display = "none";
-          legacyHint.textContent = "";
-        }
-
-        companiesList.innerHTML = "";
-        if (!companies.length) {
-          companiesList.innerHTML = `<div class="small">No companies yet.</div>`;
-          return;
-        }
-
-        const rows = companies.map(c => {
-          const cc = normalizeCompany(c.companyCode);
-          const disabled = !!c.isDisabled;
-          const managers = users.filter(u => normalizeCompany(u.companyCode) === cc && String(u.role || "") === "manager");
-          const managerCount = managers.length;
-          const employeesCount = (s.employees || []).filter(e => normalizeCompany(e.companyCode) === cc).length;
-          const crewsCount = (s.crews || []).filter(x => normalizeCompany(x.companyCode) === cc).length;
-          const shiftsCount = (s.shifts || []).filter(x => normalizeCompany(x.companyCode) === cc).length;
-          const employeeLoginsCount = users.filter(u => normalizeCompany(u.companyCode) === cc && String(u.role || "") === "employee").length;
-          return { c, cc, disabled, managerCount, employeesCount, employeeLoginsCount, crewsCount, shiftsCount };
-        });
-
-        rows.sort((a,b) => {
-          if (b.employeesCount !== a.employeesCount) return b.employeesCount - a.employeesCount;
-          return String(a.cc).localeCompare(String(b.cc));
-        });
-
-        for (const r of rows) {
-          const { c, cc, disabled, managerCount, employeesCount, employeeLoginsCount, crewsCount, shiftsCount } = r;
-          const row = document.createElement("div");
-          row.className = "item";
-          row.innerHTML = `
-            <div class="meta">
-              <strong>${escape(cc)}</strong>
-              <div class="muted">${escape(c.companyName || "")}</div>
-              <div class="small" style="margin-top:6px;">
-                Status: ${disabled ? `<span class="pill danger">Disabled</span>` : `<span class="pill">Active</span>`}
-                &nbsp;•&nbsp; Managers: <strong>${managerCount}</strong>
-                &nbsp;•&nbsp; Employees: <strong>${employeesCount}</strong>
-                &nbsp;•&nbsp; Employee logins: <strong>${employeeLoginsCount}</strong>
-                &nbsp;•&nbsp; Crews: <strong>${crewsCount}</strong>
-                &nbsp;•&nbsp; Shifts: <strong>${shiftsCount}</strong>
-              </div>
-              <div class="btnRow" style="margin-top:10px;">
-                <button class="btn ${disabled ? "secondary" : "danger"}" type="button" data-action="toggleCompany" data-code="${escape(cc)}">
-                  ${disabled ? "Enable" : "Disable"}
-                </button>
-                <button class="btn danger" type="button" data-action="deleteCompany" data-code="${escape(cc)}">Delete</button>
-              </div>
-            </div>
-          `;
-          companiesList.appendChild(row);
-        }
-      }
-
-      function renderResetSelects() {
-        const { companies, users } = getAll();
-        companies.sort((a,b) => String(a.companyCode || "").localeCompare(String(b.companyCode || "")));
-
-        const prevCompany = String(resetCompanyEl.value || "");
-        const prevManager = String(resetManagerEl.value || "");
-
-        resetCompanyEl.innerHTML = "";
-        resetCompanyEl.insertAdjacentHTML("beforeend", `<option value="">Select a company</option>`);
-        for (const c of companies) {
-          const cc = normalizeCompany(c.companyCode);
-          resetCompanyEl.insertAdjacentHTML("beforeend", `<option value="${escape(cc)}">${escape(cc)} — ${escape(c.companyName || "")}</option>`);
-        }
-
-        if (prevCompany) resetCompanyEl.value = prevCompany;
-
-        const currentCompany = normalizeCompany(resetCompanyEl.value);
-        const managers = currentCompany
-          ? users.filter(u => normalizeCompany(u.companyCode) === currentCompany && String(u.role || "") === "manager")
-          : [];
-
-        resetManagerEl.innerHTML = "";
-        resetManagerEl.insertAdjacentHTML("beforeend", `<option value="">Select a manager</option>`);
-        managers
-          .slice()
-          .sort((a,b) => String(a.username || "").localeCompare(String(b.username || "")))
-          .forEach(m => {
-            resetManagerEl.insertAdjacentHTML("beforeend", `<option value="${escape(m.id)}">${escape(m.username || "")}</option>`);
-          });
-
-        if (prevManager) resetManagerEl.value = prevManager;
-      }
-
-      async function copyText(text) {
-        const t = String(text || "");
-        try {
-          await navigator.clipboard.writeText(t);
-          JanitorApp.toast("Copied to clipboard.", { type: "success" });
-        } catch {
-          JanitorApp.downloadText("credentials.txt", t, "text/plain");
-          JanitorApp.toast("Clipboard blocked. Downloaded credentials instead.", { type: "warn", ms: 2600 });
-        }
-      }
-
-      document.getElementById("clearCreateBtn").addEventListener("click", () => {
-        companyNameEl.value = "";
-        companyCodeEl.value = "";
-        managerUsernameEl.value = "";
-        managerPinEl.value = "";
-        credsCard.style.display = "none";
-        companyNameEl.focus();
-      });
-
-      copyCredsBtn.addEventListener("click", () => copyText(credsText.textContent || ""));
-
-      document.getElementById("createCompanyForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const companyName = String(companyNameEl.value || "").trim();
-        const companyCode = normalizeCompany(companyCodeEl.value);
-        const managerUsername = normalizeUsername(managerUsernameEl.value);
-        const managerPin = String(managerPinEl.value || "").trim();
-
-        if (!companyName) return JanitorApp.toast("Company name is required.", { type: "warn" });
-        if (!/^[A-Z0-9]{3,10}$/.test(companyCode)) return JanitorApp.toast("Company code must be 3–10 characters (A–Z, 0–9).", { type: "warn" });
-        if (!managerUsername) return JanitorApp.toast("Manager username is required.", { type: "warn" });
-        if (!pinOk(managerPin)) return JanitorApp.toast("PIN must be exactly 4 digits.", { type: "warn" });
-
-        try {
-          // Build in draft then save once.
-          await JanitorStore.resetDraftToSaved();
-          JanitorStore.addCompany({ companyCode, companyName });
-          const pinHash = await JanitorAuth.hashPin({ companyCode, username: managerUsername, pin: managerPin });
-          JanitorStore.addUser({
-            companyCode,
-            username: managerUsername,
-            pinHash,
-            role: "manager",
-            employeeId: null,
-          });
-          await JanitorStore.save();
-
-          const text =
-            `Company: ${companyName}\n` +
-            `Company code: ${companyCode}\n` +
-            `Manager username: ${managerUsername}\n` +
-            `Manager PIN: ${managerPin}\n`;
-          credsText.textContent = text;
-          credsCard.style.display = "block";
-          JanitorApp.toast("Company + manager created.", { type: "success" });
-
-          renderCompanies();
-          renderResetSelects();
-        } catch (err) {
-          try { await JanitorStore.resetDraftToSaved(); } catch {}
-          JanitorApp.toast(err?.message || "Creation failed.", { type: "error" });
-        }
-      });
-
-      companiesList.addEventListener("click", async (e) => {
-        const btn = e.target.closest("button[data-action][data-code]");
-        if (!btn) return;
-        const action = btn.dataset.action;
-        const code = normalizeCompany(btn.dataset.code);
-        if (action !== "toggleCompany" || !code) return;
-
-        const { companies } = getAll();
-        const co = companies.find(c => normalizeCompany(c.companyCode) === code) || null;
-        if (!co) return JanitorApp.toast("Company not found.", { type: "error" });
-
-        const next = !co.isDisabled;
-        const ok = await JanitorApp.confirmBox(`${next ? "Disable" : "Enable"} company code "${code}"?`);
-        if (!ok) return;
-
-        try {
-          await JanitorStore.resetDraftToSaved();
-          JanitorStore.updateCompany(code, { isDisabled: next });
-          await JanitorStore.save();
-          JanitorApp.toast(next ? "Company disabled." : "Company enabled.", { type: "success" });
-          renderCompanies();
-          renderResetSelects();
-        } catch (err) {
-          try { await JanitorStore.resetDraftToSaved(); } catch {}
-          JanitorApp.toast(err?.message || "Update failed.", { type: "error" });
-        }
-      });
-
-      companiesList.addEventListener("click", async (e) => {
-        const btn = e.target.closest("button[data-action][data-code]");
-        if (!btn) return;
-        const action = btn.dataset.action;
-        const code = normalizeCompany(btn.dataset.code);
-        if (action !== "deleteCompany" || !code) return;
-
-        const ok = await JanitorApp.confirmBox(
-          `Delete company "${code}"?\n\nThis permanently deletes the company record, all company data, and all logins for that company on this device.`
-        );
-        if (!ok) return;
-
-        const typed = window.prompt(`Type the company code "${code}" to confirm deletion:`, "");
-        if (typed === null) return;
-        if (normalizeCompany(typed) !== code) {
-          JanitorApp.toast("Confirmation code did not match. Deletion canceled.", { type: "warn" });
-          return;
-        }
-
-        try {
-          await JanitorStore.resetDraftToSaved();
-          JanitorStore.deleteCompany(code, { deleteData: true, deleteUsers: true });
-          await JanitorStore.save();
-          JanitorApp.toast("Company deleted.", { type: "success" });
-          renderCompanies();
-          renderResetSelects();
-        } catch (err) {
-          try { await JanitorStore.resetDraftToSaved(); } catch {}
-          JanitorApp.toast(err?.message || "Delete failed.", { type: "error" });
-        }
-      });
-
-      resetCompanyEl.addEventListener("change", () => renderResetSelects());
-
-      document.getElementById("resetClearBtn").addEventListener("click", () => {
-        resetCompanyEl.value = "";
-        resetManagerEl.value = "";
-        resetNewUsernameEl.value = "";
-        resetPinEl.value = "";
-        resetCompanyEl.focus();
-        renderResetSelects();
-      });
-
-      document.getElementById("resetPinForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const companyCode = normalizeCompany(resetCompanyEl.value);
-        const managerId = String(resetManagerEl.value || "");
-        const nextUsername = normalizeUsername(resetNewUsernameEl.value);
-        const nextPin = String(resetPinEl.value || "").trim();
-
-        if (!companyCode) return JanitorApp.toast("Select a company.", { type: "warn" });
-        if (!managerId) return JanitorApp.toast("Select a manager.", { type: "warn" });
-        const wantsPin = pinOk(nextPin);
-        const wantsUsername = !!nextUsername;
-        if (!wantsPin && !wantsUsername) return JanitorApp.toast("Enter a new PIN and/or new username.", { type: "warn" });
-
-        const { users } = getAll();
-        const manager = users.find(u => String(u.id || "") === managerId) || null;
-        if (!manager || String(manager.role || "") !== "manager") return JanitorApp.toast("Manager not found.", { type: "error" });
-        if (normalizeCompany(manager.companyCode) !== companyCode) return JanitorApp.toast("Manager/company mismatch.", { type: "error" });
-
-        try {
-          const currentUsername = normalizeUsername(manager.username);
-          const changingUsername = wantsUsername && nextUsername !== currentUsername;
-          if (changingUsername && !wantsPin) {
-            return JanitorApp.toast("Changing the username requires setting a new PIN.", { type: "warn" });
-          }
-
-          await JanitorStore.resetDraftToSaved();
-
-          let finalUsername = currentUsername;
-          if (changingUsername) {
-            JanitorStore.updateUser(manager.id, { username: nextUsername });
-            finalUsername = nextUsername;
-          }
-
-          if (wantsPin) {
-            const pinHash = await JanitorAuth.hashPin({ companyCode, username: finalUsername, pin: nextPin });
-            JanitorStore.updateUser(manager.id, { pinHash, active: true });
-          }
-
-          await JanitorStore.save();
-          JanitorApp.toast("Manager updated.", { type: "success" });
-          resetPinEl.value = "";
-          resetNewUsernameEl.value = "";
-          renderCompanies();
-          renderResetSelects();
-        } catch (err) {
-          try { await JanitorStore.resetDraftToSaved(); } catch {}
-          JanitorApp.toast(err?.message || "Update failed.", { type: "error" });
-        }
-      });
-
-      document.getElementById("adminAccountClearBtn").addEventListener("click", () => {
-        adminNewUsernameEl.value = "";
-        adminNewPinEl.value = "";
-        adminNewUsernameEl.focus();
-      });
-
-      document.getElementById("adminAccountForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const { users } = getAll();
-        const me = users.find(u => String(u.id || "") === String(session.userId || "")) || null;
-        const currentUsername = normalizeUsername(me?.username || session.username);
-        const nextUsername = normalizeUsername(adminNewUsernameEl.value);
-        const nextPin = String(adminNewPinEl.value || "").trim();
-
-        const wantsPin = pinOk(nextPin);
-        const wantsUsername = !!nextUsername && nextUsername !== currentUsername;
-        if (!wantsPin && !wantsUsername) return JanitorApp.toast("Enter a new username and/or a new PIN.", { type: "warn" });
-        if (wantsUsername && !wantsPin) return JanitorApp.toast("Changing the username requires setting a new PIN.", { type: "warn" });
-        if (!wantsPin && nextPin) return JanitorApp.toast("PIN must be exactly 4 digits.", { type: "warn" });
-
-        try {
-          await JanitorStore.resetDraftToSaved();
-
-          JanitorStore.createRequest({
-            type: "admin_change_credentials",
-            proposedUsername: wantsUsername ? nextUsername : "",
-            proposedPin: wantsPin ? nextPin : "",
-            note: "",
-          });
-
-          let finalUsername = currentUsername;
-          if (wantsUsername) {
-            JanitorStore.updateUser(session.userId, { username: nextUsername });
-            finalUsername = nextUsername;
-          }
-
-          if (wantsPin) {
-            const pinHash = await JanitorAuth.hashPin({ companyCode: session.companyCode, username: finalUsername, pin: nextPin });
-            JanitorStore.updateUser(session.userId, { pinHash, active: true });
-          }
-
-          await JanitorStore.save();
-
-          if (wantsUsername) JanitorAuth.updateSession?.({ username: finalUsername });
-
-          adminNewPinEl.value = "";
-          adminNewUsernameEl.value = "";
-          renderAdminAccount();
-          JanitorApp.toast("Admin account updated.", { type: "success" });
-        } catch (err) {
-          try { await JanitorStore.resetDraftToSaved(); } catch {}
-          JanitorApp.toast(err?.message || "Update failed.", { type: "error" });
-        }
-      });
-
-      refreshManagerRequestsBtn.addEventListener("click", () => renderManagerRequests());
-
-      managerRequestsListEl.addEventListener("click", async (e) => {
-        const btn = e.target.closest("button[data-action][data-id]");
-        if (!btn) return;
-        const action = btn.dataset.action;
-        const requestId = String(btn.dataset.id || "");
-        if (!requestId) return;
-
-        if (action !== "approve" && action !== "deny") return;
-        const ok = await JanitorApp.confirmBox(`${action === "approve" ? "Approve" : "Deny"} this manager credential request?`);
-        if (!ok) return;
-
-        try {
-          await JanitorStore.resetDraftToSaved();
-          if (action === "approve") await JanitorStore.approveRequest(requestId);
-          else JanitorStore.denyRequest(requestId);
-          await JanitorStore.save();
-          JanitorApp.toast(action === "approve" ? "Request approved." : "Request denied.", { type: "success" });
-          renderResetSelects();
-          renderCompanies();
-          await renderManagerRequests();
-        } catch (err) {
-          try { await JanitorStore.resetDraftToSaved(); } catch {}
-          JanitorApp.toast(err?.message || "Action failed.", { type: "error" });
-        }
-      });
-
-      renderCompanies();
-      renderResetSelects();
-      renderAdminAccount();
-      renderManagerRequests();
-    })();
-  </script>
+  <script type="module" src="./js/pages/admin.js"></script>
 </body>
 </html>

@@ -25,34 +25,58 @@ export function normalizeEmail(value) {
   return email;
 }
 
-// Must match `internalEmail()` in `supabase/functions/_shared/admin.ts`.
-export function internalEmail(companyCode, username) {
-  return `${normalizeCompanyCode(companyCode)}+${normalizeUsername(username)}@yourapp.local`;
+export async function authLogin(payload) {
+  const supabase = getSupabase();
+  const { data, error } = await supabase.functions.invoke("auth_login", { body: payload });
+  if (error) throw new Error(error.message);
+  if (data?.error) throw new Error(data.error);
+
+  const session = data?.session || data?.success?.session;
+  const profile = data?.profile || data?.success?.profile;
+  if (!session || !profile) throw new Error("Login failed.");
+
+  const { error: sessionError } = await supabase.auth.setSession({
+    access_token: session.access_token,
+    refresh_token: session.refresh_token,
+  });
+  if (sessionError) throw new Error(sessionError.message);
+
+  return { session, profile };
 }
 
 export async function signInWithCompanyUsernamePin({ companyCode, username, pin }) {
-  const supabase = getSupabase();
-  const email = internalEmail(companyCode, username);
-  const password = assertPin(pin);
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw new Error(error.message);
-  return data;
+  return authLogin({
+    companyCode: normalizeCompanyCode(companyCode),
+    username: normalizeUsername(username),
+    pin: assertPin(pin),
+  });
 }
 
 export async function signInWithEmailPin({ email, pin }) {
-  const supabase = getSupabase();
-  const password = assertPin(pin);
-  const { data, error } = await supabase.auth.signInWithPassword({
+  return authLogin({
     email: normalizeEmail(email),
-    password,
+    pin: assertPin(pin),
   });
-  if (error) throw new Error(error.message);
-  return data;
 }
 
 export async function signOut() {
   const supabase = getSupabase();
   await supabase.auth.signOut();
+}
+
+export function isAuthError(error) {
+  const status = error?.status || error?.statusCode;
+  return status === 401 || status === 403;
+}
+
+export async function handleAuthError(error) {
+  if (!isAuthError(error)) return false;
+  try {
+    await signOut();
+  } finally {
+    goToLogin();
+  }
+  return true;
 }
 
 export async function getCurrentUserProfile() {
@@ -64,7 +88,7 @@ export async function getCurrentUserProfile() {
 
   const { data, error } = await supabase
     .from("users")
-    .select('id, "companyCode", company_code, username, role, "employeeId", active, force_pin_change')
+    .select('id, "companyCode", username, role, "employeeId", active, force_pin_change')
     .eq("id", userId)
     .single();
 
@@ -73,7 +97,6 @@ export async function getCurrentUserProfile() {
   return {
     id: data.id,
     companyCode: data.companyCode,
-    company_code: data.company_code,
     username: data.username,
     role: data.role,
     employeeId: data.employeeId,

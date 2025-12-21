@@ -8,47 +8,19 @@
   <title>Job Sites • Cyber Solutions LLC Schedule Manager</title>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
-<body>
+<body data-allowed-roles="manager,platform_admin" data-reason="Job site management is not available because the API contract does not expose job site endpoints.">
   <header class="header" id="appHeader"></header>
 
   <div class="container">
-    <section class="card" id="companyPicker" style="display:none;"></section>
-
     <section class="card">
-      <h2>Add job site</h2>
-      <form id="createForm" autocomplete="off">
-        <div class="row two">
-          <div>
-            <label for="name">Name</label>
-            <input id="name" placeholder="e.g., Main Site" />
-          </div>
-          <div>
-            <label for="address">Address</label>
-            <input id="address" placeholder="Street / city" />
-          </div>
-        </div>
-
-        <label style="margin-top:12px;">
-          <input id="active" type="checkbox" checked style="width:auto; margin-right:8px;" />
-          Active
-        </label>
-
-        <div class="btnRow">
-          <button class="btn" type="submit">Create</button>
-        </div>
-      </form>
-    </section>
-
-    <section class="card">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-        <h2 style="margin:0;">Job Sites</h2>
-        <button class="btn secondary" type="button" onclick="location.reload()">Refresh</button>
+      <h2>Job Sites</h2>
+      <div class="small" id="unsupportedMessage"></div>
+      <div class="small" style="margin-top:10px;">
+        Return to <a href="./dashboard.html">Dashboard</a>.
       </div>
-      <div id="list" style="margin-top:10px;"></div>
     </section>
   </div>
 
-  <script type="module" src="./js/pages/job-sites.js"></script>
+  <script type="module" src="./js/pages/unsupported.js"></script>
 </body>
 </html>
-

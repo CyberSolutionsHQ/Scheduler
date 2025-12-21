@@ -5,129 +5,74 @@
   <meta name="theme-color" content="#0e1520">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>My Account • Cyber Solutions LLC Schedule Manager</title>
+  <title>Account • Cyber Solutions LLC Schedule Manager</title>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-  <header class="header">
-    <div class="title">
-      <div>
-        <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
-        <div class="sub">Manager account</div>
-      </div>
-    </div>
-
-    <nav class="nav">
-      <a href="index.html">Home</a>
-      <a href="employees.html">Employees</a>
-      <a href="locations.html">Locations</a>
-      <a href="jobs.html">Jobs</a>
-      <a href="shifts.html">Shifts</a>
-      <a href="crews.html">Crews</a>
-      <a href="export.html">Export PDFs</a>
-      <a href="users.html">Users / Access</a>
-      <a href="employee-requests.html">Employee Requests <span class="badge" data-badge="employeeRequests" style="display:none;"></span></a>
-      <a class="active" href="account.html">My Account</a>
-      <a href="settings.html">Settings</a>
-    </nav>
-  </header>
+  <header class="header" id="appHeader"></header>
 
   <div class="container">
     <section class="card">
-      <h2>My Account</h2>
+      <h2>My account</h2>
       <div class="small" id="accountMeta">Loading…</div>
     </section>
 
-    <section class="card">
+    <section class="card" id="changeRequestCard">
       <h2>Request username / PIN change</h2>
-      <form id="requestForm" autocomplete="off">
-        <label for="newUsername">Requested new username (optional)</label>
-        <input id="newUsername" placeholder="Leave blank to keep current username" autocomplete="username" autocapitalize="none" />
+      <form id="changeRequestForm" autocomplete="off">
+        <label for="newUsername">New username (optional)</label>
+        <input id="newUsername" autocomplete="username" autocapitalize="none" />
 
-        <label for="newPin">Requested new 4-digit PIN (optional)</label>
-        <input id="newPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
-
-        <label for="note">Note (optional)</label>
-        <input id="note" placeholder="Optional reason for the platform admin" />
+        <label for="newPin">New 4-digit PIN (optional)</label>
+        <input id="newPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
 
         <div class="btnRow" style="margin-top:12px;">
           <button class="btn" type="submit">Submit request</button>
-          <button class="btn secondary" id="clearBtn" type="button">Clear</button>
+        </div>
+        <div class="small" style="margin-top:10px;">
+          Requests are reviewed by a manager or platform admin.
         </div>
       </form>
-      <div class="small" style="margin-top:10px;">
-        Requests are reviewed by the platform admin. Your login does not change until approved.
-      </div>
     </section>
 
-    <div id="saveBar"></div>
+    <section class="card" id="resetRequestCard">
+      <h2>Forgot credentials</h2>
+      <form id="resetRequestForm" autocomplete="off">
+        <label for="requestType">Request type</label>
+        <select id="requestType">
+          <option value="username">Username reset</option>
+          <option value="pin">PIN reset</option>
+          <option value="both">Username + PIN reset</option>
+        </select>
+
+        <div class="btnRow" style="margin-top:12px;">
+          <button class="btn" type="submit">Submit request</button>
+        </div>
+        <div class="small" style="margin-top:10px;">
+          Requests are reviewed by a manager.
+        </div>
+      </form>
+    </section>
+
+    <section class="card" id="adminCredsCard">
+      <h2>Platform admin credentials</h2>
+      <form id="adminCredsForm" autocomplete="off">
+        <label for="adminUsername">New username (optional)</label>
+        <input id="adminUsername" autocomplete="username" autocapitalize="none" />
+
+        <label for="adminPin">New 4-digit PIN (optional)</label>
+        <input id="adminPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+
+        <div class="btnRow" style="margin-top:12px;">
+          <button class="btn" type="submit">Update credentials</button>
+        </div>
+        <div class="small" style="margin-top:10px;">
+          Changing your username requires setting a new PIN.
+        </div>
+      </form>
+    </section>
   </div>
 
-  <script src="assets/config.example.js"></script>
-  <script src="assets/config.js"></script>
-  <script src="assets/store.js"></script>
-  <script src="assets/app.js"></script>
-  <script>
-    (async () => {
-      await JanitorApp.init({ pageTitle: "My Account • Cyber Solutions LLC Schedule Manager", wireSaveBar: false });
-
-      const session = JanitorAuth.getSession();
-      const accountMetaEl = document.getElementById("accountMeta");
-      const newUsernameEl = document.getElementById("newUsername");
-      const newPinEl = document.getElementById("newPin");
-      const noteEl = document.getElementById("note");
-
-      const normalizeCompany = (s) => String(s || "").trim().toUpperCase();
-      const normalizeUsername = (s) => String(s || "").trim().toLowerCase();
-      const pinOk = (p) => /^[0-9]{4}$/.test(String(p || "").trim());
-
-      function renderMeta() {
-        accountMetaEl.textContent =
-          `Company code: ${normalizeCompany(session?.companyCode)} • Username: ${normalizeUsername(session?.username)}`;
-      }
-
-      document.getElementById("clearBtn").addEventListener("click", () => {
-        newUsernameEl.value = "";
-        newPinEl.value = "";
-        noteEl.value = "";
-        newUsernameEl.focus();
-      });
-
-      document.getElementById("requestForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const nextUsername = normalizeUsername(newUsernameEl.value);
-        const nextPin = String(newPinEl.value || "").trim();
-        const note = String(noteEl.value || "").trim();
-
-        const wantsPin = pinOk(nextPin);
-        const wantsUsername = !!nextUsername && nextUsername !== normalizeUsername(session?.username);
-        if (!wantsPin && !wantsUsername) return JanitorApp.toast("Enter a new username and/or a new PIN.", { type: "warn" });
-        if (wantsUsername && !wantsPin) return JanitorApp.toast("Changing the username requires setting a new PIN.", { type: "warn" });
-        if (!wantsPin && nextPin) return JanitorApp.toast("PIN must be exactly 4 digits.", { type: "warn" });
-
-        try {
-          await JanitorStore.resetDraftToSaved();
-          JanitorStore.createRequest({
-            type: "manager_change_credentials",
-            proposedUsername: wantsUsername ? nextUsername : "",
-            proposedPin: wantsPin ? nextPin : "",
-            note,
-          });
-          await JanitorStore.save();
-          JanitorApp.toast("Request submitted.", { type: "success" });
-          newUsernameEl.value = "";
-          newPinEl.value = "";
-          noteEl.value = "";
-          JanitorApp.updateRequestBadges?.();
-        } catch (err) {
-          try { await JanitorStore.resetDraftToSaved(); } catch {}
-          JanitorApp.toast(err?.message || "Request failed.", { type: "error" });
-        }
-      });
-
-      renderMeta();
-      JanitorApp.updateRequestBadges?.();
-    })();
-  </script>
+  <script type="module" src="./js/pages/account.js"></script>
 </body>
 </html>

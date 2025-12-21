@@ -12,6 +12,8 @@
   <header class="header" id="appHeader"></header>
 
   <div class="container">
+    <section class="card" id="companyPicker" style="display:none;"></section>
+
     <section class="card">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
         <h2 style="margin:0;">Credential Reset Requests</h2>
@@ -21,7 +23,7 @@
       <div class="hr"></div>
       <div id="list" class="list"></div>
       <div class="small" style="margin-top:10px;">
-        Approvals update <code>credential_reset_requests</code>. PIN resets and employee username changes call Edge Functions.
+        Approvals are handled by the <code>resolve_credential_reset_request</code> Edge Function.
       </div>
     </section>
   </div>
@@ -29,4 +31,3 @@
   <script type="module" src="./js/pages/requests.js"></script>
 </body>
 </html>
-
