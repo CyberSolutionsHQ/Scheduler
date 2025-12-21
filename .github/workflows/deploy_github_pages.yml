@@ -30,7 +30,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          cat > ./runtime-config.js <<EOF
+          cat > ./public/runtime-config.js <<EOF
           window.RUNTIME_CONFIG = {
             SUPABASE_URL: "${SUPABASE_URL:-}",
             SUPABASE_ANON_KEY: "${SUPABASE_ANON_KEY:-}"
@@ -40,7 +40,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: ./public
 
       - name: Deploy to GitHub Pages
         id: deployment

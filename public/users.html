@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1520">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Users • Cyber Solutions LLC Schedule Manager</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="header" id="appHeader"></header>
+
+  <div class="container">
+    <section class="card" id="companyPicker" style="display:none;"></section>
+
+    <section class="card" id="createCard">
+      <h2>Create employee login</h2>
+      <form id="createForm" autocomplete="off">
+        <label for="empSelect">Employee</label>
+        <select id="empSelect"></select>
+
+        <label for="newUsername">Username</label>
+        <input id="newUsername" autocomplete="username" autocapitalize="none" />
+
+        <label for="newPin">4-digit PIN</label>
+        <input id="newPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+
+        <div class="btnRow">
+          <button class="btn" type="submit">Create login</button>
+        </div>
+        <div class="small" id="createHint" style="margin-top:10px;"></div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Accounts</h2>
+      <div class="small" id="meta" style="margin-top:8px;"></div>
+      <div class="hr"></div>
+      <div id="usersList" class="list"></div>
+    </section>
+  </div>
+
+  <script src="./runtime-config.js"></script>
+  <script type="module" src="./js/pages/users.js"></script>
+</body>
+</html>

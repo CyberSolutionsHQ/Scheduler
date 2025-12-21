@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1520">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Change PIN • Cyber Solutions LLC Schedule Manager</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="title">
+      <div>
+        <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
+        <div class="sub">Security check • Set a new 4-digit PIN to continue</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <section class="card">
+      <h2>Change PIN</h2>
+      <div class="small" id="profileLine" style="margin-bottom:10px;"></div>
+
+      <form id="changePinForm" autocomplete="off">
+        <label for="newPin">New PIN</label>
+        <input id="newPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
+
+        <label for="confirmPin">Confirm new PIN</label>
+        <input id="confirmPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
+
+        <div class="btnRow">
+          <button class="btn" type="submit">Save PIN</button>
+          <button class="btn secondary" id="logoutBtn" type="button">Sign out</button>
+        </div>
+        <div class="small" id="status" style="margin-top:10px; color:#ffdf9f;"></div>
+      </form>
+    </section>
+  </div>
+
+  <script src="./runtime-config.js"></script>
+  <script type="module" src="./js/pages/change-pin.js"></script>
+</body>
+</html>
+

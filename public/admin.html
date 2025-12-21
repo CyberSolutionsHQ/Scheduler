@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1520">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Tools • Cyber Solutions LLC Schedule Manager</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="header" id="appHeader"></header>
+
+  <div class="container">
+    <section class="card">
+      <h2>Platform admin account</h2>
+      <form id="adminAccountForm" autocomplete="off">
+        <label for="adminUsername">New username (optional)</label>
+        <input id="adminUsername" autocomplete="username" autocapitalize="none" />
+
+        <label for="adminPin">New 4-digit PIN (optional)</label>
+        <input id="adminPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+
+        <div class="btnRow" style="margin-top:12px;">
+          <button class="btn" type="submit">Update credentials</button>
+        </div>
+      </form>
+      <div class="small" style="margin-top:10px;">
+        Changing your username requires setting a new PIN.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Create company + manager</h2>
+      <form id="createCompanyForm" autocomplete="off">
+        <label for="companyName">Company name</label>
+        <input id="companyName" autocomplete="organization" />
+
+        <label for="companyCode">Company code</label>
+        <input id="companyCode" autocapitalize="characters" />
+
+        <label for="managerUsername">Manager username</label>
+        <input id="managerUsername" autocomplete="username" autocapitalize="none" />
+
+        <label for="managerPin">Manager 4-digit PIN</label>
+        <input id="managerPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+
+        <div class="btnRow" style="margin-top:12px;">
+          <button class="btn" type="submit">Create</button>
+        </div>
+        <div class="small" id="createCompanyResult" style="margin-top:10px;"></div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Create additional manager</h2>
+      <form id="createManagerForm" autocomplete="off">
+        <label for="managerCompanyCode">Company code</label>
+        <select id="managerCompanyCode"></select>
+
+        <label for="newManagerUsername">Manager username</label>
+        <input id="newManagerUsername" autocomplete="username" autocapitalize="none" />
+
+        <label for="newManagerPin">Manager 4-digit PIN</label>
+        <input id="newManagerPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+
+        <div class="btnRow" style="margin-top:12px;">
+          <button class="btn" type="submit">Create manager</button>
+        </div>
+        <div class="small" id="createManagerResult" style="margin-top:10px;"></div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Companies</h2>
+      <div class="small" style="margin-top:-6px;">
+        Disable or terminate companies. Disabling can optionally reactivate users.
+      </div>
+      <div class="hr"></div>
+      <div id="companiesList" class="list"></div>
+    </section>
+  </div>
+
+  <script src="./runtime-config.js"></script>
+  <script type="module" src="./js/pages/admin.js"></script>
+</body>
+</html>

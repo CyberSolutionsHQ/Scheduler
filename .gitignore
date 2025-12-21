@@ -1,18 +1,35 @@
-# Local (non-committed) config override used by legacy pages
-assets/config.js
+# Runtime config (never commit secrets)
+public/runtime-config.js
+runtime-config.js
+public/assets/config.js
 
 # Node / JS
 node_modules/
+dist/
+build/
 
 # Environment variables
 .env
 .env.*
+*.local
 
 # Supabase
 supabase/.temp/
 supabase/.env
 supabase/.env.*
 
+# Local archives/logs
+_archive/
+context_logs/
+
+# Keys / certificates
+*.pem
+*.key
+
 # OS / Editor
 .DS_Store
 .vscode/
+
+# Logs
+npm-debug.log*
+yarn-error.log*

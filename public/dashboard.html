@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1520">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard • Cyber Solutions LLC Schedule Manager</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="header" id="appHeader"></header>
+
+  <div class="container">
+    <section class="card" id="managerCard">
+      <h2>Quick status</h2>
+      <div class="small" id="counts">Loading…</div>
+      <div class="hr"></div>
+      <div class="btnRow">
+        <a class="btn" href="./schedule.html">Schedule</a>
+        <a class="btn secondary" href="./requests.html">Requests</a>
+      </div>
+    </section>
+
+    <section class="card" id="adminCard" style="display:none;">
+      <h2>Companies</h2>
+      <div class="small" style="margin-bottom:10px;">
+        Create a company and its manager login using the Edge Function <code>create_company_with_manager</code>.
+      </div>
+
+      <form id="createCompanyForm" autocomplete="off">
+        <div class="row two">
+          <div>
+            <label for="companyName">Company name</label>
+            <input id="companyName" placeholder="e.g., Cyber Solutions HQ" />
+          </div>
+          <div>
+            <label for="companyCode">Company code</label>
+            <input id="companyCode" placeholder="e.g., CYBER" autocapitalize="characters" />
+          </div>
+        </div>
+
+        <div class="row two">
+          <div>
+            <label for="managerUsername">Manager username</label>
+            <input id="managerUsername" placeholder="e.g., manager1" autocapitalize="none" />
+          </div>
+          <div>
+            <label for="managerPin">Manager PIN</label>
+            <input id="managerPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" />
+          </div>
+        </div>
+
+        <div class="btnRow">
+          <button class="btn" type="submit">Create company + manager</button>
+        </div>
+        <div class="small" id="createCompanyResult" style="margin-top:10px; color:#ffdf9f;"></div>
+      </form>
+
+      <div class="hr"></div>
+      <div id="companiesList"></div>
+    </section>
+  </div>
+
+  <script src="./runtime-config.js"></script>
+  <script type="module" src="./js/pages/dashboard.js"></script>
+</body>
+</html>
+
