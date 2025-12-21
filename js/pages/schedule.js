@@ -36,7 +36,7 @@ function normalizeCompanyCode(value) {
   const locIdInput = document.getElementById("locId");
 
   try {
-    if (!supabase) throw new Error("Supabase is not configured. Set values in js/config.js.");
+    if (!supabase) throw new Error("Missing Supabase configuration for production. Set repo secrets SUPABASE_URL and SUPABASE_ANON_KEY.");
     const profile = await requireAuth({ allowRoles: ["manager", "platform_admin"] });
     if (!profile) return;
 

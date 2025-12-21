@@ -1,5 +1,16 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/+esm";
-import { SUPABASE_ANON_KEY, SUPABASE_PROJECT_REF, SUPABASE_URL } from "./config.js";
+
+function getRuntimeConfig() {
+  if (typeof globalThis === "undefined") return {};
+  const runtime = globalThis.RUNTIME_CONFIG;
+  if (!runtime || typeof runtime !== "object") return {};
+  return runtime;
+}
+
+const runtimeConfig = getRuntimeConfig();
+const SUPABASE_URL = String(runtimeConfig.SUPABASE_URL || "").trim();
+const SUPABASE_ANON_KEY = String(runtimeConfig.SUPABASE_ANON_KEY || "").trim();
+const SUPABASE_PROJECT_REF = String(runtimeConfig.SUPABASE_PROJECT_REF || "").trim();
 
 function isUnsafeSupabaseUrl(url) {
   const u = String(url ?? "").toLowerCase();
@@ -31,8 +42,8 @@ function renderFatalConfigError(message) {
         <div style="margin-bottom:12px;">${String(message)}</div>
         <pre style="white-space:pre-wrap;background:#08101a;color:#cfe3ff;padding:12px;border-radius:8px;overflow:auto;">SUPABASE_URL: ${String(SUPABASE_URL)}</pre>
         <div style="margin-top:12px;">
-          Fix: provide an anon key for production (without committing it). Recommended: GitHub Pages deploy via
-          <code>.github/workflows/deploy_github_pages.yml</code> with repo secret <code>SUPABASE_ANON_KEY</code>, then hard refresh.
+          Fix: Set repo secrets <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> for the GitHub Pages deploy.
+          Then hard refresh (or try a private window).
         </div>
       </div>
     `;
@@ -58,7 +69,9 @@ function enforceProductionSupabaseLock() {
   if (isLocalHostname(location.hostname)) return;
 
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    renderFatalConfigError("Missing Supabase configuration for production.");
+    renderFatalConfigError(
+      "Missing Supabase configuration for production. Set repo secrets SUPABASE_URL and SUPABASE_ANON_KEY.",
+    );
   }
 
   if (isUnsafeSupabaseUrl(SUPABASE_URL)) {
@@ -120,6 +133,6 @@ export const supabase = isSupabaseConfigured
 export function getSupabase() {
   if (supabase) return supabase;
   throw new Error(
-    "Supabase is not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY in js/config.js.",
+    "Missing Supabase configuration for production. Set repo secrets SUPABASE_URL and SUPABASE_ANON_KEY.",
   );
 }
