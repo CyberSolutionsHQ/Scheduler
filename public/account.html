@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1520">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Account • Cyber Solutions LLC Schedule Manager</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="header" id="appHeader"></header>
+
+  <div class="container">
+    <section class="card">
+      <h2>My account</h2>
+      <div class="small" id="accountMeta">Loading…</div>
+    </section>
+
+    <section class="card" id="changeRequestCard">
+      <h2>Request username / PIN change</h2>
+      <form id="changeRequestForm" autocomplete="off">
+        <label for="newUsername">New username (optional)</label>
+        <input id="newUsername" autocomplete="username" autocapitalize="none" />
+
+        <label for="newPin">New 4-digit PIN (optional)</label>
+        <input id="newPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+
+        <div class="btnRow" style="margin-top:12px;">
+          <button class="btn" type="submit">Submit request</button>
+        </div>
+        <div class="small" style="margin-top:10px;">
+          Requests are reviewed by a manager or platform admin.
+        </div>
+      </form>
+    </section>
+
+    <section class="card" id="resetRequestCard">
+      <h2>Forgot credentials</h2>
+      <form id="resetRequestForm" autocomplete="off">
+        <label for="requestType">Request type</label>
+        <select id="requestType">
+          <option value="username">Username reset</option>
+          <option value="pin">PIN reset</option>
+          <option value="both">Username + PIN reset</option>
+        </select>
+
+        <div class="btnRow" style="margin-top:12px;">
+          <button class="btn" type="submit">Submit request</button>
+        </div>
+        <div class="small" style="margin-top:10px;">
+          Requests are reviewed by a manager.
+        </div>
+      </form>
+    </section>
+
+    <section class="card" id="adminCredsCard">
+      <h2>Platform admin credentials</h2>
+      <form id="adminCredsForm" autocomplete="off">
+        <label for="adminUsername">New username (optional)</label>
+        <input id="adminUsername" autocomplete="username" autocapitalize="none" />
+
+        <label for="adminPin">New 4-digit PIN (optional)</label>
+        <input id="adminPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+
+        <div class="btnRow" style="margin-top:12px;">
+          <button class="btn" type="submit">Update credentials</button>
+        </div>
+        <div class="small" style="margin-top:10px;">
+          Changing your username requires setting a new PIN.
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script src="./runtime-config.js"></script>
+  <script type="module" src="./js/pages/account.js"></script>
+</body>
+</html>

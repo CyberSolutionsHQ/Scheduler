@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1520">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jobs • Cyber Solutions LLC Schedule Manager</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body data-allowed-roles="manager,platform_admin" data-reason="Job type management is not available because the API contract does not include job endpoints.">
+  <header class="header" id="appHeader"></header>
+
+  <div class="container">
+    <section class="card">
+      <h2>Jobs</h2>
+      <div class="small" id="unsupportedMessage"></div>
+      <div class="small" style="margin-top:10px;">
+        Return to <a href="./dashboard.html">Dashboard</a>.
+      </div>
+    </section>
+  </div>
+
+  <script src="./runtime-config.js"></script>
+  <script type="module" src="./js/pages/unsupported.js"></script>
+</body>
+</html>

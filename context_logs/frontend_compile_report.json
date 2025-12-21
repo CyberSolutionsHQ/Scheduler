@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "phase": "frontend_ui_compile",
+  "read": {
+    "api_contract": "./context_logs/api_contract.json",
+    "lint_report": "./context_logs/lint_report.json",
+    "frontend_handoff": "./context_logs/frontend_handoff.json"
+  },
+  "assumptions_used": {
+    "frontend_root": "public/",
+    "runtime_config_path": "public/runtime-config.js",
+    "supabase_client_path": "public/js/supabaseClient.js"
+  },
+  "files": {
+    "modified": [
+      {
+        "path": "public/js/supabaseClient.js",
+        "reason": "Show a configuration error overlay when runtime-config keys are missing."
+      }
+    ],
+    "added": [],
+    "deleted": []
+  },
+  "contract_bindings": [
+    {
+      "ui_area": "login",
+      "endpoint": "/functions/v1/auth_login",
+      "notes": "Edge function login sets Supabase session from returned tokens."
+    },
+    {
+      "ui_area": "employees",
+      "endpoint": "/rest/v1/employees",
+      "notes": "Employees list/create/update/delete use Supabase REST table access."
+    },
+    {
+      "ui_area": "schedule",
+      "endpoint": "/rest/v1/schedules + /rest/v1/shifts",
+      "notes": "Weekly schedules and shift CRUD align to schedules/shifts tables."
+    },
+    {
+      "ui_area": "my_shifts",
+      "endpoint": "/rest/v1/shifts",
+      "notes": "Employee shift view filters by empId and companyCode."
+    }
+  ],
+  "warnings": [
+    {
+      "code": "F_RUNTIME_CONFIG_MISSING",
+      "message": "public/runtime-config.js is not present in the repo; generate it locally or via deploy workflow secrets.",
+      "path": "public/runtime-config.js"
+    }
+  ],
+  "blockers": []
+}

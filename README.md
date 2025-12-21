@@ -1,27 +1,25 @@
 # Schedule Manager
 
-## Production lock (GitHub Pages)
+## Frontend
 
-This repo is deployed to GitHub Pages under `/Scheduler/`.
+Static assets live in `public/` and are deployed to GitHub Pages.
 
-To prevent the production site from ever accidentally pointing to local Supabase:
+### Local development (no secrets committed)
 
-- `js/config.js` is committed and must contain **only** the cloud `SUPABASE_URL`. Do not commit keys.
-- `js/supabaseClient.js` hard-fails (with a visible full-page error) on any non-localhost site if:
-  - `SUPABASE_URL` points at `localhost`/local dev ports, or
-  - `SUPABASE_URL` is not `https://xwroayzhbbwbiuswtuvs.supabase.co`.
-- `service-worker.js` is versioned and forces `js/config.js` to be fetched with `cache: "no-store"` to avoid stale cached config.
+1) Create a local `.env` with:
+   - `SUPABASE_URL`
+   - `SUPABASE_ANON_KEY`
+   - `SUPABASE_PROJECT_REF` (optional)
+2) Generate the runtime config:
+   - `python scripts/generate_runtime_config.py`
+3) Serve `public/` with any static server.
 
-If the site looks “stuck” on an old config after a deploy:
+### GitHub Pages
 
-1) Hard refresh: `Ctrl+Shift+R` (Windows/Linux) or `Cmd+Shift+R` (macOS)
-2) Clear the Service Worker + caches:
-   - Chrome: DevTools → Application → Service Workers → **Unregister**
-   - DevTools → Application → Storage → **Clear site data**
+- Set repo secrets: `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
+- The Pages workflow writes `public/runtime-config.js` at deploy time.
+- Pages can be served from a subpath; all links are relative.
 
-## Cloud test scripts (no secrets committed)
+## Supabase
 
-- `scripts/bootstrap_platform_admin_cloud.sh` bootstraps the first platform admin via the deployed Edge Function.
-- `scripts/cloud_lifecycle_test.sh` runs an end-to-end lifecycle test using Edge Functions + Auth + PostgREST.
-
-Both scripts require env vars (anon key + PINs/tokens) and will not print access tokens.
+Edge functions live in `supabase/functions/` and are aligned with `context_logs/api_contract.json`.

@@ -1,0 +1,7 @@
+- [x] Captured repo status, remotes, workflows, and GitHub references
+- [x] Updated `.gitignore` with additional ignore rules and local log/archive exclusions
+- [x] Scanned staged files for secret patterns (no blocking matches)
+- [x] Committed current changes and pushed to `origin/master`
+- [x] Verified GitHub Pages environment branch policy (allowed branch: `main`)
+- [ ] If required, merge or sync `origin/main` with `master` to update the default branch
+- [ ] If deploying from `master`, update GitHub Pages environment policy to allow it (or deploy from `main` only)

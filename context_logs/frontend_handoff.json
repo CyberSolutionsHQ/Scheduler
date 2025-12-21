@@ -1,0 +1,32 @@
+{
+  "phase_from": "lint_consistency",
+  "phase_to": "frontend_ui_compile",
+  "frontend_root": "public/",
+  "authoritative_contract": "./context_logs/api_contract.json",
+  "runtime_config": {
+    "required": true,
+    "path": "public/runtime-config.js",
+    "loader_verified": true,
+    "notes": [
+      "All HTML entrypoints include runtime-config.js before module scripts.",
+      "runtime-config.js is expected to be generated (not committed)."
+    ]
+  },
+  "supabase_client": {
+    "path": "public/js/supabaseClient.js",
+    "single_entrypoint_verified": true,
+    "notes": [
+      "Only public/js/supabaseClient.js creates the Supabase client.",
+      "Client reads config from globalThis.RUNTIME_CONFIG."
+    ]
+  },
+  "high_priority_fixes_for_next_agent": [],
+  "known_good": [
+    "Service worker bypasses runtime-config.js caching.",
+    "Supabase edge function names and REST tables match api_contract.json.",
+    "No legacy asset references detected under public/."
+  ],
+  "known_risks": [
+    "public/runtime-config.js is missing in the repo; local preview or deploy must generate it."
+  ]
+}

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1520">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login • Cyber Solutions LLC Schedule Manager</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="title">
+      <div>
+        <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
+        <div class="sub">Sign in with your company code + username + PIN</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <section class="card" id="setupCard" style="display:none;">
+      <h2>Bootstrap platform admin</h2>
+      <div class="small" style="margin-bottom:10px;">
+        Use the one-time bootstrap token to create the initial platform admin account.
+      </div>
+      <form id="setupForm" autocomplete="off">
+        <label for="setupToken">Bootstrap token</label>
+        <input id="setupToken" type="password" autocomplete="off" />
+
+        <label for="setupUsername">Platform admin username</label>
+        <input id="setupUsername" autocomplete="username" autocapitalize="none" />
+
+        <label for="setupPin">Platform admin PIN</label>
+        <input id="setupPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+
+        <div class="btnRow">
+          <button class="btn" type="submit">Create admin</button>
+        </div>
+
+        <div class="small" id="setupStatus" style="margin-top:10px;"></div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Login</h2>
+      <form id="loginForm" autocomplete="on">
+        <label for="companyCode">Company code</label>
+        <input id="companyCode" placeholder="e.g., CYBER" autocomplete="organization" autocapitalize="characters" />
+
+        <label for="username">Username or email</label>
+        <input id="username" placeholder="e.g., manager1" autocomplete="username" autocapitalize="none" />
+
+        <label for="pin">PIN</label>
+        <input id="pin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="current-password" />
+
+        <div class="btnRow">
+          <button class="btn" type="submit">Sign in</button>
+        </div>
+
+        <div class="small" id="status" style="margin-top:10px;"></div>
+        <div class="small" style="margin-top:10px;">
+          Need to bootstrap the platform admin? <a href="./login.html?bootstrap=1">Use the bootstrap token</a>.
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script src="./runtime-config.js"></script>
+  <script type="module" src="./js/pages/login.js"></script>
+</body>
+</html>

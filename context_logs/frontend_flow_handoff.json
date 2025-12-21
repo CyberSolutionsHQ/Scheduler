@@ -1,0 +1,121 @@
+{
+  "ok": true,
+  "phase": "frontend_flow_handoff",
+  "frontend_root": "public/",
+  "runtime_config_path": "public/runtime-config.js",
+  "supabase_client_path": "public/js/supabaseClient.js",
+  "routes_or_entrypoints": [
+    {
+      "name": "index",
+      "path": "public/index.html"
+    },
+    {
+      "name": "login",
+      "path": "public/login.html"
+    },
+    {
+      "name": "dashboard",
+      "path": "public/dashboard.html"
+    },
+    {
+      "name": "employees",
+      "path": "public/employees.html"
+    },
+    {
+      "name": "schedule",
+      "path": "public/schedule.html"
+    },
+    {
+      "name": "my_shifts",
+      "path": "public/my-shifts.html"
+    }
+  ],
+  "test_flows": [
+    {
+      "name": "login_to_dashboard",
+      "steps": [
+        "Open app",
+        "Load runtime-config",
+        "Login with companyCode + username + pin (or contract-defined method)",
+        "Expect redirect/render dashboard"
+      ],
+      "expected": [
+        "Valid session created",
+        "User profile present",
+        "Company active check enforced"
+      ],
+      "failure_signals": [
+        "No network call on button click",
+        "Console error about missing runtime-config",
+        "401/403 from auth endpoint"
+      ]
+    },
+    {
+      "name": "employees_crud",
+      "steps": [
+        "Navigate to Employees",
+        "List employees",
+        "Create employee (if allowed)",
+        "Confirm persisted in Supabase"
+      ],
+      "expected": [
+        "Network calls match api_contract endpoint names",
+        "UI updates after successful mutation"
+      ]
+    },
+    {
+      "name": "schedule_crud",
+      "steps": [
+        "Navigate to Schedule",
+        "List schedule",
+        "Create shift",
+        "Confirm persisted",
+        "Reload page and confirm still present"
+      ],
+      "expected": [
+        "Correct tenant scoping applied",
+        "No local-only schedule state"
+      ]
+    },
+    {
+      "name": "my_shifts_view",
+      "steps": [
+        "Navigate to My Shifts",
+        "List only current user shifts",
+        "Confirm matches schedule data"
+      ],
+      "expected": [
+        "User scoping enforced",
+        "No cross-user leakage"
+      ]
+    }
+  ],
+  "endpoints_used": [
+    {
+      "name": "/functions/v1/auth_login",
+      "purpose": "Authenticate and return session/profile for login flow."
+    },
+    {
+      "name": "/rest/v1/users",
+      "purpose": "Fetch current user profile after auth session bootstrap."
+    },
+    {
+      "name": "/rest/v1/employees",
+      "purpose": "Employee list/create/update/delete in employees flow."
+    },
+    {
+      "name": "/rest/v1/schedules",
+      "purpose": "Create/list weekly schedules in schedule flow."
+    },
+    {
+      "name": "/rest/v1/shifts",
+      "purpose": "Shift CRUD and my-shifts listing."
+    }
+  ],
+  "known_risks": [
+    {
+      "code": "R_RUNTIME_CONFIG",
+      "message": "runtime-config.js must be generated for dev/deploy if missing"
+    }
+  ]
+}

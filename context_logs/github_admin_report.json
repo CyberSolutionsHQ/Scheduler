@@ -1,0 +1,243 @@
+{
+  "ok": true,
+  "phase": "github_admin_audit",
+  "generated_at": "2025-12-21T10:57:31.759084+00:00",
+  "local_repo": {
+    "is_git_repo": true,
+    "root": "/home/krovo/Schedule Manager",
+    "branch": "master",
+    "head_sha": "f0fa75bf1885165e2d38a40eab57481f3d57219b",
+    "remotes": [
+      {
+        "name": "origin",
+        "url": "https://github.com/CyberSolutionsHQ/Scheduler.git"
+      }
+    ],
+    "working_tree_clean": false,
+    "untracked_suspected_secret_files": [
+      "supabase/functions/update_admin_credentials/"
+    ]
+  },
+  "github": {
+    "resolved_repo": "CyberSolutionsHQ/Scheduler",
+    "viewer_login": "CyberSolutionsHQ",
+    "has_admin": true,
+    "default_branch": "main",
+    "push_health": {
+      "can_push": null,
+      "last_error_code": null,
+      "diagnosis": [
+        "No push attempted from this audit.",
+        "Local branch is master while default branch is main.",
+        "github-pages environment allows deployments from main only."
+      ]
+    },
+    "actions": {
+      "workflows": [
+        {
+          "name": "Deploy GitHub Pages",
+          "path": ".github/workflows/deploy_github_pages.yml"
+        },
+        {
+          "name": "Deploy static content to Pages",
+          "path": ".github/workflows/static.yml"
+        }
+      ],
+      "recent_failures": [
+        {
+          "workflow": "Deploy GitHub Pages",
+          "run_id": "20408539210",
+          "summary": "Branch \"master\" is not allowed to deploy to github-pages due to environment protection rules."
+        }
+      ]
+    },
+    "pages": {
+      "enabled": true,
+      "build_type": "workflow",
+      "source_branch": "main",
+      "source_path": "/",
+      "published_url": "https://cybersolutionshq.github.io/Scheduler/",
+      "suspected_404_causes": [
+        "Deployments from master are blocked by the github-pages environment policy; site may remain stale after master pushes.",
+        "A second Pages workflow deploys without generating runtime-config.js, which can result in missing configuration at runtime."
+      ]
+    },
+    "secrets": {
+      "required": [
+        "SUPABASE_URL",
+        "SUPABASE_ANON_KEY"
+      ],
+      "present": [
+        "SUPABASE_URL",
+        "SUPABASE_ANON_KEY"
+      ],
+      "missing": []
+    },
+    "variables": {
+      "required": [],
+      "present": [],
+      "missing": []
+    }
+  },
+  "github_files": {
+    "workflows": [
+      {
+        "path": ".github/workflows/deploy_github_pages.yml",
+        "notes": [
+          "Triggers on push to main and master.",
+          "Generates runtime-config.js from SUPABASE_URL and SUPABASE_ANON_KEY secrets.",
+          "Uploads repository root as Pages artifact."
+        ]
+      },
+      {
+        "path": ".github/workflows/static.yml",
+        "notes": [
+          "Present on remote main branch; not in local working tree.",
+          "Triggers on push to main.",
+          "Does not generate runtime-config.js before artifact upload."
+        ]
+      }
+    ],
+    "other": [
+      {
+        "path": ".gitignore",
+        "type": "config",
+        "notes": [
+          "Ignores runtime-config.js and .env files."
+        ]
+      },
+      {
+        "path": "README.md",
+        "type": "docs",
+        "notes": [
+          "Documents GitHub Pages deployment and production Supabase URL guardrails."
+        ]
+      },
+      {
+        "path": ".github/dependabot.yml",
+        "type": "missing",
+        "notes": [
+          "Not present."
+        ]
+      },
+      {
+        "path": ".github/CODEOWNERS",
+        "type": "missing",
+        "notes": [
+          "Not present."
+        ]
+      },
+      {
+        "path": ".github/ISSUE_TEMPLATE/",
+        "type": "missing",
+        "notes": [
+          "Not present."
+        ]
+      },
+      {
+        "path": ".github/PULL_REQUEST_TEMPLATE",
+        "type": "missing",
+        "notes": [
+          "Not present."
+        ]
+      },
+      {
+        "path": ".github/FUNDING.yml",
+        "type": "missing",
+        "notes": [
+          "Not present."
+        ]
+      },
+      {
+        "path": "SECURITY.md",
+        "type": "missing",
+        "notes": [
+          "Not present."
+        ]
+      },
+      {
+        "path": "CODE_OF_CONDUCT.md",
+        "type": "missing",
+        "notes": [
+          "Not present."
+        ]
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "type": "missing",
+        "notes": [
+          "Not present."
+        ]
+      }
+    ]
+  },
+  "env_audit": {
+    "dotenv_found": true,
+    "keys_present": [
+      "SUPABASE_ACCESS_TOKEN",
+      "SUPABASE_DB_PASSWORD",
+      "SUPABASE_PROJECT_ID",
+      "SUPABASE_DB_URL"
+    ],
+    "keys_missing_recommended": [
+      "SUPABASE_URL",
+      "SUPABASE_ANON_KEY",
+      "SUPABASE_PROJECT_REF"
+    ],
+    "notes": [
+      "Never include values.",
+      "Frontend runtime config is injected via GitHub secrets or js/config.js, not .env."
+    ]
+  },
+  "blocking_issues": [
+    {
+      "issue_code": "E_WORKFLOW_FAIL",
+      "evidence": [
+        "gh run view 20408539210",
+        "repos/CyberSolutionsHQ/Scheduler/environments/github-pages/deployment-branch-policies"
+      ],
+      "likely_root_cause": "github-pages environment branch policy only allows main, so Deploy GitHub Pages runs from master are rejected.",
+      "fix_options": [
+        "Deploy from main only (recommended) and stop pushing Pages changes to master.",
+        "Add master to the github-pages environment branch policy.",
+        "Remove master from workflow triggers to prevent rejected runs."
+      ],
+      "recommended_fix": "Align on main as the Pages deployment branch and ensure pushes are made to main."
+    },
+    {
+      "issue_code": "E_MISSING_RUNTIME_CONFIG",
+      "evidence": [
+        ".github/workflows/static.yml",
+        "js/supabaseClient.js",
+        "index.html"
+      ],
+      "likely_root_cause": "The static Pages workflow deploys without generating runtime-config.js; when it finishes after the other workflow, the published site can lack Supabase config.",
+      "fix_options": [
+        "Remove/disable the static workflow and keep only deploy_github_pages.yml.",
+        "Add runtime-config.js generation to static.yml before artifact upload.",
+        "Restrict Pages deployment to a single workflow via branch or workflow filters."
+      ],
+      "recommended_fix": "Keep a single Pages workflow that generates runtime-config.js before uploading the artifact."
+    }
+  ],
+  "next_actions": [
+    {
+      "priority": 1,
+      "action": "Decide and enforce the single deployment branch (main recommended) for GitHub Pages.",
+      "owner": "human",
+      "details": "Update github-pages environment branch policies or merge/push to main only."
+    },
+    {
+      "priority": 2,
+      "action": "Consolidate Pages workflows to ensure runtime-config.js is always generated.",
+      "owner": "human",
+      "details": "Edit or remove .github/workflows/static.yml; keep deploy_github_pages.yml as the only deploy pipeline."
+    },
+    {
+      "priority": 3,
+      "action": "Verify the next Pages deployment outputs runtime-config.js and site loads without config warnings.",
+      "owner": "human",
+      "details": "Check the Pages URL and workflow run logs after the next push."
+    }
+  ]
+}

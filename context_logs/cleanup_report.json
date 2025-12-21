@@ -1,0 +1,93 @@
+{
+  "ok": true,
+  "phase": "cleanup_hygiene",
+  "summary": {
+    "files_deleted": 7,
+    "files_archived": 1,
+    "files_modified": 6,
+    "workflows_modified": 1
+  },
+  "changes": {
+    "deleted": [
+      {
+        "path": "public/assets/app.js",
+        "reason": "Legacy frontend bundle not referenced after moving to public/."
+      },
+      {
+        "path": "public/assets/store.js",
+        "reason": "Legacy storage helper not referenced after moving to public/."
+      },
+      {
+        "path": "public/assets/pdf.js",
+        "reason": "Legacy PDF helper not referenced by current pages."
+      },
+      {
+        "path": "public/assets/config.js",
+        "reason": "Remove local override file to prevent committed secrets; runtime-config.js is the source of truth."
+      },
+      {
+        "path": "public/assets/config.example.js",
+        "reason": "Obsolete config example tied to removed legacy assets."
+      },
+      {
+        "path": "public/js/config.js",
+        "reason": "Remove static config entrypoint to enforce runtime-config.js."
+      },
+      {
+        "path": "package-lock.json",
+        "reason": "No package.json present; remove orphaned lockfile."
+      }
+    ],
+    "archived": [
+      {
+        "from": "worktree-main",
+        "to": "_archive/worktree-main",
+        "reason": "Duplicate worktree snapshot kept for reference."
+      }
+    ],
+    "modified": [
+      {
+        "path": "public/",
+        "reason": "Relocated frontend files into public/ for a clear deployable root."
+      },
+      {
+        "path": ".github/workflows/deploy_github_pages.yml",
+        "reason": "Deploy public/ only and generate runtime-config.js in public/."
+      },
+      {
+        "path": "public/js/supabaseClient.js",
+        "reason": "Use runtime-config only and render a configuration error UI in production when missing."
+      },
+      {
+        "path": "public/service-worker.js",
+        "reason": "Remove legacy cached assets and bypass runtime-config.js caching."
+      },
+      {
+        "path": ".gitignore",
+        "reason": "Ignore runtime-config artifacts and build outputs."
+      },
+      {
+        "path": "README.md",
+        "reason": "Document public/ layout and runtime-config workflow."
+      }
+    ],
+    "added": [
+      {
+        "path": "scripts/generate_runtime_config.py",
+        "reason": "Generate public/runtime-config.js from local .env without logging secrets."
+      }
+    ]
+  },
+  "warnings": [
+    {
+      "code": "W_RUNTIME_CONFIG",
+      "message": "public/runtime-config.js is required at runtime; ensure GitHub Pages secrets are set or generate it locally for dev.",
+      "path": "public/runtime-config.js"
+    }
+  ],
+  "next_steps": [
+    "Set GitHub Pages secrets SUPABASE_URL and SUPABASE_ANON_KEY and run the deploy workflow.",
+    "For local dev, create .env and run python scripts/generate_runtime_config.py, then serve public/.",
+    "After verifying, delete _archive/worktree-main if no longer needed."
+  ]
+}
