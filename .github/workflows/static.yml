@@ -31,6 +31,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Generate runtime config
+        env:
+          # Repo secrets required for Pages deploys.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          cat > ./runtime-config.js <<EOF
+          window.RUNTIME_CONFIG = {
+            SUPABASE_URL: "${SUPABASE_URL:-}",
+            SUPABASE_ANON_KEY: "${SUPABASE_ANON_KEY:-}"
+          };
+          EOF
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

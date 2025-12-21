@@ -44,7 +44,7 @@ function wireLogout() {
   const adminPinEl = document.getElementById("adminPin");
 
   try {
-    if (!supabase) throw new Error("Missing Supabase configuration for production. Set repo secrets SUPABASE_URL and SUPABASE_ANON_KEY.");
+    if (!supabase) return;
     const profile = await requireAuth();
     if (!profile) return;
 
