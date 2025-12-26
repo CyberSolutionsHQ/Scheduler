@@ -1,0 +1,49 @@
+{
+  "ok": true,
+  "mode": "service_role_full_bootstrap",
+  "created": {
+    "companies": {
+      "PLATFORM": false,
+      "CSLTEST4": true
+    },
+    "employee": true,
+    "auth_users": {
+      "platform_admin": false,
+      "manager": true,
+      "employee": true
+    },
+    "app_users": {
+      "platform_admin": false,
+      "manager": true,
+      "employee": true
+    },
+    "schedule": true,
+    "shift": true,
+    "job_site": true
+  },
+  "reused": {
+    "companies": {
+      "PLATFORM": true,
+      "CSLTEST4": false
+    },
+    "employee": false,
+    "auth_users": {
+      "platform_admin": true,
+      "manager": false,
+      "employee": false
+    },
+    "app_users": {
+      "platform_admin": true,
+      "manager": false,
+      "employee": false
+    },
+    "schedule": false,
+    "shift": false,
+    "job_site": false
+  },
+  "blockers": [],
+  "errors": [
+    "Auth password update warnings: {'platform_admin': 'Password should be at least 6 characters.'}"
+  ],
+  "next_agent": "Frontend Flow Validation Agent (Phase 6)"
+}

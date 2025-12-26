@@ -1,0 +1,153 @@
+{
+  "generated_at_utc": "2025-12-22T02:15:48.270171+00:00",
+  "expected": {
+    "edge_functions": [
+      "approve_request",
+      "auth_login",
+      "bootstrap_platform_admin",
+      "create_company_with_manager",
+      "create_employee_login",
+      "create_manager_account",
+      "deny_request",
+      "reset_user_pin",
+      "resolve_credential_reset_request",
+      "set_company_status",
+      "submit_change_request",
+      "submit_credential_reset_request",
+      "terminate_company",
+      "update_admin_credentials"
+    ],
+    "tenant_key": "company_code (generated from companyCode)",
+    "auth_strategy": {
+      "type": "supabase_auth",
+      "login": {
+        "type": "edge_function",
+        "name": "auth_login",
+        "path": "/functions/v1/auth_login"
+      }
+    }
+  },
+  "found": {
+    "edge_functions": [
+      "approve_request",
+      "auth_login",
+      "bootstrap_platform_admin",
+      "create_company_with_manager",
+      "create_employee_login",
+      "create_manager_account",
+      "deny_request",
+      "reset_user_pin",
+      "resolve_credential_reset_request",
+      "set_company_status",
+      "submit_change_request",
+      "submit_credential_reset_request",
+      "terminate_company",
+      "update_admin_credentials"
+    ],
+    "edge_functions_region": "West US (Oregon)",
+    "tables_count": 34,
+    "auth_users_links": [],
+    "secrets_present": [
+      "BOOTSTRAP_TOKEN",
+      "SUPABASE_ANON_KEY",
+      "SUPABASE_DB_URL",
+      "SUPABASE_SERVICE_ROLE_KEY",
+      "SUPABASE_URL"
+    ]
+  },
+  "fixed": [
+    {
+      "action": "deploy_edge_function",
+      "function": "approve_request",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "create_manager_account",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "deny_request",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "resolve_credential_reset_request",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "set_company_status",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "submit_change_request",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "submit_credential_reset_request",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "update_admin_credentials",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "redeploy_edge_function",
+      "function": "auth_login",
+      "method": "supabase functions deploy --use-api --no-verify-jwt",
+      "reason": "auth_login is public per api_contract.json and was deployed with verify_jwt=true"
+    }
+  ],
+  "unresolved": [
+    {
+      "severity": "WARNING",
+      "category": "missing_auth_user_fk",
+      "what": "Expected foreign keys to auth.users are not present in live schema.",
+      "why": "User mapping may be inconsistent and auth cleanup may not cascade.",
+      "recommendation": "Add or restore foreign keys referencing auth.users if intended.",
+      "evidence": {
+        "tables": [
+          "public.users"
+        ]
+      }
+    },
+    {
+      "severity": "INFO",
+      "category": "context_logs_out_of_date",
+      "what": "Context expectations do not match live schema tables.",
+      "why": "Subsequent agents may rely on stale schema snapshots.",
+      "recommendation": "Update context logs to reflect current live schema.",
+      "evidence": {
+        "missing_in_live": [
+          "extensions.pg_stat_statements",
+          "extensions.pg_stat_statements_info",
+          "realtime.messages",
+          "realtime.schema_migrations",
+          "realtime.subscription",
+          "storage.buckets",
+          "storage.buckets_analytics",
+          "storage.buckets_vectors",
+          "storage.migrations",
+          "storage.objects",
+          "storage.prefixes",
+          "storage.s3_multipart_uploads",
+          "storage.s3_multipart_uploads_parts",
+          "storage.vector_indexes",
+          "supabase_migrations.schema_migrations",
+          "vault.decrypted_secrets",
+          "vault.secrets"
+        ],
+        "extra_in_live": []
+      }
+    }
+  ],
+  "next_agent": {
+    "recommended": "supabase-migration-agent",
+    "reason": "Missing FK from public.users to auth.users requires a schema change, which is disallowed for auto-fix here. Context logs also need a refreshed full schema snapshot if required."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "ok": true,
+  "phase": "deployment",
+  "environment": "github_pages",
+  "frontend_root": "public/",
+  "runtime_config_path": "public/runtime-config.js",
+  "secrets_checked": [
+    {
+      "name": "SUPABASE_URL",
+      "present": true
+    },
+    {
+      "name": "SUPABASE_ANON_KEY",
+      "present": true
+    }
+  ],
+  "changes": {
+    "workflows_modified": [
+      {
+        "path": ".github/workflows/deploy_github_pages.yml",
+        "reason": "Restrict Pages deploys to main and generate runtime-config.js without logging secrets; fail fast if required secrets are missing."
+      }
+    ],
+    "frontend_files_modified": [],
+    "gitignore_modified": false
+  },
+  "issues": [],
+  "notes": [
+    "runtime-config.js generated at deploy time via GitHub Actions",
+    "Pages deployment now only triggers from main to align with environment policy",
+    "merge or push changes to main for GitHub Pages to update",
+    "no secrets committed"
+  ]
+}

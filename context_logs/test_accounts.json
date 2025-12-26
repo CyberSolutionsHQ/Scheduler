@@ -1,0 +1,65 @@
+{
+  "company": {
+    "companyCode": "CSLTEST4",
+    "companyId": "3b24d27c-fb94-407a-9c32-833c3e52745d",
+    "companyName": "CSL Test Company"
+  },
+  "platform_company": {
+    "companyCode": "PLATFORM",
+    "companyId": "67ea0cd9-537a-419e-9701-77af696e8a1b",
+    "companyName": "Platform"
+  },
+  "users": {
+    "platform_admin": {
+      "companyCode": "PLATFORM",
+      "username": "platform_admin_test",
+      "role": "platform_admin",
+      "pin": "4598",
+      "auth_user_id": "b264244c-af65-45c5-9a4b-bfeed02b2fff",
+      "app_user_id": "b264244c-af65-45c5-9a4b-bfeed02b2fff",
+      "auth_email": "PLATFORM+platform_admin_test@yourapp.local",
+      "public_email": "platform_admin_test@local.test"
+    },
+    "manager": {
+      "companyCode": "CSLTEST4",
+      "username": "manager_test",
+      "role": "manager",
+      "pin": "0196",
+      "auth_user_id": "f4159397-4679-4b79-8e25-9b8908f6c57d",
+      "app_user_id": "f4159397-4679-4b79-8e25-9b8908f6c57d",
+      "auth_email": "CSLTEST4+manager_test@yourapp.local",
+      "public_email": "manager_test@local.test"
+    },
+    "employee": {
+      "companyCode": "CSLTEST4",
+      "username": "employee_test",
+      "role": "employee",
+      "pin": "9567",
+      "auth_user_id": "ea7a6edf-8da0-448f-983e-34913622dd05",
+      "app_user_id": "ea7a6edf-8da0-448f-983e-34913622dd05",
+      "auth_email": "CSLTEST4+employee_test@yourapp.local",
+      "public_email": "employee_test@local.test",
+      "employeeId": "a1c09be7-f45a-4f5a-8a6d-c5647effec6c"
+    }
+  },
+  "employee": {
+    "id": "a1c09be7-f45a-4f5a-8a6d-c5647effec6c",
+    "name": "Test Employee",
+    "companyCode": "CSLTEST4"
+  },
+  "schedule": {
+    "id": "4bc1e47b-9366-489c-b6b9-ebdc82143a7b",
+    "company_code": "CSLTEST4",
+    "week_start_date": "2025-12-22"
+  },
+  "shift": {
+    "id": "e8f9c9a3-3a1a-47ba-8e8f-976253bc7148",
+    "schedule_id": "4bc1e47b-9366-489c-b6b9-ebdc82143a7b",
+    "empId": "a1c09be7-f45a-4f5a-8a6d-c5647effec6c",
+    "locId": "040d7722-1394-46a1-9a2c-f678f064da50"
+  },
+  "job_site": {
+    "id": "040d7722-1394-46a1-9a2c-f678f064da50",
+    "companyCode": "CSLTEST4"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "ok": false,
+  "phase": "frontend_flow_validation",
+  "companyCode": "CSLTEST4",
+  "results": {
+    "auth": { "pass": 0, "fail": 2 },
+    "manager_flows": { "pass": 0, "fail": 2 },
+    "employee_flows": { "pass": 0, "fail": 2 }
+  },
+  "failures": [
+    {
+      "test": "auth_manager_login",
+      "reason": "Unable to run frontend UI login flow; no network/browser access to deployed app in current environment."
+    },
+    {
+      "test": "auth_employee_login",
+      "reason": "Unable to run frontend UI login flow; no network/browser access to deployed app in current environment."
+    },
+    {
+      "test": "manager_employees_crud",
+      "reason": "Manager flow not executed because authentication and UI access could not be performed."
+    },
+    {
+      "test": "manager_schedule_shift_crud",
+      "reason": "Manager flow not executed because authentication and UI access could not be performed."
+    },
+    {
+      "test": "employee_my_shifts_view",
+      "reason": "Employee flow not executed because authentication and UI access could not be performed."
+    },
+    {
+      "test": "employee_authorization_limits",
+      "reason": "Authorization check not executed because employee session could not be established."
+    }
+  ],
+  "notes": [
+    "Deployment handoff references the deployed frontend, but network access is restricted in this run.",
+    "No automated browser tooling was available to exercise the UI flows."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "login_path": "/login.html",
+  "companyCode": "CSLTEST4",
+  "manager_username": "manager_test",
+  "employee_username": "employee_test",
+  "what_to_test": [
+    "Employees CRUD (manager)",
+    "Schedule + shifts CRUD (manager)",
+    "My shifts view (employee)"
+  ],
+  "notes": [
+    "runtime-config is injected at deploy time"
+  ]
+}

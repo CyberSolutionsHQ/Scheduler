@@ -1,0 +1,46 @@
+{
+  "generated_at_utc": "2025-12-22T02:15:08.679570+00:00",
+  "discrepancies": [
+    {
+      "severity": "WARNING",
+      "category": "missing_auth_user_fk",
+      "what": "Expected foreign keys to auth.users are not present in live schema.",
+      "why": "User mapping may be inconsistent and auth cleanup may not cascade.",
+      "recommendation": "Add or restore foreign keys referencing auth.users if intended.",
+      "evidence": {
+        "tables": [
+          "public.users"
+        ]
+      }
+    },
+    {
+      "severity": "INFO",
+      "category": "context_logs_out_of_date",
+      "what": "Context expectations do not match live schema tables.",
+      "why": "Subsequent agents may rely on stale schema snapshots.",
+      "recommendation": "Update context logs to reflect current live schema.",
+      "evidence": {
+        "missing_in_live": [
+          "extensions.pg_stat_statements",
+          "extensions.pg_stat_statements_info",
+          "realtime.messages",
+          "realtime.schema_migrations",
+          "realtime.subscription",
+          "storage.buckets",
+          "storage.buckets_analytics",
+          "storage.buckets_vectors",
+          "storage.migrations",
+          "storage.objects",
+          "storage.prefixes",
+          "storage.s3_multipart_uploads",
+          "storage.s3_multipart_uploads_parts",
+          "storage.vector_indexes",
+          "supabase_migrations.schema_migrations",
+          "vault.decrypted_secrets",
+          "vault.secrets"
+        ],
+        "extra_in_live": []
+      }
+    }
+  ]
+}

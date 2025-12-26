@@ -1,0 +1,2552 @@
+{
+  "edge_functions": {
+    "region": "West US (Oregon)",
+    "functions": [
+      {
+        "name": "create_company_with_manager",
+        "status": "ACTIVE",
+        "version": 3,
+        "verify_jwt": false,
+        "created_at": "2025-12-18T21:23:13.142000+00:00",
+        "updated_at": "2025-12-18T21:57:18.515000+00:00",
+        "last_deploy_at": "2025-12-18T21:57:18.515000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_d536b69c-d20a-4d11-aa59-964d76431af6_3/source/supabase/functions/create_company_with_manager/index.ts"
+      },
+      {
+        "name": "terminate_company",
+        "status": "ACTIVE",
+        "version": 3,
+        "verify_jwt": false,
+        "created_at": "2025-12-18T21:23:14.501000+00:00",
+        "updated_at": "2025-12-18T21:57:19.869000+00:00",
+        "last_deploy_at": "2025-12-18T21:57:19.869000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_cf2ed083-3d84-4bbb-ace8-678e7f93ca85_3/source/supabase/functions/terminate_company/index.ts"
+      },
+      {
+        "name": "create_employee_login",
+        "status": "ACTIVE",
+        "version": 3,
+        "verify_jwt": false,
+        "created_at": "2025-12-18T21:23:15.979000+00:00",
+        "updated_at": "2025-12-18T21:57:20.843000+00:00",
+        "last_deploy_at": "2025-12-18T21:57:20.843000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_df3dbef4-898a-4da9-816c-10af0be7e3d4_3/source/supabase/functions/create_employee_login/index.ts"
+      },
+      {
+        "name": "reset_user_pin",
+        "status": "ACTIVE",
+        "version": 3,
+        "verify_jwt": false,
+        "created_at": "2025-12-18T21:23:17.383000+00:00",
+        "updated_at": "2025-12-18T21:57:21.759000+00:00",
+        "last_deploy_at": "2025-12-18T21:57:21.759000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_6825dabd-50ab-4918-a019-9a547b1ffee8_3/source/supabase/functions/reset_user_pin/index.ts"
+      },
+      {
+        "name": "bootstrap_platform_admin",
+        "status": "ACTIVE",
+        "version": 3,
+        "verify_jwt": false,
+        "created_at": "2025-12-18T21:23:18.845000+00:00",
+        "updated_at": "2025-12-18T21:57:22.655000+00:00",
+        "last_deploy_at": "2025-12-18T21:57:22.655000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_c83abff2-a24b-4fe2-a289-3efdf9e1c42f_3/source/supabase/functions/bootstrap_platform_admin/index.ts"
+      },
+      {
+        "name": "auth_login",
+        "status": "ACTIVE",
+        "version": 2,
+        "verify_jwt": false,
+        "created_at": "2025-12-22T00:42:47.048000+00:00",
+        "updated_at": "2025-12-22T02:11:41.122000+00:00",
+        "last_deploy_at": "2025-12-22T02:11:41.122000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_e5f37d14-e7e6-4f54-9ff9-45e2dc1ecb0e_2/source/supabase/functions/auth_login/index.ts"
+      },
+      {
+        "name": "approve_request",
+        "status": "ACTIVE",
+        "version": 1,
+        "verify_jwt": true,
+        "created_at": "2025-12-22T02:10:38.063000+00:00",
+        "updated_at": "2025-12-22T02:10:38.063000+00:00",
+        "last_deploy_at": "2025-12-22T02:10:38.063000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_65cfa15f-d56c-462a-9461-878905dccff4_1/source/supabase/functions/approve_request/index.ts"
+      },
+      {
+        "name": "create_manager_account",
+        "status": "ACTIVE",
+        "version": 1,
+        "verify_jwt": true,
+        "created_at": "2025-12-22T02:10:39.396000+00:00",
+        "updated_at": "2025-12-22T02:10:39.396000+00:00",
+        "last_deploy_at": "2025-12-22T02:10:39.396000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_2a4f7db0-5273-4a5c-a39a-ea94ee41f84a_1/source/supabase/functions/create_manager_account/index.ts"
+      },
+      {
+        "name": "deny_request",
+        "status": "ACTIVE",
+        "version": 1,
+        "verify_jwt": true,
+        "created_at": "2025-12-22T02:10:40.798000+00:00",
+        "updated_at": "2025-12-22T02:10:40.798000+00:00",
+        "last_deploy_at": "2025-12-22T02:10:40.798000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_837dfcde-4bd0-456b-8905-699b1382d072_1/source/supabase/functions/deny_request/index.ts"
+      },
+      {
+        "name": "resolve_credential_reset_request",
+        "status": "ACTIVE",
+        "version": 1,
+        "verify_jwt": true,
+        "created_at": "2025-12-22T02:10:42.082000+00:00",
+        "updated_at": "2025-12-22T02:10:42.082000+00:00",
+        "last_deploy_at": "2025-12-22T02:10:42.082000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_7d542f32-bb94-40b5-9083-30fb49be0a35_1/source/supabase/functions/resolve_credential_reset_request/index.ts"
+      },
+      {
+        "name": "set_company_status",
+        "status": "ACTIVE",
+        "version": 1,
+        "verify_jwt": true,
+        "created_at": "2025-12-22T02:10:43.361000+00:00",
+        "updated_at": "2025-12-22T02:10:43.361000+00:00",
+        "last_deploy_at": "2025-12-22T02:10:43.361000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_d53292d1-56c0-41e3-b177-669dc04800e9_1/source/supabase/functions/set_company_status/index.ts"
+      },
+      {
+        "name": "submit_change_request",
+        "status": "ACTIVE",
+        "version": 1,
+        "verify_jwt": true,
+        "created_at": "2025-12-22T02:10:44.761000+00:00",
+        "updated_at": "2025-12-22T02:10:44.761000+00:00",
+        "last_deploy_at": "2025-12-22T02:10:44.761000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_c860f108-19a4-4906-9b43-f97d81aae4eb_1/source/supabase/functions/submit_change_request/index.ts"
+      },
+      {
+        "name": "submit_credential_reset_request",
+        "status": "ACTIVE",
+        "version": 1,
+        "verify_jwt": true,
+        "created_at": "2025-12-22T02:11:24.360000+00:00",
+        "updated_at": "2025-12-22T02:11:24.360000+00:00",
+        "last_deploy_at": "2025-12-22T02:11:24.360000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_35409e83-0e12-4253-baf8-2e434200fa33_1/source/supabase/functions/submit_credential_reset_request/index.ts"
+      },
+      {
+        "name": "update_admin_credentials",
+        "status": "ACTIVE",
+        "version": 1,
+        "verify_jwt": true,
+        "created_at": "2025-12-22T02:11:32.507000+00:00",
+        "updated_at": "2025-12-22T02:11:32.507000+00:00",
+        "last_deploy_at": "2025-12-22T02:11:32.507000+00:00",
+        "entrypoint_path": "file:///tmp/user_fn_xwroayzhbbwbiuswtuvs_4cdc29af-127d-413e-89ee-2c6b9b000424_1/source/supabase/functions/update_admin_credentials/index.ts"
+      }
+    ]
+  },
+  "schema": {
+    "tables": [
+      {
+        "schema": "auth",
+        "name": "audit_log_entries",
+        "columns": [
+          {
+            "name": "instance_id",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "payload",
+            "data_type": "json",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "ip_address",
+            "data_type": "character varying(64)",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "flow_state",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "user_id",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "auth_code",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "code_challenge_method",
+            "data_type": "\"auth\".\"code_challenge_method\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "code_challenge",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "provider_type",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "provider_access_token",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "provider_refresh_token",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "authentication_method",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "auth_code_issued_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "identities",
+        "columns": [
+          {
+            "name": "provider_id",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "user_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "identity_data",
+            "data_type": "\"jsonb\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "provider",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "last_sign_in_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "email",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "instances",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "uuid",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "raw_base_config",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "mfa_amr_claims",
+        "columns": [
+          {
+            "name": "session_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "authentication_method",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "mfa_challenges",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "factor_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "verified_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "ip_address",
+            "data_type": "\"inet\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "otp_code",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "web_authn_session_data",
+            "data_type": "\"jsonb\"",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "mfa_factors",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "user_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "friendly_name",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "factor_type",
+            "data_type": "\"auth\".\"factor_type\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "status",
+            "data_type": "\"auth\".\"factor_status\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "secret",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "phone",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "last_challenged_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "web_authn_credential",
+            "data_type": "\"jsonb\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "web_authn_aaguid",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "last_webauthn_challenge_data",
+            "data_type": "\"jsonb\"",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "oauth_authorizations",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "authorization_id",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "client_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "user_id",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "redirect_uri",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "scope",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "state",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "resource",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "code_challenge",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "code_challenge_method",
+            "data_type": "\"auth\".\"code_challenge_method\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "response_type",
+            "data_type": "\"auth\".\"oauth_response_type\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "status",
+            "data_type": "\"auth\".\"oauth_authorization_status\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "authorization_code",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "expires_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "approved_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "nonce",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": null
+      },
+      {
+        "schema": "auth",
+        "name": "oauth_client_states",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "provider_type",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "code_verifier",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": null
+      },
+      {
+        "schema": "auth",
+        "name": "oauth_clients",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "client_secret_hash",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "registration_type",
+            "data_type": "\"auth\".\"oauth_registration_type\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "redirect_uris",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "grant_types",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "client_name",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "client_uri",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "logo_uri",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "deleted_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "client_type",
+            "data_type": "\"auth\".\"oauth_client_type\"",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": null
+      },
+      {
+        "schema": "auth",
+        "name": "oauth_consents",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "user_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "client_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "scopes",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "granted_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "revoked_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": null
+      },
+      {
+        "schema": "auth",
+        "name": "one_time_tokens",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "user_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "token_type",
+            "data_type": "\"auth\".\"one_time_token_type\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "token_hash",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "relates_to",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp without time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp without time zone",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "refresh_tokens",
+        "columns": [
+          {
+            "name": "instance_id",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "id",
+            "data_type": "bigint",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "token",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "user_id",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "revoked",
+            "data_type": "boolean",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "parent",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "session_id",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "saml_providers",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "sso_provider_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "entity_id",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "metadata_xml",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "metadata_url",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "attribute_mapping",
+            "data_type": "\"jsonb\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "name_id_format",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "saml_relay_states",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "sso_provider_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "request_id",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "for_email",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "redirect_to",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "flow_state_id",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "schema_migrations",
+        "columns": [
+          {
+            "name": "version",
+            "data_type": "character varying(255)",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "sessions",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "user_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "factor_id",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "aal",
+            "data_type": "\"auth\".\"aal_level\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "not_after",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "refreshed_at",
+            "data_type": "timestamp without time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "user_agent",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "ip",
+            "data_type": "\"inet\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "tag",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "oauth_client_id",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "refresh_token_hmac_key",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "refresh_token_counter",
+            "data_type": "bigint",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "scopes",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "sso_domains",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "sso_provider_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "domain",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "sso_providers",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "resource_id",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "disabled",
+            "data_type": "boolean",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "auth",
+        "name": "users",
+        "columns": [
+          {
+            "name": "instance_id",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "aud",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "role",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "email",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "encrypted_password",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "email_confirmed_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "invited_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "confirmation_token",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "confirmation_sent_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "recovery_token",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "recovery_sent_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "email_change_token_new",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "email_change",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "email_change_sent_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "last_sign_in_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "raw_app_meta_data",
+            "data_type": "\"jsonb\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "raw_user_meta_data",
+            "data_type": "\"jsonb\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "is_super_admin",
+            "data_type": "boolean",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "phone",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "phone_confirmed_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "phone_change",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "phone_change_token",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "phone_change_sent_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "confirmed_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "email_change_token_current",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "email_change_confirm_status",
+            "data_type": "smallint",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "banned_until",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "reauthentication_token",
+            "data_type": "character varying(255)",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "reauthentication_sent_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "is_sso_user",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "deleted_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "is_anonymous",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "companies",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "companyCode",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "companyName",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "isDisabled",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "supportEnabled",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "createdAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "name",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "company_name",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "is_disabled",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "support_enabled",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "credential_reset_requests",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "requested_by_user_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "target_user_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "request_type",
+            "data_type": "\"public\".\"credential_reset_request_type\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "status",
+            "data_type": "\"public\".\"credential_reset_request_status\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "resolved_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "crew_members",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "companyCode",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "crewId",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "employeeId",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "createdAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "crew_id",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "employee_id",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "crews",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "companyCode",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "name",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "active",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "createdAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updatedAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "employees",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "companyCode",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "name",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "contact",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "active",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "createdAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updatedAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": true
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "job_sites",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "companyCode",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "name",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "address",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "active",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "createdAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updatedAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": true
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "job_types",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "companyCode",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "name",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "active",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "createdAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updatedAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "locations",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "name",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "address",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "active",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "platform_admin_reset_tokens",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "user_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "token_hash",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "expires_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "used_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "created_by",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "requests",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "companyCode",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "type",
+            "data_type": "\"public\".\"request_type\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "status",
+            "data_type": "\"public\".\"request_status\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "requesterUserId",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "targetUserId",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "proposedUsername",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "proposedPin",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "createdAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "handledAt",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "handledBy",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "decisionNote",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "requester_user_id",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "target_user_id",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "proposed_username",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "proposed_pin",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "handled_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "handled_by",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "decision_note",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "schedules",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "week_start_date",
+            "data_type": "\"date\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "shift_jobs",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "companyCode",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "shiftId",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "jobTypeId",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "createdAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "shift_id",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "job_type_id",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "shifts",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "companyCode",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "date",
+            "data_type": "\"date\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "start",
+            "data_type": "time without time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "end",
+            "data_type": "time without time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "notes",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "locId",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "empId",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "crewId",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "createdAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updatedAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "schedule_id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "employee_id",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "job_site_id",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "start_time",
+            "data_type": "timestamp without time zone",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "end_time",
+            "data_type": "timestamp without time zone",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "loc_id",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "emp_id",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "crew_id",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      },
+      {
+        "schema": "public",
+        "name": "users",
+        "columns": [
+          {
+            "name": "id",
+            "data_type": "\"uuid\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "companyCode",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "username",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "pinHash",
+            "data_type": "\"text\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "role",
+            "data_type": "\"public\".\"user_role\"",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "employeeId",
+            "data_type": "\"uuid\"",
+            "not_null": false,
+            "generated": false
+          },
+          {
+            "name": "active",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "createdAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "updatedAt",
+            "data_type": "timestamp with time zone",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "company_code",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "pin_hash",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "created_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "updated_at",
+            "data_type": "timestamp with time zone",
+            "not_null": false,
+            "generated": true
+          },
+          {
+            "name": "force_pin_change",
+            "data_type": "boolean",
+            "not_null": true,
+            "generated": false
+          },
+          {
+            "name": "employee_id",
+            "data_type": "\"text\"",
+            "not_null": false,
+            "generated": false
+          }
+        ],
+        "primary_key": [],
+        "foreign_keys": [],
+        "rls_enabled": true
+      }
+    ],
+    "tables_count": 34
+  },
+  "auth": {
+    "auth_users_links": [],
+    "rls_enabled_tables": [
+      "auth.audit_log_entries",
+      "auth.flow_state",
+      "auth.identities",
+      "auth.instances",
+      "auth.mfa_amr_claims",
+      "auth.mfa_challenges",
+      "auth.mfa_factors",
+      "auth.one_time_tokens",
+      "auth.refresh_tokens",
+      "auth.saml_providers",
+      "auth.saml_relay_states",
+      "auth.schema_migrations",
+      "auth.sessions",
+      "auth.sso_domains",
+      "auth.sso_providers",
+      "auth.users",
+      "public.companies",
+      "public.credential_reset_requests",
+      "public.crew_members",
+      "public.crews",
+      "public.employees",
+      "public.job_sites",
+      "public.job_types",
+      "public.locations",
+      "public.platform_admin_reset_tokens",
+      "public.requests",
+      "public.schedules",
+      "public.shift_jobs",
+      "public.shifts",
+      "public.users"
+    ],
+    "rls_disabled_tables": []
+  },
+  "secrets": {
+    "names": [
+      "BOOTSTRAP_TOKEN",
+      "SUPABASE_ANON_KEY",
+      "SUPABASE_DB_URL",
+      "SUPABASE_SERVICE_ROLE_KEY",
+      "SUPABASE_URL"
+    ]
+  },
+  "meta": {
+    "collected_at_utc": "2025-12-22T02:12:59.422090+00:00"
+  }
+}

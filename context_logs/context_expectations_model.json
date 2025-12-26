@@ -1,0 +1,5295 @@
+{
+  "sources": {
+    "files_read": [
+      {
+        "path": "api_contract.json",
+        "sha256": "442fe89297e184ee6959f5f3b2913adaed16b290cbc42ef6af82ee3ff30bfd31",
+        "size": 31794,
+        "type": "json"
+      },
+      {
+        "path": "api_contract.schema.json",
+        "sha256": "8eea4aa0af29f387328342a35440c0e8c03e4ee764d8c5ffd61a1e50bed58255",
+        "size": 6636,
+        "type": "json"
+      },
+      {
+        "path": "cleanup_report.json",
+        "sha256": "c4cd00f9dac3f97aef99ddbde423f293d1656391726bce2036e8897c6dd20d6e",
+        "size": 2989,
+        "type": "json"
+      },
+      {
+        "path": "final_state.json",
+        "sha256": "bc2b280722c10c779c5d5d4b4079a3b29aa0131f0536f4abb1718a9518dd6b30",
+        "size": 299742,
+        "type": "json"
+      },
+      {
+        "path": "final_state.schema.json",
+        "sha256": "7b45edcd0593eacf31fd61e0677134dab59ac68ae0cfb1fea476b6fb347cad01",
+        "size": 8331,
+        "type": "json"
+      },
+      {
+        "path": "frontend_compile_report.json",
+        "sha256": "d24df06d924ee5ca41db5189a435bb72e0ab32a9dbf0dd768cdad68f9e5e06f5",
+        "size": 1605,
+        "type": "json"
+      },
+      {
+        "path": "frontend_flow_handoff.json",
+        "sha256": "04668bf6904fda82bb09b965533cf8ac71cd46ad96c830105dbbf2b92755d349",
+        "size": 2973,
+        "type": "json"
+      },
+      {
+        "path": "frontend_handoff.json",
+        "sha256": "8b479eec983c969732f02c631c7ebf184f20e3109f52be07df773b6be1fc4d09",
+        "size": 1102,
+        "type": "json"
+      },
+      {
+        "path": "github_actions_plan.md",
+        "sha256": "cca97cda6576e520eeae04cb6511aaebc3c10c922687bfee8d8759babbea8f0e",
+        "size": 573,
+        "type": "text"
+      },
+      {
+        "path": "github_admin_actions.md",
+        "sha256": "df3497224caed0b24854149290a90907144f3705c9127bd4186db7f04578e5b2",
+        "size": 1206,
+        "type": "text"
+      },
+      {
+        "path": "github_admin_report.json",
+        "sha256": "645b2a1b99560e01746c5c53e543182c93712b638f857a620b6ffd9acce884d2",
+        "size": 7245,
+        "type": "json"
+      },
+      {
+        "path": "github_agent_report.json",
+        "sha256": "9ac34c98ddfeef17c5bd02d77592814168532026e7e462fdf56f4e48528c0019",
+        "size": 2198,
+        "type": "json"
+      },
+      {
+        "path": "github_sync_result.json",
+        "sha256": "2b2fdb21eafc25837de4875dca9fc22ca33c3ee449fb0af1ff52463ef0a4cbf3",
+        "size": 329,
+        "type": "json"
+      },
+      {
+        "path": "lint_report.json",
+        "sha256": "bd1a8273d3c34c60f5158cd0d82708e05dded22faff1b71d148363e1fb7a0074",
+        "size": 1539,
+        "type": "json"
+      },
+      {
+        "path": "live_schema.json",
+        "sha256": "9e5c8b54e487282d038ee14b8c0852fdc03fe5a0fe6a9fa7cd103e7842a58af7",
+        "size": 318952,
+        "type": "json"
+      },
+      {
+        "path": "live_schema.schema.json",
+        "sha256": "47b292c3a92b3dae0d99770699c6d7edca0f9c56d677e7e817c09898a6145d06",
+        "size": 6285,
+        "type": "json"
+      },
+      {
+        "path": "manifest.json",
+        "sha256": "7c8aff1eecc155e9a1a3728ef5f9449d911782538418d7f59c2443347037ee6f",
+        "size": 81507,
+        "type": "json"
+      },
+      {
+        "path": "manifest.schema.json",
+        "sha256": "1d5b05c73da2d4f0d677b5e1fddfe034c9627a93e7944089b3d409b2c032f9c1",
+        "size": 10378,
+        "type": "json"
+      },
+      {
+        "path": "supabase_auth_state.json",
+        "sha256": "5152ad298e48217b8f5730cc2a2f00eb7df1ee715e7b5328b4047d74be379cd4",
+        "size": 281,
+        "type": "json"
+      },
+      {
+        "path": "supabase_local_inventory.json",
+        "sha256": "59730e20073efe2852ca492677d0ccfaf9a0a22212ba1548492c346459c18c12",
+        "size": 37678,
+        "type": "json"
+      },
+      {
+        "path": "artifacts/flow_validation_playwright.js",
+        "sha256": "197a3ab549882d1cc40f060fe9d27f4452f5826372152ad698da2de7075005bb",
+        "size": 3483,
+        "type": "text"
+      },
+      {
+        "path": "artifacts/http_server.log",
+        "sha256": "8b176a9287f40040225e7f234a9f321c3654bcd2a3975f0b4ad89d7609445cf9",
+        "size": 1742,
+        "type": "text"
+      }
+    ],
+    "json_files": [
+      "api_contract.json",
+      "api_contract.schema.json",
+      "cleanup_report.json",
+      "final_state.json",
+      "final_state.schema.json",
+      "frontend_compile_report.json",
+      "frontend_flow_handoff.json",
+      "frontend_handoff.json",
+      "github_admin_report.json",
+      "github_agent_report.json",
+      "github_sync_result.json",
+      "lint_report.json",
+      "live_schema.json",
+      "live_schema.schema.json",
+      "manifest.json",
+      "manifest.schema.json",
+      "supabase_auth_state.json",
+      "supabase_local_inventory.json"
+    ],
+    "text_files": [
+      "artifacts/flow_validation_playwright.js",
+      "artifacts/http_server.log",
+      "github_actions_plan.md",
+      "github_admin_actions.md"
+    ]
+  },
+  "expected": {
+    "edge_functions": [
+      "approve_request",
+      "auth_login",
+      "bootstrap_platform_admin",
+      "create_company_with_manager",
+      "create_employee_login",
+      "create_manager_account",
+      "deny_request",
+      "reset_user_pin",
+      "resolve_credential_reset_request",
+      "set_company_status",
+      "submit_change_request",
+      "submit_credential_reset_request",
+      "terminate_company",
+      "update_admin_credentials"
+    ],
+    "endpoint_function_names": [
+      "approve_request",
+      "auth_login",
+      "bootstrap_platform_admin",
+      "create_company_with_manager",
+      "create_employee_login",
+      "create_manager_account",
+      "deny_request",
+      "reset_user_pin",
+      "resolve_credential_reset_request",
+      "set_company_status",
+      "submit_change_request",
+      "submit_credential_reset_request",
+      "terminate_company",
+      "update_admin_credentials"
+    ],
+    "schema": {
+      "tables": [
+        "auth.audit_log_entries",
+        "auth.flow_state",
+        "auth.identities",
+        "auth.instances",
+        "auth.mfa_amr_claims",
+        "auth.mfa_challenges",
+        "auth.mfa_factors",
+        "auth.oauth_authorizations",
+        "auth.oauth_client_states",
+        "auth.oauth_clients",
+        "auth.oauth_consents",
+        "auth.one_time_tokens",
+        "auth.refresh_tokens",
+        "auth.saml_providers",
+        "auth.saml_relay_states",
+        "auth.schema_migrations",
+        "auth.sessions",
+        "auth.sso_domains",
+        "auth.sso_providers",
+        "auth.users",
+        "extensions.pg_stat_statements",
+        "extensions.pg_stat_statements_info",
+        "public.companies",
+        "public.credential_reset_requests",
+        "public.crew_members",
+        "public.crews",
+        "public.employees",
+        "public.job_sites",
+        "public.job_types",
+        "public.locations",
+        "public.platform_admin_reset_tokens",
+        "public.requests",
+        "public.schedules",
+        "public.shift_jobs",
+        "public.shifts",
+        "public.users",
+        "realtime.messages",
+        "realtime.schema_migrations",
+        "realtime.subscription",
+        "storage.buckets",
+        "storage.buckets_analytics",
+        "storage.buckets_vectors",
+        "storage.migrations",
+        "storage.objects",
+        "storage.prefixes",
+        "storage.s3_multipart_uploads",
+        "storage.s3_multipart_uploads_parts",
+        "storage.vector_indexes",
+        "supabase_migrations.schema_migrations",
+        "vault.decrypted_secrets",
+        "vault.secrets"
+      ],
+      "views": [
+        "extensions.pg_stat_statements",
+        "extensions.pg_stat_statements_info",
+        "vault.decrypted_secrets"
+      ],
+      "db_functions": [
+        {
+          "schema": "auth",
+          "name": "email",
+          "signature": "email()",
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "auth",
+          "name": "jwt",
+          "signature": "jwt()",
+          "return_type": "jsonb",
+          "language": "sql"
+        },
+        {
+          "schema": "auth",
+          "name": "role",
+          "signature": "role()",
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "auth",
+          "name": "uid",
+          "signature": "uid()",
+          "return_type": "uuid",
+          "language": "sql"
+        },
+        {
+          "schema": "extensions",
+          "name": "armor",
+          "signature": "armor(bytea)",
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "armor",
+          "signature": "armor(bytea, text[], text[])",
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "crypt",
+          "signature": "crypt(text, text)",
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "dearmor",
+          "signature": "dearmor(text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "decrypt",
+          "signature": "decrypt(bytea, bytea, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "decrypt_iv",
+          "signature": "decrypt_iv(bytea, bytea, bytea, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "digest",
+          "signature": "digest(bytea, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "digest",
+          "signature": "digest(text, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "encrypt",
+          "signature": "encrypt(bytea, bytea, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "encrypt_iv",
+          "signature": "encrypt_iv(bytea, bytea, bytea, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_random_bytes",
+          "signature": "gen_random_bytes(integer)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_random_uuid",
+          "signature": "gen_random_uuid()",
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_salt",
+          "signature": "gen_salt(text)",
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_salt",
+          "signature": "gen_salt(text, integer)",
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "grant_pg_cron_access",
+          "signature": "grant_pg_cron_access()",
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "extensions",
+          "name": "grant_pg_graphql_access",
+          "signature": "grant_pg_graphql_access()",
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "extensions",
+          "name": "grant_pg_net_access",
+          "signature": "grant_pg_net_access()",
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "extensions",
+          "name": "hmac",
+          "signature": "hmac(bytea, bytea, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "hmac",
+          "signature": "hmac(text, text, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pg_stat_statements",
+          "signature": "pg_stat_statements(showtext boolean, OUT userid oid, OUT dbid oid, OUT toplevel boolean, OUT queryid bigint, OUT query text, OUT plans bigint, OUT total_plan_time double precision, OUT min_plan_time double precision, OUT max_plan_time double precision, OUT mean_plan_time double precision, OUT stddev_plan_time double precision, OUT calls bigint, OUT total_exec_time double precision, OUT min_exec_time double precision, OUT max_exec_time double precision, OUT mean_exec_time double precision, OUT stddev_exec_time double precision, OUT rows bigint, OUT shared_blks_hit bigint, OUT shared_blks_read bigint, OUT shared_blks_dirtied bigint, OUT shared_blks_written bigint, OUT local_blks_hit bigint, OUT local_blks_read bigint, OUT local_blks_dirtied bigint, OUT local_blks_written bigint, OUT temp_blks_read bigint, OUT temp_blks_written bigint, OUT shared_blk_read_time double precision, OUT shared_blk_write_time double precision, OUT local_blk_read_time double precision, OUT local_blk_write_time double precision, OUT temp_blk_read_time double precision, OUT temp_blk_write_time double precision, OUT wal_records bigint, OUT wal_fpi bigint, OUT wal_bytes numeric, OUT jit_functions bigint, OUT jit_generation_time double precision, OUT jit_inlining_count bigint, OUT jit_inlining_time double precision, OUT jit_optimization_count bigint, OUT jit_optimization_time double precision, OUT jit_emission_count bigint, OUT jit_emission_time double precision, OUT jit_deform_count bigint, OUT jit_deform_time double precision, OUT stats_since timestamp with time zone, OUT minmax_stats_since timestamp with time zone)",
+          "return_type": "SETOF record",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pg_stat_statements_info",
+          "signature": "pg_stat_statements_info(OUT dealloc bigint, OUT stats_reset timestamp with time zone)",
+          "return_type": "record",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pg_stat_statements_reset",
+          "signature": "pg_stat_statements_reset(userid oid DEFAULT 0, dbid oid DEFAULT 0, queryid bigint DEFAULT 0, minmax_only boolean DEFAULT false)",
+          "return_type": "timestamp with time zone",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_armor_headers",
+          "signature": "pgp_armor_headers(text, OUT key text, OUT value text)",
+          "return_type": "SETOF record",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_key_id",
+          "signature": "pgp_key_id(bytea)",
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt",
+          "signature": "pgp_pub_decrypt(bytea, bytea)",
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt",
+          "signature": "pgp_pub_decrypt(bytea, bytea, text)",
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt",
+          "signature": "pgp_pub_decrypt(bytea, bytea, text, text)",
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt_bytea",
+          "signature": "pgp_pub_decrypt_bytea(bytea, bytea)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt_bytea",
+          "signature": "pgp_pub_decrypt_bytea(bytea, bytea, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt_bytea",
+          "signature": "pgp_pub_decrypt_bytea(bytea, bytea, text, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt",
+          "signature": "pgp_pub_encrypt(text, bytea)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt",
+          "signature": "pgp_pub_encrypt(text, bytea, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt_bytea",
+          "signature": "pgp_pub_encrypt_bytea(bytea, bytea)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt_bytea",
+          "signature": "pgp_pub_encrypt_bytea(bytea, bytea, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt",
+          "signature": "pgp_sym_decrypt(bytea, text)",
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt",
+          "signature": "pgp_sym_decrypt(bytea, text, text)",
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt_bytea",
+          "signature": "pgp_sym_decrypt_bytea(bytea, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt_bytea",
+          "signature": "pgp_sym_decrypt_bytea(bytea, text, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt",
+          "signature": "pgp_sym_encrypt(text, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt",
+          "signature": "pgp_sym_encrypt(text, text, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt_bytea",
+          "signature": "pgp_sym_encrypt_bytea(bytea, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt_bytea",
+          "signature": "pgp_sym_encrypt_bytea(bytea, text, text)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgrst_ddl_watch",
+          "signature": "pgrst_ddl_watch()",
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgrst_drop_watch",
+          "signature": "pgrst_drop_watch()",
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "extensions",
+          "name": "set_graphql_placeholder",
+          "signature": "set_graphql_placeholder()",
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v1",
+          "signature": "uuid_generate_v1()",
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v1mc",
+          "signature": "uuid_generate_v1mc()",
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v3",
+          "signature": "uuid_generate_v3(namespace uuid, name text)",
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v4",
+          "signature": "uuid_generate_v4()",
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v5",
+          "signature": "uuid_generate_v5(namespace uuid, name text)",
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_nil",
+          "signature": "uuid_nil()",
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_dns",
+          "signature": "uuid_ns_dns()",
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_oid",
+          "signature": "uuid_ns_oid()",
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_url",
+          "signature": "uuid_ns_url()",
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_x500",
+          "signature": "uuid_ns_x500()",
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "graphql",
+          "name": "_internal_resolve",
+          "signature": "_internal_resolve(query text, variables jsonb DEFAULT '{}'::jsonb, \"operationName\" text DEFAULT NULL::text, extensions jsonb DEFAULT NULL::jsonb)",
+          "return_type": "jsonb",
+          "language": "c"
+        },
+        {
+          "schema": "graphql",
+          "name": "comment_directive",
+          "signature": "comment_directive(comment_ text)",
+          "return_type": "jsonb",
+          "language": "sql"
+        },
+        {
+          "schema": "graphql",
+          "name": "exception",
+          "signature": "exception(message text)",
+          "return_type": "text",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "graphql",
+          "name": "get_schema_version",
+          "signature": "get_schema_version()",
+          "return_type": "integer",
+          "language": "sql"
+        },
+        {
+          "schema": "graphql",
+          "name": "increment_schema_version",
+          "signature": "increment_schema_version()",
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "graphql",
+          "name": "resolve",
+          "signature": "resolve(query text, variables jsonb DEFAULT '{}'::jsonb, \"operationName\" text DEFAULT NULL::text, extensions jsonb DEFAULT NULL::jsonb)",
+          "return_type": "jsonb",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "graphql_public",
+          "name": "graphql",
+          "signature": "graphql(\"operationName\" text DEFAULT NULL::text, query text DEFAULT NULL::text, variables jsonb DEFAULT NULL::jsonb, extensions jsonb DEFAULT NULL::jsonb)",
+          "return_type": "jsonb",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "company_is_active",
+          "signature": "company_is_active(code text)",
+          "return_type": "boolean",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "consume_platform_admin_reset_token",
+          "signature": "consume_platform_admin_reset_token(plaintext_token text)",
+          "return_type": "jsonb",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "public",
+          "name": "create_platform_admin_reset_token",
+          "signature": "create_platform_admin_reset_token(target_user_id uuid)",
+          "return_type": "text",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "public",
+          "name": "current_company_code",
+          "signature": "current_company_code()",
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "current_company_is_active",
+          "signature": "current_company_is_active()",
+          "return_type": "boolean",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "current_employee_id",
+          "signature": "current_employee_id()",
+          "return_type": "uuid",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "current_role",
+          "signature": "current_role()",
+          "return_type": "user_role",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "current_user_active",
+          "signature": "current_user_active()",
+          "return_type": "boolean",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "current_user_role",
+          "signature": "current_user_role()",
+          "return_type": "user_role",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "is_manager",
+          "signature": "is_manager()",
+          "return_type": "boolean",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "is_platform_admin",
+          "signature": "is_platform_admin()",
+          "return_type": "boolean",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "platform_admin_recovery_set_pin",
+          "signature": "platform_admin_recovery_set_pin(new_pin text)",
+          "return_type": "jsonb",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "public",
+          "name": "prevent_company_code_update",
+          "signature": "prevent_company_code_update()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "public",
+          "name": "set_updated_at",
+          "signature": "set_updated_at()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "public",
+          "name": "sync_my_pin_hash_and_clear_force_pin_change",
+          "signature": "sync_my_pin_hash_and_clear_force_pin_change(new_pin text)",
+          "return_type": "jsonb",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "apply_rls",
+          "signature": "apply_rls(wal jsonb, max_record_bytes integer DEFAULT (1024 * 1024))",
+          "return_type": "SETOF realtime.wal_rls",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "broadcast_changes",
+          "signature": "broadcast_changes(topic_name text, event_name text, operation text, table_name text, table_schema text, new record, old record, level text DEFAULT 'ROW'::text)",
+          "return_type": "void",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "build_prepared_statement_sql",
+          "signature": "build_prepared_statement_sql(prepared_statement_name text, entity regclass, columns realtime.wal_column[])",
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "realtime",
+          "name": "cast",
+          "signature": "cast(val text, type_ regtype)",
+          "return_type": "jsonb",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "check_equality_op",
+          "signature": "check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text)",
+          "return_type": "boolean",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "is_visible_through_filters",
+          "signature": "is_visible_through_filters(columns realtime.wal_column[], filters realtime.user_defined_filter[])",
+          "return_type": "boolean",
+          "language": "sql"
+        },
+        {
+          "schema": "realtime",
+          "name": "list_changes",
+          "signature": "list_changes(publication name, slot_name name, max_changes integer, max_record_bytes integer)",
+          "return_type": "SETOF realtime.wal_rls",
+          "language": "sql"
+        },
+        {
+          "schema": "realtime",
+          "name": "quote_wal2json",
+          "signature": "quote_wal2json(entity regclass)",
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "realtime",
+          "name": "send",
+          "signature": "send(payload jsonb, event text, topic text, private boolean DEFAULT true)",
+          "return_type": "void",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "subscription_check_filters",
+          "signature": "subscription_check_filters()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "to_regrole",
+          "signature": "to_regrole(role_name text)",
+          "return_type": "regrole",
+          "language": "sql"
+        },
+        {
+          "schema": "realtime",
+          "name": "topic",
+          "signature": "topic()",
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "storage",
+          "name": "add_prefixes",
+          "signature": "add_prefixes(_bucket_id text, _name text)",
+          "return_type": "void",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "can_insert_object",
+          "signature": "can_insert_object(bucketid text, name text, owner uuid, metadata jsonb)",
+          "return_type": "void",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "delete_leaf_prefixes",
+          "signature": "delete_leaf_prefixes(bucket_ids text[], names text[])",
+          "return_type": "void",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "delete_prefix",
+          "signature": "delete_prefix(_bucket_id text, _name text)",
+          "return_type": "boolean",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "delete_prefix_hierarchy_trigger",
+          "signature": "delete_prefix_hierarchy_trigger()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "enforce_bucket_name_length",
+          "signature": "enforce_bucket_name_length()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "extension",
+          "signature": "extension(name text)",
+          "return_type": "text",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "filename",
+          "signature": "filename(name text)",
+          "return_type": "text",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "foldername",
+          "signature": "foldername(name text)",
+          "return_type": "text[]",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "get_level",
+          "signature": "get_level(name text)",
+          "return_type": "integer",
+          "language": "sql"
+        },
+        {
+          "schema": "storage",
+          "name": "get_prefix",
+          "signature": "get_prefix(name text)",
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "storage",
+          "name": "get_prefixes",
+          "signature": "get_prefixes(name text)",
+          "return_type": "text[]",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "get_size_by_bucket",
+          "signature": "get_size_by_bucket()",
+          "return_type": "TABLE(size bigint, bucket_id text)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "list_multipart_uploads_with_delimiter",
+          "signature": "list_multipart_uploads_with_delimiter(bucket_id text, prefix_param text, delimiter_param text, max_keys integer DEFAULT 100, next_key_token text DEFAULT ''::text, next_upload_token text DEFAULT ''::text)",
+          "return_type": "TABLE(key text, id text, created_at timestamp with time zone)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "list_objects_with_delimiter",
+          "signature": "list_objects_with_delimiter(bucket_id text, prefix_param text, delimiter_param text, max_keys integer DEFAULT 100, start_after text DEFAULT ''::text, next_token text DEFAULT ''::text)",
+          "return_type": "TABLE(name text, id uuid, metadata jsonb, updated_at timestamp with time zone)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "lock_top_prefixes",
+          "signature": "lock_top_prefixes(bucket_ids text[], names text[])",
+          "return_type": "void",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_delete_cleanup",
+          "signature": "objects_delete_cleanup()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_insert_prefix_trigger",
+          "signature": "objects_insert_prefix_trigger()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_update_cleanup",
+          "signature": "objects_update_cleanup()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_update_level_trigger",
+          "signature": "objects_update_level_trigger()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_update_prefix_trigger",
+          "signature": "objects_update_prefix_trigger()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "operation",
+          "signature": "operation()",
+          "return_type": "text",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "prefixes_delete_cleanup",
+          "signature": "prefixes_delete_cleanup()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "prefixes_insert_trigger",
+          "signature": "prefixes_insert_trigger()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "search",
+          "signature": "search(prefix text, bucketname text, limits integer DEFAULT 100, levels integer DEFAULT 1, offsets integer DEFAULT 0, search text DEFAULT ''::text, sortcolumn text DEFAULT 'name'::text, sortorder text DEFAULT 'asc'::text)",
+          "return_type": "TABLE(name text, id uuid, updated_at timestamp with time zone, created_at timestamp with time zone, last_accessed_at timestamp with time zone, metadata jsonb)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "search_legacy_v1",
+          "signature": "search_legacy_v1(prefix text, bucketname text, limits integer DEFAULT 100, levels integer DEFAULT 1, offsets integer DEFAULT 0, search text DEFAULT ''::text, sortcolumn text DEFAULT 'name'::text, sortorder text DEFAULT 'asc'::text)",
+          "return_type": "TABLE(name text, id uuid, updated_at timestamp with time zone, created_at timestamp with time zone, last_accessed_at timestamp with time zone, metadata jsonb)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "search_v1_optimised",
+          "signature": "search_v1_optimised(prefix text, bucketname text, limits integer DEFAULT 100, levels integer DEFAULT 1, offsets integer DEFAULT 0, search text DEFAULT ''::text, sortcolumn text DEFAULT 'name'::text, sortorder text DEFAULT 'asc'::text)",
+          "return_type": "TABLE(name text, id uuid, updated_at timestamp with time zone, created_at timestamp with time zone, last_accessed_at timestamp with time zone, metadata jsonb)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "search_v2",
+          "signature": "search_v2(prefix text, bucket_name text, limits integer DEFAULT 100, levels integer DEFAULT 1, start_after text DEFAULT ''::text, sort_order text DEFAULT 'asc'::text, sort_column text DEFAULT 'name'::text, sort_column_after text DEFAULT ''::text)",
+          "return_type": "TABLE(key text, name text, id uuid, updated_at timestamp with time zone, created_at timestamp with time zone, last_accessed_at timestamp with time zone, metadata jsonb)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "update_updated_at_column",
+          "signature": "update_updated_at_column()",
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "vault",
+          "name": "_crypto_aead_det_decrypt",
+          "signature": "_crypto_aead_det_decrypt(message bytea, additional bytea, key_id bigint, context bytea DEFAULT '\\x7067736f6469756d'::bytea, nonce bytea DEFAULT NULL::bytea)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "vault",
+          "name": "_crypto_aead_det_encrypt",
+          "signature": "_crypto_aead_det_encrypt(message bytea, additional bytea, key_id bigint, context bytea DEFAULT '\\x7067736f6469756d'::bytea, nonce bytea DEFAULT NULL::bytea)",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "vault",
+          "name": "_crypto_aead_det_noncegen",
+          "signature": "_crypto_aead_det_noncegen()",
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "vault",
+          "name": "create_secret",
+          "signature": "create_secret(new_secret text, new_name text DEFAULT NULL::text, new_description text DEFAULT ''::text, new_key_id uuid DEFAULT NULL::uuid)",
+          "return_type": "uuid",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "vault",
+          "name": "update_secret",
+          "signature": "update_secret(secret_id uuid, new_secret text DEFAULT NULL::text, new_name text DEFAULT NULL::text, new_description text DEFAULT NULL::text, new_key_id uuid DEFAULT NULL::uuid)",
+          "return_type": "void",
+          "language": "plpgsql"
+        }
+      ]
+    },
+    "auth": {
+      "strategy": {
+        "type": "supabase_auth",
+        "login": {
+          "type": "edge_function",
+          "name": "auth_login",
+          "path": "/functions/v1/auth_login"
+        }
+      },
+      "tenant_key": "company_code (generated from companyCode)",
+      "auth_model": "supabase_auth",
+      "login_endpoint": "/functions/v1/auth_login"
+    }
+  },
+  "logs_snapshot": {
+    "live_schema_log": {
+      "project": {
+        "supabase_project_ref": "xwroayzhbbwbiuswtuvs",
+        "db_host_hint": "aws-0-us-west-2.pooler.supabase.com",
+        "schema_names": [
+          "auth",
+          "extensions",
+          "graphql",
+          "graphql_public",
+          "public",
+          "realtime",
+          "storage",
+          "supabase_migrations",
+          "vault"
+        ]
+      },
+      "tables": [
+        "auth.audit_log_entries",
+        "auth.flow_state",
+        "auth.identities",
+        "auth.instances",
+        "auth.mfa_amr_claims",
+        "auth.mfa_challenges",
+        "auth.mfa_factors",
+        "auth.oauth_authorizations",
+        "auth.oauth_client_states",
+        "auth.oauth_clients",
+        "auth.oauth_consents",
+        "auth.one_time_tokens",
+        "auth.refresh_tokens",
+        "auth.saml_providers",
+        "auth.saml_relay_states",
+        "auth.schema_migrations",
+        "auth.sessions",
+        "auth.sso_domains",
+        "auth.sso_providers",
+        "auth.users",
+        "extensions.pg_stat_statements",
+        "extensions.pg_stat_statements_info",
+        "public.companies",
+        "public.credential_reset_requests",
+        "public.crew_members",
+        "public.crews",
+        "public.employees",
+        "public.job_sites",
+        "public.job_types",
+        "public.locations",
+        "public.platform_admin_reset_tokens",
+        "public.requests",
+        "public.schedules",
+        "public.shift_jobs",
+        "public.shifts",
+        "public.users",
+        "realtime.messages",
+        "realtime.schema_migrations",
+        "realtime.subscription",
+        "storage.buckets",
+        "storage.buckets_analytics",
+        "storage.buckets_vectors",
+        "storage.migrations",
+        "storage.objects",
+        "storage.prefixes",
+        "storage.s3_multipart_uploads",
+        "storage.s3_multipart_uploads_parts",
+        "storage.vector_indexes",
+        "supabase_migrations.schema_migrations",
+        "vault.decrypted_secrets",
+        "vault.secrets"
+      ],
+      "views": [
+        "extensions.pg_stat_statements",
+        "extensions.pg_stat_statements_info",
+        "vault.decrypted_secrets"
+      ],
+      "db_functions": [
+        {
+          "schema": "auth",
+          "name": "email",
+          "signature": null,
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "auth",
+          "name": "jwt",
+          "signature": null,
+          "return_type": "jsonb",
+          "language": "sql"
+        },
+        {
+          "schema": "auth",
+          "name": "role",
+          "signature": null,
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "auth",
+          "name": "uid",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "sql"
+        },
+        {
+          "schema": "extensions",
+          "name": "armor",
+          "signature": null,
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "armor",
+          "signature": null,
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "crypt",
+          "signature": null,
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "dearmor",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "decrypt",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "decrypt_iv",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "digest",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "digest",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "encrypt",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "encrypt_iv",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_random_bytes",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_random_uuid",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_salt",
+          "signature": null,
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_salt",
+          "signature": null,
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "grant_pg_cron_access",
+          "signature": null,
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "extensions",
+          "name": "grant_pg_graphql_access",
+          "signature": null,
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "extensions",
+          "name": "grant_pg_net_access",
+          "signature": null,
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "extensions",
+          "name": "hmac",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "hmac",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pg_stat_statements",
+          "signature": null,
+          "return_type": "SETOF record",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pg_stat_statements_info",
+          "signature": null,
+          "return_type": "record",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pg_stat_statements_reset",
+          "signature": null,
+          "return_type": "timestamp with time zone",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_armor_headers",
+          "signature": null,
+          "return_type": "SETOF record",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_key_id",
+          "signature": null,
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt",
+          "signature": null,
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt",
+          "signature": null,
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt",
+          "signature": null,
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt_bytea",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt_bytea",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt_bytea",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt_bytea",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt_bytea",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt",
+          "signature": null,
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt",
+          "signature": null,
+          "return_type": "text",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt_bytea",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt_bytea",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt_bytea",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt_bytea",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgrst_ddl_watch",
+          "signature": null,
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgrst_drop_watch",
+          "signature": null,
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "extensions",
+          "name": "set_graphql_placeholder",
+          "signature": null,
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v1",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v1mc",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v3",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v4",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v5",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_nil",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_dns",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_oid",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_url",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_x500",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "c"
+        },
+        {
+          "schema": "graphql",
+          "name": "_internal_resolve",
+          "signature": null,
+          "return_type": "jsonb",
+          "language": "c"
+        },
+        {
+          "schema": "graphql",
+          "name": "comment_directive",
+          "signature": null,
+          "return_type": "jsonb",
+          "language": "sql"
+        },
+        {
+          "schema": "graphql",
+          "name": "exception",
+          "signature": null,
+          "return_type": "text",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "graphql",
+          "name": "get_schema_version",
+          "signature": null,
+          "return_type": "integer",
+          "language": "sql"
+        },
+        {
+          "schema": "graphql",
+          "name": "increment_schema_version",
+          "signature": null,
+          "return_type": "event_trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "graphql",
+          "name": "resolve",
+          "signature": null,
+          "return_type": "jsonb",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "graphql_public",
+          "name": "graphql",
+          "signature": null,
+          "return_type": "jsonb",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "company_is_active",
+          "signature": null,
+          "return_type": "boolean",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "consume_platform_admin_reset_token",
+          "signature": null,
+          "return_type": "jsonb",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "public",
+          "name": "create_platform_admin_reset_token",
+          "signature": null,
+          "return_type": "text",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "public",
+          "name": "current_company_code",
+          "signature": null,
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "current_company_is_active",
+          "signature": null,
+          "return_type": "boolean",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "current_employee_id",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "current_role",
+          "signature": null,
+          "return_type": "user_role",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "current_user_active",
+          "signature": null,
+          "return_type": "boolean",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "current_user_role",
+          "signature": null,
+          "return_type": "user_role",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "is_manager",
+          "signature": null,
+          "return_type": "boolean",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "is_platform_admin",
+          "signature": null,
+          "return_type": "boolean",
+          "language": "sql"
+        },
+        {
+          "schema": "public",
+          "name": "platform_admin_recovery_set_pin",
+          "signature": null,
+          "return_type": "jsonb",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "public",
+          "name": "prevent_company_code_update",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "public",
+          "name": "set_updated_at",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "public",
+          "name": "sync_my_pin_hash_and_clear_force_pin_change",
+          "signature": null,
+          "return_type": "jsonb",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "apply_rls",
+          "signature": null,
+          "return_type": "SETOF realtime.wal_rls",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "broadcast_changes",
+          "signature": null,
+          "return_type": "void",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "build_prepared_statement_sql",
+          "signature": null,
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "realtime",
+          "name": "cast",
+          "signature": null,
+          "return_type": "jsonb",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "check_equality_op",
+          "signature": null,
+          "return_type": "boolean",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "is_visible_through_filters",
+          "signature": null,
+          "return_type": "boolean",
+          "language": "sql"
+        },
+        {
+          "schema": "realtime",
+          "name": "list_changes",
+          "signature": null,
+          "return_type": "SETOF realtime.wal_rls",
+          "language": "sql"
+        },
+        {
+          "schema": "realtime",
+          "name": "quote_wal2json",
+          "signature": null,
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "realtime",
+          "name": "send",
+          "signature": null,
+          "return_type": "void",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "subscription_check_filters",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "realtime",
+          "name": "to_regrole",
+          "signature": null,
+          "return_type": "regrole",
+          "language": "sql"
+        },
+        {
+          "schema": "realtime",
+          "name": "topic",
+          "signature": null,
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "storage",
+          "name": "add_prefixes",
+          "signature": null,
+          "return_type": "void",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "can_insert_object",
+          "signature": null,
+          "return_type": "void",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "delete_leaf_prefixes",
+          "signature": null,
+          "return_type": "void",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "delete_prefix",
+          "signature": null,
+          "return_type": "boolean",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "delete_prefix_hierarchy_trigger",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "enforce_bucket_name_length",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "extension",
+          "signature": null,
+          "return_type": "text",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "filename",
+          "signature": null,
+          "return_type": "text",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "foldername",
+          "signature": null,
+          "return_type": "text[]",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "get_level",
+          "signature": null,
+          "return_type": "integer",
+          "language": "sql"
+        },
+        {
+          "schema": "storage",
+          "name": "get_prefix",
+          "signature": null,
+          "return_type": "text",
+          "language": "sql"
+        },
+        {
+          "schema": "storage",
+          "name": "get_prefixes",
+          "signature": null,
+          "return_type": "text[]",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "get_size_by_bucket",
+          "signature": null,
+          "return_type": "TABLE(size bigint, bucket_id text)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "list_multipart_uploads_with_delimiter",
+          "signature": null,
+          "return_type": "TABLE(key text, id text, created_at timestamp with time zone)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "list_objects_with_delimiter",
+          "signature": null,
+          "return_type": "TABLE(name text, id uuid, metadata jsonb, updated_at timestamp with time zone)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "lock_top_prefixes",
+          "signature": null,
+          "return_type": "void",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_delete_cleanup",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_insert_prefix_trigger",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_update_cleanup",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_update_level_trigger",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_update_prefix_trigger",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "operation",
+          "signature": null,
+          "return_type": "text",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "prefixes_delete_cleanup",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "prefixes_insert_trigger",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "search",
+          "signature": null,
+          "return_type": "TABLE(name text, id uuid, updated_at timestamp with time zone, created_at timestamp with time zone, last_accessed_at timestamp with time zone, metadata jsonb)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "search_legacy_v1",
+          "signature": null,
+          "return_type": "TABLE(name text, id uuid, updated_at timestamp with time zone, created_at timestamp with time zone, last_accessed_at timestamp with time zone, metadata jsonb)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "search_v1_optimised",
+          "signature": null,
+          "return_type": "TABLE(name text, id uuid, updated_at timestamp with time zone, created_at timestamp with time zone, last_accessed_at timestamp with time zone, metadata jsonb)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "search_v2",
+          "signature": null,
+          "return_type": "TABLE(key text, name text, id uuid, updated_at timestamp with time zone, created_at timestamp with time zone, last_accessed_at timestamp with time zone, metadata jsonb)",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "storage",
+          "name": "update_updated_at_column",
+          "signature": null,
+          "return_type": "trigger",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "vault",
+          "name": "_crypto_aead_det_decrypt",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "vault",
+          "name": "_crypto_aead_det_encrypt",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "vault",
+          "name": "_crypto_aead_det_noncegen",
+          "signature": null,
+          "return_type": "bytea",
+          "language": "c"
+        },
+        {
+          "schema": "vault",
+          "name": "create_secret",
+          "signature": null,
+          "return_type": "uuid",
+          "language": "plpgsql"
+        },
+        {
+          "schema": "vault",
+          "name": "update_secret",
+          "signature": null,
+          "return_type": "void",
+          "language": "plpgsql"
+        }
+      ]
+    },
+    "api_contract": {
+      "version": "1.0.0",
+      "base_url": "SUPABASE_URL",
+      "auth_strategy": {
+        "type": "supabase_auth",
+        "login": {
+          "type": "edge_function",
+          "name": "auth_login",
+          "path": "/functions/v1/auth_login"
+        }
+      },
+      "tenant_key": "company_code (generated from companyCode)",
+      "edge_functions": [
+        {
+          "name": "auth_login",
+          "path": "/functions/v1/auth_login"
+        },
+        {
+          "name": "bootstrap_platform_admin",
+          "path": "/functions/v1/bootstrap_platform_admin"
+        },
+        {
+          "name": "create_company_with_manager",
+          "path": "/functions/v1/create_company_with_manager"
+        },
+        {
+          "name": "create_manager_account",
+          "path": "/functions/v1/create_manager_account"
+        },
+        {
+          "name": "set_company_status",
+          "path": "/functions/v1/set_company_status"
+        },
+        {
+          "name": "terminate_company",
+          "path": "/functions/v1/terminate_company"
+        },
+        {
+          "name": "update_admin_credentials",
+          "path": "/functions/v1/update_admin_credentials"
+        },
+        {
+          "name": "create_employee_login",
+          "path": "/functions/v1/create_employee_login"
+        },
+        {
+          "name": "reset_user_pin",
+          "path": "/functions/v1/reset_user_pin"
+        },
+        {
+          "name": "submit_change_request",
+          "path": "/functions/v1/submit_change_request"
+        },
+        {
+          "name": "submit_credential_reset_request",
+          "path": "/functions/v1/submit_credential_reset_request"
+        },
+        {
+          "name": "resolve_credential_reset_request",
+          "path": "/functions/v1/resolve_credential_reset_request"
+        },
+        {
+          "name": "approve_request",
+          "path": "/functions/v1/approve_request"
+        },
+        {
+          "name": "deny_request",
+          "path": "/functions/v1/deny_request"
+        }
+      ],
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/functions/v1/auth_login",
+          "description": "Login with companyCode+username+pin or email+pin; returns Supabase session and profile.",
+          "auth_required": false,
+          "roles_allowed": [
+            "public"
+          ],
+          "request_schema": {
+            "companyCode": "string (required if username provided)",
+            "username": "string (required if companyCode provided)",
+            "email": "string (optional alternative)",
+            "pin": "string (4 digits)"
+          },
+          "response_schema": {
+            "success": {
+              "session": {
+                "access_token": "string",
+                "refresh_token": "string",
+                "expires_in": "number",
+                "token_type": "string",
+                "user_id": "uuid"
+              },
+              "profile": {
+                "id": "uuid",
+                "companyCode": "string",
+                "username": "string",
+                "role": "platform_admin|manager|employee",
+                "employeeId": "uuid|null",
+                "active": "boolean",
+                "forcePinChange": "boolean"
+              }
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "companyCode",
+                "username",
+                "role",
+                "employeeId",
+                "active",
+                "force_pin_change"
+              ]
+            },
+            {
+              "table": "public.companies",
+              "columns": [
+                "companyCode",
+                "isDisabled"
+              ]
+            },
+            {
+              "table": "auth.users",
+              "columns": [
+                "id",
+                "email",
+                "encrypted_password"
+              ]
+            }
+          ],
+          "rls_notes": "Uses service role for public.users/companies lookups; validates active user and company not disabled.",
+          "errors": [
+            "E_AUTH_INVALID",
+            "E_FORBIDDEN",
+            "E_NOT_FOUND",
+            "E_COMPANY_DISABLED",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/bootstrap_platform_admin",
+          "description": "Bootstrap initial platform admin using a one-time token.",
+          "auth_required": false,
+          "roles_allowed": [
+            "bootstrap_token"
+          ],
+          "request_schema": {
+            "token": "string",
+            "username": "string",
+            "pin": "string (4 digits)"
+          },
+          "response_schema": {
+            "success": {
+              "ok": true,
+              "companyCode": "PLATFORM",
+              "username": "string",
+              "pin": "string",
+              "authUserId": "uuid"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.companies",
+              "columns": [
+                "companyCode",
+                "companyName",
+                "isDisabled",
+                "supportEnabled"
+              ]
+            },
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "companyCode",
+                "username",
+                "pinHash",
+                "role",
+                "employeeId",
+                "active"
+              ]
+            },
+            {
+              "table": "auth.users",
+              "columns": [
+                "id",
+                "email",
+                "encrypted_password"
+              ]
+            }
+          ],
+          "rls_notes": "Uses service role; validates bootstrap token; manual checks only.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_CONFLICT",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/create_company_with_manager",
+          "description": "Platform admin creates a company and initial manager.",
+          "auth_required": true,
+          "roles_allowed": [
+            "platform_admin"
+          ],
+          "request_schema": {
+            "companyName": "string",
+            "companyCode": "string",
+            "managerUsername": "string",
+            "managerPin": "string (4 digits)"
+          },
+          "response_schema": {
+            "success": {
+              "companyId": "uuid",
+              "companyCode": "string",
+              "managerUsername": "string",
+              "managerPin": "string"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.companies",
+              "columns": [
+                "companyCode",
+                "companyName",
+                "isDisabled",
+                "supportEnabled"
+              ]
+            },
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "companyCode",
+                "username",
+                "pinHash",
+                "role",
+                "employeeId",
+                "active"
+              ]
+            },
+            {
+              "table": "auth.users",
+              "columns": [
+                "id",
+                "email",
+                "encrypted_password"
+              ]
+            }
+          ],
+          "rls_notes": "Uses service role; manual role and tenant checks.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_CONFLICT",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/create_manager_account",
+          "description": "Platform admin creates an additional manager for an existing company.",
+          "auth_required": true,
+          "roles_allowed": [
+            "platform_admin"
+          ],
+          "request_schema": {
+            "companyCode": "string",
+            "managerUsername": "string",
+            "managerPin": "string (4 digits)"
+          },
+          "response_schema": {
+            "success": {
+              "ok": true,
+              "companyCode": "string",
+              "managerUsername": "string",
+              "managerPin": "string",
+              "managerUserId": "uuid"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.companies",
+              "columns": [
+                "companyCode",
+                "isDisabled"
+              ]
+            },
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "companyCode",
+                "username",
+                "pinHash",
+                "role",
+                "employeeId",
+                "active"
+              ]
+            },
+            {
+              "table": "auth.users",
+              "columns": [
+                "id",
+                "email",
+                "encrypted_password"
+              ]
+            }
+          ],
+          "rls_notes": "Uses service role; manual role and tenant checks.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_CONFLICT",
+            "E_NOT_FOUND",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/set_company_status",
+          "description": "Platform admin enables/disables a company; optionally reactivates users.",
+          "auth_required": true,
+          "roles_allowed": [
+            "platform_admin"
+          ],
+          "request_schema": {
+            "companyCode": "string",
+            "isDisabled": "boolean",
+            "reactivateUsers": "boolean (optional)"
+          },
+          "response_schema": {
+            "success": {
+              "ok": true,
+              "companyCode": "string",
+              "isDisabled": "boolean",
+              "reactivateUsers": "boolean"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.companies",
+              "columns": [
+                "companyCode",
+                "isDisabled"
+              ]
+            },
+            {
+              "table": "public.users",
+              "columns": [
+                "companyCode",
+                "active"
+              ]
+            }
+          ],
+          "rls_notes": "Uses service role; manual role checks; tenant boundary enforced by companyCode.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_NOT_FOUND",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/terminate_company",
+          "description": "Platform admin disables a company and deactivates users (legacy alias).",
+          "auth_required": true,
+          "roles_allowed": [
+            "platform_admin"
+          ],
+          "request_schema": {
+            "companyCode": "string"
+          },
+          "response_schema": {
+            "success": {
+              "ok": true
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.companies",
+              "columns": [
+                "companyCode",
+                "isDisabled"
+              ]
+            },
+            {
+              "table": "public.users",
+              "columns": [
+                "companyCode",
+                "active"
+              ]
+            }
+          ],
+          "rls_notes": "Uses service role; manual role checks.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_NOT_FOUND",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/update_admin_credentials",
+          "description": "Platform admin updates own username and/or PIN directly.",
+          "auth_required": true,
+          "roles_allowed": [
+            "platform_admin"
+          ],
+          "request_schema": {
+            "newUsername": "string (optional)",
+            "newPin": "string (optional, 4 digits)"
+          },
+          "response_schema": {
+            "success": {
+              "ok": true,
+              "username": "string",
+              "companyCode": "string"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "companyCode",
+                "username",
+                "pinHash",
+                "active"
+              ]
+            },
+            {
+              "table": "auth.users",
+              "columns": [
+                "id",
+                "email",
+                "encrypted_password"
+              ]
+            }
+          ],
+          "rls_notes": "Uses service role; manual role checks; requires newPin when changing username.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_CONFLICT",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/create_employee_login",
+          "description": "Manager creates/updates employee login (username + PIN).",
+          "auth_required": true,
+          "roles_allowed": [
+            "manager"
+          ],
+          "request_schema": {
+            "companyCode": "string",
+            "employeeId": "uuid",
+            "username": "string",
+            "pin": "string (4 digits)"
+          },
+          "response_schema": {
+            "success": {
+              "username": "string",
+              "pin": "string"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.companies",
+              "columns": [
+                "companyCode",
+                "isDisabled"
+              ]
+            },
+            {
+              "table": "public.employees",
+              "columns": [
+                "id",
+                "companyCode"
+              ]
+            },
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "companyCode",
+                "username",
+                "pinHash",
+                "role",
+                "employeeId",
+                "active"
+              ]
+            },
+            {
+              "table": "auth.users",
+              "columns": [
+                "id",
+                "email",
+                "encrypted_password"
+              ]
+            }
+          ],
+          "rls_notes": "Uses service role; manual role and tenant checks.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_NOT_FOUND",
+            "E_CONFLICT",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/reset_user_pin",
+          "description": "Manager or platform admin resets a user's PIN (manager -> employee, admin -> manager).",
+          "auth_required": true,
+          "roles_allowed": [
+            "manager",
+            "platform_admin"
+          ],
+          "request_schema": {
+            "companyCode": "string",
+            "username": "string",
+            "newPin": "string (4 digits)"
+          },
+          "response_schema": {
+            "success": {
+              "ok": true
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "companyCode",
+                "username",
+                "role",
+                "pinHash",
+                "active"
+              ]
+            },
+            {
+              "table": "public.companies",
+              "columns": [
+                "companyCode",
+                "isDisabled"
+              ]
+            },
+            {
+              "table": "auth.users",
+              "columns": [
+                "id",
+                "encrypted_password"
+              ]
+            }
+          ],
+          "rls_notes": "Uses service role; manual role and tenant checks.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_NOT_FOUND",
+            "E_VALIDATION",
+            "E_COMPANY_DISABLED"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/submit_change_request",
+          "description": "Employee or manager submits a credential change request for self (username and/or PIN).",
+          "auth_required": true,
+          "roles_allowed": [
+            "employee",
+            "manager"
+          ],
+          "request_schema": {
+            "proposedUsername": "string (optional)",
+            "proposedPin": "string (optional, 4 digits)"
+          },
+          "response_schema": {
+            "success": {
+              "ok": true,
+              "requestId": "uuid",
+              "type": "request_type"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "companyCode",
+                "role",
+                "active"
+              ]
+            },
+            {
+              "table": "public.requests",
+              "columns": [
+                "companyCode",
+                "type",
+                "status",
+                "requesterUserId",
+                "targetUserId",
+                "proposedUsername",
+                "proposedPin"
+              ]
+            }
+          ],
+          "rls_notes": "Uses user JWT and RLS insert checks; companyCode must equal current_company_code().",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/submit_credential_reset_request",
+          "description": "Employee submits a forgot-credentials request to managers.",
+          "auth_required": true,
+          "roles_allowed": [
+            "employee"
+          ],
+          "request_schema": {
+            "requestType": "username|pin|both"
+          },
+          "response_schema": {
+            "success": {
+              "ok": true,
+              "requestId": "uuid"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "companyCode",
+                "role",
+                "active"
+              ]
+            },
+            {
+              "table": "public.credential_reset_requests",
+              "columns": [
+                "company_code",
+                "requested_by_user_id",
+                "target_user_id",
+                "request_type",
+                "status"
+              ]
+            }
+          ],
+          "rls_notes": "Uses user JWT and RLS insert checks; company_code must equal current_company_code().",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/resolve_credential_reset_request",
+          "description": "Manager or platform admin approves/denies a credential reset request and updates credentials if approved.",
+          "auth_required": true,
+          "roles_allowed": [
+            "manager",
+            "platform_admin"
+          ],
+          "request_schema": {
+            "requestId": "uuid",
+            "approve": "boolean",
+            "newUsername": "string (optional)",
+            "newPin": "string (optional, 4 digits)"
+          },
+          "response_schema": {
+            "success": {
+              "ok": true
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.credential_reset_requests",
+              "columns": [
+                "id",
+                "company_code",
+                "request_type",
+                "status",
+                "resolved_at"
+              ]
+            },
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "companyCode",
+                "username",
+                "role",
+                "pinHash",
+                "active"
+              ]
+            },
+            {
+              "table": "auth.users",
+              "columns": [
+                "id",
+                "email",
+                "encrypted_password"
+              ]
+            }
+          ],
+          "rls_notes": "Uses service role; manual role and tenant checks; managers limited to employee targets within company.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_NOT_FOUND",
+            "E_VALIDATION",
+            "E_CONFLICT",
+            "E_REQUEST_NOT_PENDING"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/approve_request",
+          "description": "Approve a credential change request (manager or platform admin).",
+          "auth_required": true,
+          "roles_allowed": [
+            "manager",
+            "platform_admin"
+          ],
+          "request_schema": {
+            "requestId": "uuid",
+            "decisionNote": "string (optional)"
+          },
+          "response_schema": {
+            "success": {
+              "ok": true
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.requests",
+              "columns": [
+                "id",
+                "companyCode",
+                "type",
+                "status",
+                "requesterUserId",
+                "targetUserId",
+                "proposedUsername",
+                "proposedPin",
+                "decisionNote",
+                "handledAt",
+                "handledBy"
+              ]
+            },
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "companyCode",
+                "username",
+                "pinHash",
+                "active"
+              ]
+            },
+            {
+              "table": "auth.users",
+              "columns": [
+                "id",
+                "email",
+                "encrypted_password"
+              ]
+            }
+          ],
+          "rls_notes": "Uses service role; manual role checks per request.type and companyCode.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_NOT_FOUND",
+            "E_VALIDATION",
+            "E_CONFLICT",
+            "E_REQUEST_NOT_PENDING"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/functions/v1/deny_request",
+          "description": "Deny a credential change request (manager or platform admin).",
+          "auth_required": true,
+          "roles_allowed": [
+            "manager",
+            "platform_admin"
+          ],
+          "request_schema": {
+            "requestId": "uuid",
+            "decisionNote": "string (optional)"
+          },
+          "response_schema": {
+            "success": {
+              "ok": true
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.requests",
+              "columns": [
+                "id",
+                "companyCode",
+                "type",
+                "status",
+                "decisionNote",
+                "handledAt",
+                "handledBy"
+              ]
+            }
+          ],
+          "rls_notes": "Uses service role; manual role checks per request.type and companyCode.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_NOT_FOUND",
+            "E_VALIDATION",
+            "E_REQUEST_NOT_PENDING"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/rest/v1/rpc/sync_my_pin_hash_and_clear_force_pin_change",
+          "description": "Sync current user's pinHash after updating auth password; clears force_pin_change.",
+          "auth_required": true,
+          "roles_allowed": [
+            "authenticated"
+          ],
+          "request_schema": {
+            "new_pin": "string (4 digits)"
+          },
+          "response_schema": {
+            "success": {
+              "ok": true
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "company_code",
+                "username",
+                "pinHash",
+                "force_pin_change"
+              ]
+            },
+            {
+              "table": "auth.users",
+              "columns": [
+                "id",
+                "encrypted_password"
+              ]
+            }
+          ],
+          "rls_notes": "Security definer function; validates auth.uid and current auth password.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/rest/v1/users",
+          "description": "Fetch user profiles (self, manager company, or platform admin).",
+          "auth_required": true,
+          "roles_allowed": [
+            "employee",
+            "manager",
+            "platform_admin"
+          ],
+          "request_schema": {
+            "filters": "id=eq.<uuid> or companyCode=eq.<code>"
+          },
+          "response_schema": {
+            "success": {
+              "data": "array of users"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.users",
+              "columns": [
+                "id",
+                "companyCode",
+                "username",
+                "role",
+                "employeeId",
+                "active",
+                "force_pin_change"
+              ]
+            }
+          ],
+          "rls_notes": "RLS enforced; employees see self; managers see company; platform admins see all.",
+          "errors": [
+            "E_FORBIDDEN"
+          ]
+        },
+        {
+          "method": "GET,POST,PATCH,DELETE",
+          "path": "/rest/v1/employees",
+          "description": "CRUD employees within a company.",
+          "auth_required": true,
+          "roles_allowed": [
+            "manager",
+            "platform_admin",
+            "employee (GET self only)"
+          ],
+          "request_schema": {
+            "GET": "filters: companyCode=eq.<code> or id=eq.<uuid>",
+            "POST": {
+              "companyCode": "string",
+              "name": "string",
+              "contact": "string",
+              "active": "boolean"
+            },
+            "PATCH": {
+              "id": "uuid",
+              "name": "string (optional)",
+              "contact": "string (optional)",
+              "active": "boolean (optional)"
+            },
+            "DELETE": {
+              "id": "uuid"
+            }
+          },
+          "response_schema": {
+            "success": {
+              "data": "array of employees"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.employees",
+              "columns": [
+                "id",
+                "companyCode",
+                "name",
+                "contact",
+                "active",
+                "createdAt",
+                "updatedAt"
+              ]
+            }
+          ],
+          "rls_notes": "RLS enforced; managers/platform admins can CRUD within company; employees can read self only.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "GET,POST",
+          "path": "/rest/v1/schedules",
+          "description": "List or create weekly schedules.",
+          "auth_required": true,
+          "roles_allowed": [
+            "employee (GET only)",
+            "manager",
+            "platform_admin"
+          ],
+          "request_schema": {
+            "GET": "filters: company_code=eq.<code> or week_start_date=eq.<date>",
+            "POST": {
+              "company_code": "string",
+              "week_start_date": "date"
+            }
+          },
+          "response_schema": {
+            "success": {
+              "data": "array of schedules"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.schedules",
+              "columns": [
+                "id",
+                "company_code",
+                "week_start_date",
+                "created_at"
+              ]
+            }
+          ],
+          "rls_notes": "RLS enforced; managers/platform admins can CRUD within company; employees can read company schedules.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "GET,POST,PATCH,DELETE",
+          "path": "/rest/v1/shifts",
+          "description": "CRUD shifts within a schedule.",
+          "auth_required": true,
+          "roles_allowed": [
+            "manager",
+            "platform_admin",
+            "employee (GET own only)"
+          ],
+          "request_schema": {
+            "GET": "filters: schedule_id=eq.<uuid> or employee_id=eq.<uuid>",
+            "POST": {
+              "companyCode": "string",
+              "schedule_id": "uuid",
+              "date": "date",
+              "start": "time",
+              "end": "time",
+              "notes": "string",
+              "locId": "uuid",
+              "empId": "uuid (optional)",
+              "crewId": "uuid (optional)"
+            },
+            "PATCH": {
+              "id": "uuid",
+              "notes": "string (optional)",
+              "empId": "uuid (optional)",
+              "crewId": "uuid (optional)"
+            },
+            "DELETE": {
+              "id": "uuid"
+            }
+          },
+          "response_schema": {
+            "success": {
+              "data": "array of shifts"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.shifts",
+              "columns": [
+                "id",
+                "companyCode",
+                "date",
+                "start",
+                "end",
+                "notes",
+                "locId",
+                "empId",
+                "crewId",
+                "schedule_id"
+              ]
+            }
+          ],
+          "rls_notes": "RLS enforced; managers/platform admins can CRUD within company; employees can read own shifts.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "GET,POST,PATCH",
+          "path": "/rest/v1/credential_reset_requests",
+          "description": "Create and review forgot-credentials requests.",
+          "auth_required": true,
+          "roles_allowed": [
+            "employee",
+            "manager",
+            "platform_admin"
+          ],
+          "request_schema": {
+            "GET": "filters: status=eq.pending or requested_by_user_id=eq.<uuid>",
+            "POST": {
+              "company_code": "string",
+              "requested_by_user_id": "uuid",
+              "target_user_id": "uuid",
+              "request_type": "username|pin|both",
+              "status": "pending"
+            },
+            "PATCH": {
+              "id": "uuid",
+              "status": "approved|denied",
+              "resolved_at": "timestamptz"
+            }
+          },
+          "response_schema": {
+            "success": {
+              "data": "array of requests"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.credential_reset_requests",
+              "columns": [
+                "id",
+                "company_code",
+                "requested_by_user_id",
+                "target_user_id",
+                "request_type",
+                "status",
+                "created_at",
+                "resolved_at"
+              ]
+            }
+          ],
+          "rls_notes": "RLS enforced; employees can create/read own; managers read/update company; platform admins read/update all.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "GET,POST",
+          "path": "/rest/v1/requests",
+          "description": "Create or list credential change requests (manager/employee self-request; platform admin review).",
+          "auth_required": true,
+          "roles_allowed": [
+            "employee",
+            "manager",
+            "platform_admin"
+          ],
+          "request_schema": {
+            "GET": "filters: status=eq.pending or requesterUserId=eq.<uuid>",
+            "POST": {
+              "companyCode": "string",
+              "type": "employee_change_credentials|manager_change_credentials|admin_change_credentials",
+              "status": "pending",
+              "requesterUserId": "uuid",
+              "targetUserId": "uuid",
+              "proposedUsername": "string",
+              "proposedPin": "string"
+            }
+          },
+          "response_schema": {
+            "success": {
+              "data": "array of requests"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.requests",
+              "columns": [
+                "id",
+                "companyCode",
+                "type",
+                "status",
+                "requesterUserId",
+                "targetUserId",
+                "proposedUsername",
+                "proposedPin",
+                "createdAt"
+              ]
+            }
+          ],
+          "rls_notes": "RLS enforced; employees/managers can insert self requests; platform admins can read manager/admin requests.",
+          "errors": [
+            "E_FORBIDDEN",
+            "E_VALIDATION"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/rest/v1/companies",
+          "description": "List companies for platform admin overview.",
+          "auth_required": true,
+          "roles_allowed": [
+            "platform_admin"
+          ],
+          "request_schema": {
+            "filters": "companyCode=eq.<code>"
+          },
+          "response_schema": {
+            "success": {
+              "data": "array of companies"
+            },
+            "error": {
+              "error": "string"
+            }
+          },
+          "db_access": [
+            {
+              "table": "public.companies",
+              "columns": [
+                "id",
+                "companyCode",
+                "companyName",
+                "isDisabled",
+                "supportEnabled",
+                "createdAt"
+              ]
+            }
+          ],
+          "rls_notes": "RLS enforced for authenticated; platform admins can read all.",
+          "errors": [
+            "E_FORBIDDEN"
+          ]
+        }
+      ]
+    },
+    "final_state_meta": {
+      "schema_version": "1.0.0",
+      "phase": 3,
+      "generated_at": "2025-12-21T05:45:33.327259+00:00",
+      "agent": "context-architect-compiler",
+      "inputs": {
+        "manifest_path": "./context_logs/manifest.json",
+        "live_schema_path": "./context_logs/live_schema.json"
+      }
+    },
+    "final_state_rules": {
+      "multi_tenant": true,
+      "tenant_key": "company_code",
+      "auth_model": "supabase_auth"
+    },
+    "lint_report": {
+      "ok": true,
+      "phase": "lint_consistency",
+      "repo_assumptions": {
+        "frontend_root": "public/",
+        "runtime_config_path": "public/runtime-config.js",
+        "supabase_client_path": "public/js/supabaseClient.js"
+      },
+      "summary": {
+        "files_scanned": 42,
+        "files_modified": 2,
+        "findings_count": 1,
+        "errors_count": 0,
+        "warnings_count": 1
+      },
+      "changes": {
+        "modified": [
+          {
+            "path": "context_logs/lint_report.json",
+            "reason": "Generated lint consistency report."
+          },
+          {
+            "path": "context_logs/frontend_handoff.json",
+            "reason": "Generated frontend UI compiler handoff."
+          }
+        ]
+      },
+      "findings": [
+        {
+          "severity": "warning",
+          "code": "F_RUNTIME_CONFIG_MISSING",
+          "message": "public/runtime-config.js is not present in the repo; HTML loads it so it must be generated for local dev or at deploy.",
+          "path": "public/runtime-config.js",
+          "line_hint": null,
+          "recommended_fix": "Run scripts/generate_runtime_config.py locally or ensure the deploy workflow writes public/runtime-config.js from SUPABASE_URL and SUPABASE_ANON_KEY secrets."
+        }
+      ],
+      "blocked": false,
+      "blockers": [],
+      "next_agent": {
+        "name": "frontend-ui-compiler",
+        "recommended_start": "Phase 5",
+        "notes": [
+          "runtime-config loader order verified across HTML entrypoints.",
+          "supabaseClient.js is the single client entrypoint and uses runtime-config values.",
+          "No unknown API endpoints detected against api_contract.json."
+        ]
+      }
+    },
+    "frontend_flow_handoff": {
+      "ok": true,
+      "phase": "frontend_flow_handoff",
+      "frontend_root": "public/",
+      "runtime_config_path": "public/runtime-config.js",
+      "supabase_client_path": "public/js/supabaseClient.js",
+      "routes_or_entrypoints": [
+        {
+          "name": "index",
+          "path": "public/index.html"
+        },
+        {
+          "name": "login",
+          "path": "public/login.html"
+        },
+        {
+          "name": "dashboard",
+          "path": "public/dashboard.html"
+        },
+        {
+          "name": "employees",
+          "path": "public/employees.html"
+        },
+        {
+          "name": "schedule",
+          "path": "public/schedule.html"
+        },
+        {
+          "name": "my_shifts",
+          "path": "public/my-shifts.html"
+        }
+      ],
+      "test_flows": [
+        {
+          "name": "login_to_dashboard",
+          "steps": [
+            "Open app",
+            "Load runtime-config",
+            "Login with companyCode + username + pin (or contract-defined method)",
+            "Expect redirect/render dashboard"
+          ],
+          "expected": [
+            "Valid session created",
+            "User profile present",
+            "Company active check enforced"
+          ],
+          "failure_signals": [
+            "No network call on button click",
+            "Console error about missing runtime-config",
+            "401/403 from auth endpoint"
+          ]
+        },
+        {
+          "name": "employees_crud",
+          "steps": [
+            "Navigate to Employees",
+            "List employees",
+            "Create employee (if allowed)",
+            "Confirm persisted in Supabase"
+          ],
+          "expected": [
+            "Network calls match api_contract endpoint names",
+            "UI updates after successful mutation"
+          ]
+        },
+        {
+          "name": "schedule_crud",
+          "steps": [
+            "Navigate to Schedule",
+            "List schedule",
+            "Create shift",
+            "Confirm persisted",
+            "Reload page and confirm still present"
+          ],
+          "expected": [
+            "Correct tenant scoping applied",
+            "No local-only schedule state"
+          ]
+        },
+        {
+          "name": "my_shifts_view",
+          "steps": [
+            "Navigate to My Shifts",
+            "List only current user shifts",
+            "Confirm matches schedule data"
+          ],
+          "expected": [
+            "User scoping enforced",
+            "No cross-user leakage"
+          ]
+        }
+      ],
+      "endpoints_used": [
+        {
+          "name": "/functions/v1/auth_login",
+          "purpose": "Authenticate and return session/profile for login flow."
+        },
+        {
+          "name": "/rest/v1/users",
+          "purpose": "Fetch current user profile after auth session bootstrap."
+        },
+        {
+          "name": "/rest/v1/employees",
+          "purpose": "Employee list/create/update/delete in employees flow."
+        },
+        {
+          "name": "/rest/v1/schedules",
+          "purpose": "Create/list weekly schedules in schedule flow."
+        },
+        {
+          "name": "/rest/v1/shifts",
+          "purpose": "Shift CRUD and my-shifts listing."
+        }
+      ],
+      "known_risks": [
+        {
+          "code": "R_RUNTIME_CONFIG",
+          "message": "runtime-config.js must be generated for dev/deploy if missing"
+        }
+      ]
+    },
+    "frontend_handoff": {
+      "phase_from": "lint_consistency",
+      "phase_to": "frontend_ui_compile",
+      "frontend_root": "public/",
+      "authoritative_contract": "./context_logs/api_contract.json",
+      "runtime_config": {
+        "required": true,
+        "path": "public/runtime-config.js",
+        "loader_verified": true,
+        "notes": [
+          "All HTML entrypoints include runtime-config.js before module scripts.",
+          "runtime-config.js is expected to be generated (not committed)."
+        ]
+      },
+      "supabase_client": {
+        "path": "public/js/supabaseClient.js",
+        "single_entrypoint_verified": true,
+        "notes": [
+          "Only public/js/supabaseClient.js creates the Supabase client.",
+          "Client reads config from globalThis.RUNTIME_CONFIG."
+        ]
+      },
+      "high_priority_fixes_for_next_agent": [],
+      "known_good": [
+        "Service worker bypasses runtime-config.js caching.",
+        "Supabase edge function names and REST tables match api_contract.json.",
+        "No legacy asset references detected under public/."
+      ],
+      "known_risks": [
+        "public/runtime-config.js is missing in the repo; local preview or deploy must generate it."
+      ]
+    }
+  },
+  "reports": {
+    "lint_report": {
+      "ok": true,
+      "blocked": false,
+      "phase": "lint_consistency",
+      "summary": {
+        "files_scanned": 42,
+        "files_modified": 2,
+        "findings_count": 1,
+        "errors_count": 0,
+        "warnings_count": 1
+      }
+    },
+    "github_agent_report": {
+      "ok": true,
+      "detected": {
+        "has_git": true,
+        "branch": "master",
+        "remotes": [
+          {
+            "name": "origin",
+            "fetch": "https://github.com/CyberSolutionsHQ/Scheduler.git",
+            "push": "https://github.com/CyberSolutionsHQ/Scheduler.git"
+          }
+        ],
+        "gh_user": "CyberSolutionsHQ",
+        "repo_target": "CyberSolutionsHQ/Scheduler",
+        "workflows_found": [
+          ".github/workflows/deploy_github_pages.yml"
+        ],
+        "pages_config_found": {
+          "via_workflow": ".github/workflows/deploy_github_pages.yml",
+          "artifact_path": "public/",
+          "environment_branch_policies": [
+            "main"
+          ]
+        }
+      },
+      "github_references": [
+        {
+          "path": ".github/workflows/deploy_github_pages.yml",
+          "type": "workflow",
+          "note": "Deploys GitHub Pages and generates runtime-config.js from secrets."
+        },
+        {
+          "path": "README.md",
+          "type": "docs",
+          "note": "Mentions GitHub Pages deployment for static assets."
+        },
+        {
+          "path": "public/js/supabaseClient.js",
+          "type": "runtime",
+          "note": "Warns about missing GitHub Pages secrets/runtime config."
+        },
+        {
+          "path": "context_logs/github_admin_report.json",
+          "type": "log",
+          "note": "Prior GitHub audit details for Pages and workflows."
+        }
+      ],
+      "safety": {
+        "gitignore_updated": true,
+        "risky_tracked_files_removed": false,
+        "blocked_by_secret_detection": false
+      },
+      "actions_taken": [
+        "Captured repository status, remotes, and workflows.",
+        "Updated .gitignore with key/log patterns and ignored context_logs/ and _archive/.",
+        "Scanned staged files for secret patterns; no blocking matches found.",
+        "Committed local changes with message 'chore: sync'.",
+        "Pushed master to origin and confirmed upstream tracking.",
+        "Checked github-pages environment branch policy; only 'main' is allowed."
+      ],
+      "next_steps": [
+        "Consider updating origin/main if it should match master (default branch is main).",
+        "Verify GitHub Pages environment policy aligns with the intended deployment branch.",
+        "If deploying from master, update github-pages environment branch policy or push pages changes to main."
+      ]
+    },
+    "github_admin_report": {
+      "ok": true,
+      "phase": "github_admin_audit",
+      "generated_at": "2025-12-21T10:57:31.759084+00:00",
+      "local_repo": {
+        "is_git_repo": true,
+        "root": "/home/krovo/Schedule Manager",
+        "branch": "master",
+        "head_sha": "f0fa75bf1885165e2d38a40eab57481f3d57219b",
+        "remotes": [
+          {
+            "name": "origin",
+            "url": "https://github.com/CyberSolutionsHQ/Scheduler.git"
+          }
+        ],
+        "working_tree_clean": false,
+        "untracked_suspected_secret_files": [
+          "supabase/functions/update_admin_credentials/"
+        ]
+      },
+      "github": {
+        "resolved_repo": "CyberSolutionsHQ/Scheduler",
+        "viewer_login": "CyberSolutionsHQ",
+        "has_admin": true,
+        "default_branch": "main",
+        "push_health": {
+          "can_push": null,
+          "last_error_code": null,
+          "diagnosis": [
+            "No push attempted from this audit.",
+            "Local branch is master while default branch is main.",
+            "github-pages environment allows deployments from main only."
+          ]
+        },
+        "actions": {
+          "workflows": [
+            {
+              "name": "Deploy GitHub Pages",
+              "path": ".github/workflows/deploy_github_pages.yml"
+            },
+            {
+              "name": "Deploy static content to Pages",
+              "path": ".github/workflows/static.yml"
+            }
+          ],
+          "recent_failures": [
+            {
+              "workflow": "Deploy GitHub Pages",
+              "run_id": "20408539210",
+              "summary": "Branch \"master\" is not allowed to deploy to github-pages due to environment protection rules."
+            }
+          ]
+        },
+        "pages": {
+          "enabled": true,
+          "build_type": "workflow",
+          "source_branch": "main",
+          "source_path": "/",
+          "published_url": "https://cybersolutionshq.github.io/Scheduler/",
+          "suspected_404_causes": [
+            "Deployments from master are blocked by the github-pages environment policy; site may remain stale after master pushes.",
+            "A second Pages workflow deploys without generating runtime-config.js, which can result in missing configuration at runtime."
+          ]
+        },
+        "secrets": {
+          "required": [
+            "SUPABASE_URL",
+            "SUPABASE_ANON_KEY"
+          ],
+          "present": [
+            "SUPABASE_URL",
+            "SUPABASE_ANON_KEY"
+          ],
+          "missing": []
+        },
+        "variables": {
+          "required": [],
+          "present": [],
+          "missing": []
+        }
+      },
+      "github_files": {
+        "workflows": [
+          {
+            "path": ".github/workflows/deploy_github_pages.yml",
+            "notes": [
+              "Triggers on push to main and master.",
+              "Generates runtime-config.js from SUPABASE_URL and SUPABASE_ANON_KEY secrets.",
+              "Uploads repository root as Pages artifact."
+            ]
+          },
+          {
+            "path": ".github/workflows/static.yml",
+            "notes": [
+              "Present on remote main branch; not in local working tree.",
+              "Triggers on push to main.",
+              "Does not generate runtime-config.js before artifact upload."
+            ]
+          }
+        ],
+        "other": [
+          {
+            "path": ".gitignore",
+            "type": "config",
+            "notes": [
+              "Ignores runtime-config.js and .env files."
+            ]
+          },
+          {
+            "path": "README.md",
+            "type": "docs",
+            "notes": [
+              "Documents GitHub Pages deployment and production Supabase URL guardrails."
+            ]
+          },
+          {
+            "path": ".github/dependabot.yml",
+            "type": "missing",
+            "notes": [
+              "Not present."
+            ]
+          },
+          {
+            "path": ".github/CODEOWNERS",
+            "type": "missing",
+            "notes": [
+              "Not present."
+            ]
+          },
+          {
+            "path": ".github/ISSUE_TEMPLATE/",
+            "type": "missing",
+            "notes": [
+              "Not present."
+            ]
+          },
+          {
+            "path": ".github/PULL_REQUEST_TEMPLATE",
+            "type": "missing",
+            "notes": [
+              "Not present."
+            ]
+          },
+          {
+            "path": ".github/FUNDING.yml",
+            "type": "missing",
+            "notes": [
+              "Not present."
+            ]
+          },
+          {
+            "path": "SECURITY.md",
+            "type": "missing",
+            "notes": [
+              "Not present."
+            ]
+          },
+          {
+            "path": "CODE_OF_CONDUCT.md",
+            "type": "missing",
+            "notes": [
+              "Not present."
+            ]
+          },
+          {
+            "path": "CONTRIBUTING.md",
+            "type": "missing",
+            "notes": [
+              "Not present."
+            ]
+          }
+        ]
+      },
+      "env_audit": {
+        "dotenv_found": true,
+        "keys_present": [
+          "SUPABASE_ACCESS_TOKEN",
+          "SUPABASE_DB_PASSWORD",
+          "SUPABASE_PROJECT_ID",
+          "SUPABASE_DB_URL"
+        ],
+        "keys_missing_recommended": [
+          "SUPABASE_URL",
+          "SUPABASE_ANON_KEY",
+          "SUPABASE_PROJECT_REF"
+        ],
+        "notes": [
+          "Never include values.",
+          "Frontend runtime config is injected via GitHub secrets or js/config.js, not .env."
+        ]
+      },
+      "blocking_issues": [
+        {
+          "issue_code": "E_WORKFLOW_FAIL",
+          "evidence": [
+            "gh run view 20408539210",
+            "repos/CyberSolutionsHQ/Scheduler/environments/github-pages/deployment-branch-policies"
+          ],
+          "likely_root_cause": "github-pages environment branch policy only allows main, so Deploy GitHub Pages runs from master are rejected.",
+          "fix_options": [
+            "Deploy from main only (recommended) and stop pushing Pages changes to master.",
+            "Add master to the github-pages environment branch policy.",
+            "Remove master from workflow triggers to prevent rejected runs."
+          ],
+          "recommended_fix": "Align on main as the Pages deployment branch and ensure pushes are made to main."
+        },
+        {
+          "issue_code": "E_MISSING_RUNTIME_CONFIG",
+          "evidence": [
+            ".github/workflows/static.yml",
+            "js/supabaseClient.js",
+            "index.html"
+          ],
+          "likely_root_cause": "The static Pages workflow deploys without generating runtime-config.js; when it finishes after the other workflow, the published site can lack Supabase config.",
+          "fix_options": [
+            "Remove/disable the static workflow and keep only deploy_github_pages.yml.",
+            "Add runtime-config.js generation to static.yml before artifact upload.",
+            "Restrict Pages deployment to a single workflow via branch or workflow filters."
+          ],
+          "recommended_fix": "Keep a single Pages workflow that generates runtime-config.js before uploading the artifact."
+        }
+      ],
+      "next_actions": [
+        {
+          "priority": 1,
+          "action": "Decide and enforce the single deployment branch (main recommended) for GitHub Pages.",
+          "owner": "human",
+          "details": "Update github-pages environment branch policies or merge/push to main only."
+        },
+        {
+          "priority": 2,
+          "action": "Consolidate Pages workflows to ensure runtime-config.js is always generated.",
+          "owner": "human",
+          "details": "Edit or remove .github/workflows/static.yml; keep deploy_github_pages.yml as the only deploy pipeline."
+        },
+        {
+          "priority": 3,
+          "action": "Verify the next Pages deployment outputs runtime-config.js and site loads without config warnings.",
+          "owner": "human",
+          "details": "Check the Pages URL and workflow run logs after the next push."
+        }
+      ]
+    },
+    "frontend_handoff": {
+      "phase_from": "lint_consistency",
+      "phase_to": "frontend_ui_compile",
+      "frontend_root": "public/",
+      "authoritative_contract": "./context_logs/api_contract.json",
+      "runtime_config": {
+        "required": true,
+        "path": "public/runtime-config.js",
+        "loader_verified": true,
+        "notes": [
+          "All HTML entrypoints include runtime-config.js before module scripts.",
+          "runtime-config.js is expected to be generated (not committed)."
+        ]
+      },
+      "supabase_client": {
+        "path": "public/js/supabaseClient.js",
+        "single_entrypoint_verified": true,
+        "notes": [
+          "Only public/js/supabaseClient.js creates the Supabase client.",
+          "Client reads config from globalThis.RUNTIME_CONFIG."
+        ]
+      },
+      "high_priority_fixes_for_next_agent": [],
+      "known_good": [
+        "Service worker bypasses runtime-config.js caching.",
+        "Supabase edge function names and REST tables match api_contract.json.",
+        "No legacy asset references detected under public/."
+      ],
+      "known_risks": [
+        "public/runtime-config.js is missing in the repo; local preview or deploy must generate it."
+      ]
+    },
+    "frontend_flow_handoff": {
+      "ok": true,
+      "phase": "frontend_flow_handoff",
+      "frontend_root": "public/",
+      "runtime_config_path": "public/runtime-config.js",
+      "supabase_client_path": "public/js/supabaseClient.js",
+      "routes_or_entrypoints": [
+        {
+          "name": "index",
+          "path": "public/index.html"
+        },
+        {
+          "name": "login",
+          "path": "public/login.html"
+        },
+        {
+          "name": "dashboard",
+          "path": "public/dashboard.html"
+        },
+        {
+          "name": "employees",
+          "path": "public/employees.html"
+        },
+        {
+          "name": "schedule",
+          "path": "public/schedule.html"
+        },
+        {
+          "name": "my_shifts",
+          "path": "public/my-shifts.html"
+        }
+      ],
+      "test_flows": [
+        {
+          "name": "login_to_dashboard",
+          "steps": [
+            "Open app",
+            "Load runtime-config",
+            "Login with companyCode + username + pin (or contract-defined method)",
+            "Expect redirect/render dashboard"
+          ],
+          "expected": [
+            "Valid session created",
+            "User profile present",
+            "Company active check enforced"
+          ],
+          "failure_signals": [
+            "No network call on button click",
+            "Console error about missing runtime-config",
+            "401/403 from auth endpoint"
+          ]
+        },
+        {
+          "name": "employees_crud",
+          "steps": [
+            "Navigate to Employees",
+            "List employees",
+            "Create employee (if allowed)",
+            "Confirm persisted in Supabase"
+          ],
+          "expected": [
+            "Network calls match api_contract endpoint names",
+            "UI updates after successful mutation"
+          ]
+        },
+        {
+          "name": "schedule_crud",
+          "steps": [
+            "Navigate to Schedule",
+            "List schedule",
+            "Create shift",
+            "Confirm persisted",
+            "Reload page and confirm still present"
+          ],
+          "expected": [
+            "Correct tenant scoping applied",
+            "No local-only schedule state"
+          ]
+        },
+        {
+          "name": "my_shifts_view",
+          "steps": [
+            "Navigate to My Shifts",
+            "List only current user shifts",
+            "Confirm matches schedule data"
+          ],
+          "expected": [
+            "User scoping enforced",
+            "No cross-user leakage"
+          ]
+        }
+      ],
+      "endpoints_used": [
+        {
+          "name": "/functions/v1/auth_login",
+          "purpose": "Authenticate and return session/profile for login flow."
+        },
+        {
+          "name": "/rest/v1/users",
+          "purpose": "Fetch current user profile after auth session bootstrap."
+        },
+        {
+          "name": "/rest/v1/employees",
+          "purpose": "Employee list/create/update/delete in employees flow."
+        },
+        {
+          "name": "/rest/v1/schedules",
+          "purpose": "Create/list weekly schedules in schedule flow."
+        },
+        {
+          "name": "/rest/v1/shifts",
+          "purpose": "Shift CRUD and my-shifts listing."
+        }
+      ],
+      "known_risks": [
+        {
+          "code": "R_RUNTIME_CONFIG",
+          "message": "runtime-config.js must be generated for dev/deploy if missing"
+        }
+      ]
+    }
+  },
+  "contradictions": [
+    {
+      "type": "db_functions_missing_in_live_schema_log",
+      "detail": [
+        {
+          "schema": "auth",
+          "name": "email",
+          "signature": "email()"
+        },
+        {
+          "schema": "auth",
+          "name": "jwt",
+          "signature": "jwt()"
+        },
+        {
+          "schema": "auth",
+          "name": "role",
+          "signature": "role()"
+        },
+        {
+          "schema": "auth",
+          "name": "uid",
+          "signature": "uid()"
+        },
+        {
+          "schema": "extensions",
+          "name": "armor",
+          "signature": "armor(bytea)"
+        },
+        {
+          "schema": "extensions",
+          "name": "armor",
+          "signature": "armor(bytea, text[], text[])"
+        },
+        {
+          "schema": "extensions",
+          "name": "crypt",
+          "signature": "crypt(text, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "dearmor",
+          "signature": "dearmor(text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "decrypt",
+          "signature": "decrypt(bytea, bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "decrypt_iv",
+          "signature": "decrypt_iv(bytea, bytea, bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "digest",
+          "signature": "digest(bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "digest",
+          "signature": "digest(text, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "encrypt",
+          "signature": "encrypt(bytea, bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "encrypt_iv",
+          "signature": "encrypt_iv(bytea, bytea, bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_random_bytes",
+          "signature": "gen_random_bytes(integer)"
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_random_uuid",
+          "signature": "gen_random_uuid()"
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_salt",
+          "signature": "gen_salt(text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_salt",
+          "signature": "gen_salt(text, integer)"
+        },
+        {
+          "schema": "extensions",
+          "name": "grant_pg_cron_access",
+          "signature": "grant_pg_cron_access()"
+        },
+        {
+          "schema": "extensions",
+          "name": "grant_pg_graphql_access",
+          "signature": "grant_pg_graphql_access()"
+        },
+        {
+          "schema": "extensions",
+          "name": "grant_pg_net_access",
+          "signature": "grant_pg_net_access()"
+        },
+        {
+          "schema": "extensions",
+          "name": "hmac",
+          "signature": "hmac(bytea, bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "hmac",
+          "signature": "hmac(text, text, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pg_stat_statements",
+          "signature": "pg_stat_statements(showtext boolean, OUT userid oid, OUT dbid oid, OUT toplevel boolean, OUT queryid bigint, OUT query text, OUT plans bigint, OUT total_plan_time double precision, OUT min_plan_time double precision, OUT max_plan_time double precision, OUT mean_plan_time double precision, OUT stddev_plan_time double precision, OUT calls bigint, OUT total_exec_time double precision, OUT min_exec_time double precision, OUT max_exec_time double precision, OUT mean_exec_time double precision, OUT stddev_exec_time double precision, OUT rows bigint, OUT shared_blks_hit bigint, OUT shared_blks_read bigint, OUT shared_blks_dirtied bigint, OUT shared_blks_written bigint, OUT local_blks_hit bigint, OUT local_blks_read bigint, OUT local_blks_dirtied bigint, OUT local_blks_written bigint, OUT temp_blks_read bigint, OUT temp_blks_written bigint, OUT shared_blk_read_time double precision, OUT shared_blk_write_time double precision, OUT local_blk_read_time double precision, OUT local_blk_write_time double precision, OUT temp_blk_read_time double precision, OUT temp_blk_write_time double precision, OUT wal_records bigint, OUT wal_fpi bigint, OUT wal_bytes numeric, OUT jit_functions bigint, OUT jit_generation_time double precision, OUT jit_inlining_count bigint, OUT jit_inlining_time double precision, OUT jit_optimization_count bigint, OUT jit_optimization_time double precision, OUT jit_emission_count bigint, OUT jit_emission_time double precision, OUT jit_deform_count bigint, OUT jit_deform_time double precision, OUT stats_since timestamp with time zone, OUT minmax_stats_since timestamp with time zone)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pg_stat_statements_info",
+          "signature": "pg_stat_statements_info(OUT dealloc bigint, OUT stats_reset timestamp with time zone)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pg_stat_statements_reset",
+          "signature": "pg_stat_statements_reset(userid oid DEFAULT 0, dbid oid DEFAULT 0, queryid bigint DEFAULT 0, minmax_only boolean DEFAULT false)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_armor_headers",
+          "signature": "pgp_armor_headers(text, OUT key text, OUT value text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_key_id",
+          "signature": "pgp_key_id(bytea)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt",
+          "signature": "pgp_pub_decrypt(bytea, bytea)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt",
+          "signature": "pgp_pub_decrypt(bytea, bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt",
+          "signature": "pgp_pub_decrypt(bytea, bytea, text, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt_bytea",
+          "signature": "pgp_pub_decrypt_bytea(bytea, bytea)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt_bytea",
+          "signature": "pgp_pub_decrypt_bytea(bytea, bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt_bytea",
+          "signature": "pgp_pub_decrypt_bytea(bytea, bytea, text, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt",
+          "signature": "pgp_pub_encrypt(text, bytea)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt",
+          "signature": "pgp_pub_encrypt(text, bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt_bytea",
+          "signature": "pgp_pub_encrypt_bytea(bytea, bytea)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt_bytea",
+          "signature": "pgp_pub_encrypt_bytea(bytea, bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt",
+          "signature": "pgp_sym_decrypt(bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt",
+          "signature": "pgp_sym_decrypt(bytea, text, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt_bytea",
+          "signature": "pgp_sym_decrypt_bytea(bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt_bytea",
+          "signature": "pgp_sym_decrypt_bytea(bytea, text, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt",
+          "signature": "pgp_sym_encrypt(text, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt",
+          "signature": "pgp_sym_encrypt(text, text, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt_bytea",
+          "signature": "pgp_sym_encrypt_bytea(bytea, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt_bytea",
+          "signature": "pgp_sym_encrypt_bytea(bytea, text, text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgrst_ddl_watch",
+          "signature": "pgrst_ddl_watch()"
+        },
+        {
+          "schema": "extensions",
+          "name": "pgrst_drop_watch",
+          "signature": "pgrst_drop_watch()"
+        },
+        {
+          "schema": "extensions",
+          "name": "set_graphql_placeholder",
+          "signature": "set_graphql_placeholder()"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v1",
+          "signature": "uuid_generate_v1()"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v1mc",
+          "signature": "uuid_generate_v1mc()"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v3",
+          "signature": "uuid_generate_v3(namespace uuid, name text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v4",
+          "signature": "uuid_generate_v4()"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v5",
+          "signature": "uuid_generate_v5(namespace uuid, name text)"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_nil",
+          "signature": "uuid_nil()"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_dns",
+          "signature": "uuid_ns_dns()"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_oid",
+          "signature": "uuid_ns_oid()"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_url",
+          "signature": "uuid_ns_url()"
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_x500",
+          "signature": "uuid_ns_x500()"
+        },
+        {
+          "schema": "graphql",
+          "name": "_internal_resolve",
+          "signature": "_internal_resolve(query text, variables jsonb DEFAULT '{}'::jsonb, \"operationName\" text DEFAULT NULL::text, extensions jsonb DEFAULT NULL::jsonb)"
+        },
+        {
+          "schema": "graphql",
+          "name": "comment_directive",
+          "signature": "comment_directive(comment_ text)"
+        },
+        {
+          "schema": "graphql",
+          "name": "exception",
+          "signature": "exception(message text)"
+        },
+        {
+          "schema": "graphql",
+          "name": "get_schema_version",
+          "signature": "get_schema_version()"
+        },
+        {
+          "schema": "graphql",
+          "name": "increment_schema_version",
+          "signature": "increment_schema_version()"
+        },
+        {
+          "schema": "graphql",
+          "name": "resolve",
+          "signature": "resolve(query text, variables jsonb DEFAULT '{}'::jsonb, \"operationName\" text DEFAULT NULL::text, extensions jsonb DEFAULT NULL::jsonb)"
+        },
+        {
+          "schema": "graphql_public",
+          "name": "graphql",
+          "signature": "graphql(\"operationName\" text DEFAULT NULL::text, query text DEFAULT NULL::text, variables jsonb DEFAULT NULL::jsonb, extensions jsonb DEFAULT NULL::jsonb)"
+        },
+        {
+          "schema": "public",
+          "name": "company_is_active",
+          "signature": "company_is_active(code text)"
+        },
+        {
+          "schema": "public",
+          "name": "consume_platform_admin_reset_token",
+          "signature": "consume_platform_admin_reset_token(plaintext_token text)"
+        },
+        {
+          "schema": "public",
+          "name": "create_platform_admin_reset_token",
+          "signature": "create_platform_admin_reset_token(target_user_id uuid)"
+        },
+        {
+          "schema": "public",
+          "name": "current_company_code",
+          "signature": "current_company_code()"
+        },
+        {
+          "schema": "public",
+          "name": "current_company_is_active",
+          "signature": "current_company_is_active()"
+        },
+        {
+          "schema": "public",
+          "name": "current_employee_id",
+          "signature": "current_employee_id()"
+        },
+        {
+          "schema": "public",
+          "name": "current_role",
+          "signature": "current_role()"
+        },
+        {
+          "schema": "public",
+          "name": "current_user_active",
+          "signature": "current_user_active()"
+        },
+        {
+          "schema": "public",
+          "name": "current_user_role",
+          "signature": "current_user_role()"
+        },
+        {
+          "schema": "public",
+          "name": "is_manager",
+          "signature": "is_manager()"
+        },
+        {
+          "schema": "public",
+          "name": "is_platform_admin",
+          "signature": "is_platform_admin()"
+        },
+        {
+          "schema": "public",
+          "name": "platform_admin_recovery_set_pin",
+          "signature": "platform_admin_recovery_set_pin(new_pin text)"
+        },
+        {
+          "schema": "public",
+          "name": "prevent_company_code_update",
+          "signature": "prevent_company_code_update()"
+        },
+        {
+          "schema": "public",
+          "name": "set_updated_at",
+          "signature": "set_updated_at()"
+        },
+        {
+          "schema": "public",
+          "name": "sync_my_pin_hash_and_clear_force_pin_change",
+          "signature": "sync_my_pin_hash_and_clear_force_pin_change(new_pin text)"
+        },
+        {
+          "schema": "realtime",
+          "name": "apply_rls",
+          "signature": "apply_rls(wal jsonb, max_record_bytes integer DEFAULT (1024 * 1024))"
+        },
+        {
+          "schema": "realtime",
+          "name": "broadcast_changes",
+          "signature": "broadcast_changes(topic_name text, event_name text, operation text, table_name text, table_schema text, new record, old record, level text DEFAULT 'ROW'::text)"
+        },
+        {
+          "schema": "realtime",
+          "name": "build_prepared_statement_sql",
+          "signature": "build_prepared_statement_sql(prepared_statement_name text, entity regclass, columns realtime.wal_column[])"
+        },
+        {
+          "schema": "realtime",
+          "name": "cast",
+          "signature": "cast(val text, type_ regtype)"
+        },
+        {
+          "schema": "realtime",
+          "name": "check_equality_op",
+          "signature": "check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text)"
+        },
+        {
+          "schema": "realtime",
+          "name": "is_visible_through_filters",
+          "signature": "is_visible_through_filters(columns realtime.wal_column[], filters realtime.user_defined_filter[])"
+        },
+        {
+          "schema": "realtime",
+          "name": "list_changes",
+          "signature": "list_changes(publication name, slot_name name, max_changes integer, max_record_bytes integer)"
+        },
+        {
+          "schema": "realtime",
+          "name": "quote_wal2json",
+          "signature": "quote_wal2json(entity regclass)"
+        },
+        {
+          "schema": "realtime",
+          "name": "send",
+          "signature": "send(payload jsonb, event text, topic text, private boolean DEFAULT true)"
+        },
+        {
+          "schema": "realtime",
+          "name": "subscription_check_filters",
+          "signature": "subscription_check_filters()"
+        },
+        {
+          "schema": "realtime",
+          "name": "to_regrole",
+          "signature": "to_regrole(role_name text)"
+        },
+        {
+          "schema": "realtime",
+          "name": "topic",
+          "signature": "topic()"
+        },
+        {
+          "schema": "storage",
+          "name": "add_prefixes",
+          "signature": "add_prefixes(_bucket_id text, _name text)"
+        },
+        {
+          "schema": "storage",
+          "name": "can_insert_object",
+          "signature": "can_insert_object(bucketid text, name text, owner uuid, metadata jsonb)"
+        },
+        {
+          "schema": "storage",
+          "name": "delete_leaf_prefixes",
+          "signature": "delete_leaf_prefixes(bucket_ids text[], names text[])"
+        },
+        {
+          "schema": "storage",
+          "name": "delete_prefix",
+          "signature": "delete_prefix(_bucket_id text, _name text)"
+        },
+        {
+          "schema": "storage",
+          "name": "delete_prefix_hierarchy_trigger",
+          "signature": "delete_prefix_hierarchy_trigger()"
+        },
+        {
+          "schema": "storage",
+          "name": "enforce_bucket_name_length",
+          "signature": "enforce_bucket_name_length()"
+        },
+        {
+          "schema": "storage",
+          "name": "extension",
+          "signature": "extension(name text)"
+        },
+        {
+          "schema": "storage",
+          "name": "filename",
+          "signature": "filename(name text)"
+        },
+        {
+          "schema": "storage",
+          "name": "foldername",
+          "signature": "foldername(name text)"
+        },
+        {
+          "schema": "storage",
+          "name": "get_level",
+          "signature": "get_level(name text)"
+        },
+        {
+          "schema": "storage",
+          "name": "get_prefix",
+          "signature": "get_prefix(name text)"
+        },
+        {
+          "schema": "storage",
+          "name": "get_prefixes",
+          "signature": "get_prefixes(name text)"
+        },
+        {
+          "schema": "storage",
+          "name": "get_size_by_bucket",
+          "signature": "get_size_by_bucket()"
+        },
+        {
+          "schema": "storage",
+          "name": "list_multipart_uploads_with_delimiter",
+          "signature": "list_multipart_uploads_with_delimiter(bucket_id text, prefix_param text, delimiter_param text, max_keys integer DEFAULT 100, next_key_token text DEFAULT ''::text, next_upload_token text DEFAULT ''::text)"
+        },
+        {
+          "schema": "storage",
+          "name": "list_objects_with_delimiter",
+          "signature": "list_objects_with_delimiter(bucket_id text, prefix_param text, delimiter_param text, max_keys integer DEFAULT 100, start_after text DEFAULT ''::text, next_token text DEFAULT ''::text)"
+        },
+        {
+          "schema": "storage",
+          "name": "lock_top_prefixes",
+          "signature": "lock_top_prefixes(bucket_ids text[], names text[])"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_delete_cleanup",
+          "signature": "objects_delete_cleanup()"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_insert_prefix_trigger",
+          "signature": "objects_insert_prefix_trigger()"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_update_cleanup",
+          "signature": "objects_update_cleanup()"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_update_level_trigger",
+          "signature": "objects_update_level_trigger()"
+        },
+        {
+          "schema": "storage",
+          "name": "objects_update_prefix_trigger",
+          "signature": "objects_update_prefix_trigger()"
+        },
+        {
+          "schema": "storage",
+          "name": "operation",
+          "signature": "operation()"
+        },
+        {
+          "schema": "storage",
+          "name": "prefixes_delete_cleanup",
+          "signature": "prefixes_delete_cleanup()"
+        },
+        {
+          "schema": "storage",
+          "name": "prefixes_insert_trigger",
+          "signature": "prefixes_insert_trigger()"
+        },
+        {
+          "schema": "storage",
+          "name": "search",
+          "signature": "search(prefix text, bucketname text, limits integer DEFAULT 100, levels integer DEFAULT 1, offsets integer DEFAULT 0, search text DEFAULT ''::text, sortcolumn text DEFAULT 'name'::text, sortorder text DEFAULT 'asc'::text)"
+        },
+        {
+          "schema": "storage",
+          "name": "search_legacy_v1",
+          "signature": "search_legacy_v1(prefix text, bucketname text, limits integer DEFAULT 100, levels integer DEFAULT 1, offsets integer DEFAULT 0, search text DEFAULT ''::text, sortcolumn text DEFAULT 'name'::text, sortorder text DEFAULT 'asc'::text)"
+        },
+        {
+          "schema": "storage",
+          "name": "search_v1_optimised",
+          "signature": "search_v1_optimised(prefix text, bucketname text, limits integer DEFAULT 100, levels integer DEFAULT 1, offsets integer DEFAULT 0, search text DEFAULT ''::text, sortcolumn text DEFAULT 'name'::text, sortorder text DEFAULT 'asc'::text)"
+        },
+        {
+          "schema": "storage",
+          "name": "search_v2",
+          "signature": "search_v2(prefix text, bucket_name text, limits integer DEFAULT 100, levels integer DEFAULT 1, start_after text DEFAULT ''::text, sort_order text DEFAULT 'asc'::text, sort_column text DEFAULT 'name'::text, sort_column_after text DEFAULT ''::text)"
+        },
+        {
+          "schema": "storage",
+          "name": "update_updated_at_column",
+          "signature": "update_updated_at_column()"
+        },
+        {
+          "schema": "vault",
+          "name": "_crypto_aead_det_decrypt",
+          "signature": "_crypto_aead_det_decrypt(message bytea, additional bytea, key_id bigint, context bytea DEFAULT '\\x7067736f6469756d'::bytea, nonce bytea DEFAULT NULL::bytea)"
+        },
+        {
+          "schema": "vault",
+          "name": "_crypto_aead_det_encrypt",
+          "signature": "_crypto_aead_det_encrypt(message bytea, additional bytea, key_id bigint, context bytea DEFAULT '\\x7067736f6469756d'::bytea, nonce bytea DEFAULT NULL::bytea)"
+        },
+        {
+          "schema": "vault",
+          "name": "_crypto_aead_det_noncegen",
+          "signature": "_crypto_aead_det_noncegen()"
+        },
+        {
+          "schema": "vault",
+          "name": "create_secret",
+          "signature": "create_secret(new_secret text, new_name text DEFAULT NULL::text, new_description text DEFAULT ''::text, new_key_id uuid DEFAULT NULL::uuid)"
+        },
+        {
+          "schema": "vault",
+          "name": "update_secret",
+          "signature": "update_secret(secret_id uuid, new_secret text DEFAULT NULL::text, new_name text DEFAULT NULL::text, new_description text DEFAULT NULL::text, new_key_id uuid DEFAULT NULL::uuid)"
+        }
+      ],
+      "source": "final_state.json vs live_schema.json"
+    },
+    {
+      "type": "db_functions_extra_in_live_schema_log",
+      "detail": [
+        {
+          "schema": "auth",
+          "name": "email",
+          "signature": null
+        },
+        {
+          "schema": "auth",
+          "name": "jwt",
+          "signature": null
+        },
+        {
+          "schema": "auth",
+          "name": "role",
+          "signature": null
+        },
+        {
+          "schema": "auth",
+          "name": "uid",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "armor",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "crypt",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "dearmor",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "decrypt",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "decrypt_iv",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "digest",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "encrypt",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "encrypt_iv",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_random_bytes",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_random_uuid",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "gen_salt",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "grant_pg_cron_access",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "grant_pg_graphql_access",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "grant_pg_net_access",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "hmac",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pg_stat_statements",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pg_stat_statements_info",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pg_stat_statements_reset",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_armor_headers",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_key_id",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_decrypt_bytea",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_pub_encrypt_bytea",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_decrypt_bytea",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pgp_sym_encrypt_bytea",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pgrst_ddl_watch",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "pgrst_drop_watch",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "set_graphql_placeholder",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v1",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v1mc",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v3",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v4",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_generate_v5",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_nil",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_dns",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_oid",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_url",
+          "signature": null
+        },
+        {
+          "schema": "extensions",
+          "name": "uuid_ns_x500",
+          "signature": null
+        },
+        {
+          "schema": "graphql",
+          "name": "_internal_resolve",
+          "signature": null
+        },
+        {
+          "schema": "graphql",
+          "name": "comment_directive",
+          "signature": null
+        },
+        {
+          "schema": "graphql",
+          "name": "exception",
+          "signature": null
+        },
+        {
+          "schema": "graphql",
+          "name": "get_schema_version",
+          "signature": null
+        },
+        {
+          "schema": "graphql",
+          "name": "increment_schema_version",
+          "signature": null
+        },
+        {
+          "schema": "graphql",
+          "name": "resolve",
+          "signature": null
+        },
+        {
+          "schema": "graphql_public",
+          "name": "graphql",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "company_is_active",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "consume_platform_admin_reset_token",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "create_platform_admin_reset_token",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "current_company_code",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "current_company_is_active",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "current_employee_id",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "current_role",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "current_user_active",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "current_user_role",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "is_manager",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "is_platform_admin",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "platform_admin_recovery_set_pin",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "prevent_company_code_update",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "set_updated_at",
+          "signature": null
+        },
+        {
+          "schema": "public",
+          "name": "sync_my_pin_hash_and_clear_force_pin_change",
+          "signature": null
+        },
+        {
+          "schema": "realtime",
+          "name": "apply_rls",
+          "signature": null
+        },
+        {
+          "schema": "realtime",
+          "name": "broadcast_changes",
+          "signature": null
+        },
+        {
+          "schema": "realtime",
+          "name": "build_prepared_statement_sql",
+          "signature": null
+        },
+        {
+          "schema": "realtime",
+          "name": "cast",
+          "signature": null
+        },
+        {
+          "schema": "realtime",
+          "name": "check_equality_op",
+          "signature": null
+        },
+        {
+          "schema": "realtime",
+          "name": "is_visible_through_filters",
+          "signature": null
+        },
+        {
+          "schema": "realtime",
+          "name": "list_changes",
+          "signature": null
+        },
+        {
+          "schema": "realtime",
+          "name": "quote_wal2json",
+          "signature": null
+        },
+        {
+          "schema": "realtime",
+          "name": "send",
+          "signature": null
+        },
+        {
+          "schema": "realtime",
+          "name": "subscription_check_filters",
+          "signature": null
+        },
+        {
+          "schema": "realtime",
+          "name": "to_regrole",
+          "signature": null
+        },
+        {
+          "schema": "realtime",
+          "name": "topic",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "add_prefixes",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "can_insert_object",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "delete_leaf_prefixes",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "delete_prefix",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "delete_prefix_hierarchy_trigger",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "enforce_bucket_name_length",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "extension",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "filename",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "foldername",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "get_level",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "get_prefix",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "get_prefixes",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "get_size_by_bucket",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "list_multipart_uploads_with_delimiter",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "list_objects_with_delimiter",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "lock_top_prefixes",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "objects_delete_cleanup",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "objects_insert_prefix_trigger",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "objects_update_cleanup",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "objects_update_level_trigger",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "objects_update_prefix_trigger",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "operation",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "prefixes_delete_cleanup",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "prefixes_insert_trigger",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "search",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "search_legacy_v1",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "search_v1_optimised",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "search_v2",
+          "signature": null
+        },
+        {
+          "schema": "storage",
+          "name": "update_updated_at_column",
+          "signature": null
+        },
+        {
+          "schema": "vault",
+          "name": "_crypto_aead_det_decrypt",
+          "signature": null
+        },
+        {
+          "schema": "vault",
+          "name": "_crypto_aead_det_encrypt",
+          "signature": null
+        },
+        {
+          "schema": "vault",
+          "name": "_crypto_aead_det_noncegen",
+          "signature": null
+        },
+        {
+          "schema": "vault",
+          "name": "create_secret",
+          "signature": null
+        },
+        {
+          "schema": "vault",
+          "name": "update_secret",
+          "signature": null
+        }
+      ],
+      "source": "live_schema.json vs final_state.json"
+    }
+  ]
+}

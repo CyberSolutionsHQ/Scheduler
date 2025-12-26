@@ -22,3 +22,22 @@
 127.0.0.1 - - [21/Dec/2025 16:08:19] "GET /users.html HTTP/1.1" 200 -
 127.0.0.1 - - [21/Dec/2025 16:08:21] code 404, message File not found
 127.0.0.1 - - [21/Dec/2025 16:08:21] "GET /runtime-config.js HTTP/1.1" 404 -
+127.0.0.1 - - [21/Dec/2025 22:16:07] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:16:10] "GET /login.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:16:12] "GET /dashboard.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:16:13] "GET /employees.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:16:18] "GET /schedule.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:16:18] "GET /my-shifts.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:16:25] code 404, message File not found
+127.0.0.1 - - [21/Dec/2025 22:16:25] "GET /runtime-config.js HTTP/1.1" 404 -
+127.0.0.1 - - [21/Dec/2025 22:17:31] "GET /login.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:17:31] "GET /assets/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:17:31] code 404, message File not found
+127.0.0.1 - - [21/Dec/2025 22:17:31] "GET /runtime-config.js HTTP/1.1" 404 -
+127.0.0.1 - - [21/Dec/2025 22:17:31] "GET /js/pages/login.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:17:31] "GET /js/supabaseClient.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:17:31] "GET /js/ui.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:17:31] "GET /js/auth.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:17:31] "GET /manifest.json HTTP/1.1" 200 -
+127.0.0.1 - - [21/Dec/2025 22:17:31] code 404, message File not found
+127.0.0.1 - - [21/Dec/2025 22:17:31] "GET /favicon.ico HTTP/1.1" 404 -

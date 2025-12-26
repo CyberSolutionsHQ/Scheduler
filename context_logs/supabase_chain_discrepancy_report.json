@@ -1,0 +1,1 @@
+{"discrepancies":[{"id":"AUTH_EXPECTATION_NOTE","severity":"INFO","evidence":{"expected_auth_behavior":"mixed"},"recommended_action":"Verify auth requirements against live policies and function code."}]}

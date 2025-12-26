@@ -1,0 +1,51 @@
+{
+  "applied_at_utc": "2025-12-22T02:15:28.157886+00:00",
+  "fixes": [
+    {
+      "action": "deploy_edge_function",
+      "function": "approve_request",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "create_manager_account",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "deny_request",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "resolve_credential_reset_request",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "set_company_status",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "submit_change_request",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "submit_credential_reset_request",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "deploy_edge_function",
+      "function": "update_admin_credentials",
+      "method": "supabase functions deploy --use-api"
+    },
+    {
+      "action": "redeploy_edge_function",
+      "function": "auth_login",
+      "method": "supabase functions deploy --use-api --no-verify-jwt",
+      "reason": "auth_login is public per api_contract.json and was deployed with verify_jwt=true"
+    }
+  ]
+}
