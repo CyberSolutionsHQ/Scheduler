@@ -36,9 +36,9 @@ function setStatus(text) {
       setStatus("");
 
       try {
-        const newPin = assertPin(String(newPinEl?.value || "").trim(), "New PIN");
-        const confirmPin = assertPin(String(confirmPinEl?.value || "").trim(), "Confirm PIN");
-        if (newPin !== confirmPin) throw new Error("PINs do not match.");
+        const newPin = assertPin(String(newPinEl?.value || "").trim(), "New password");
+        const confirmPin = assertPin(String(confirmPinEl?.value || "").trim(), "Confirm password");
+        if (newPin !== confirmPin) throw new Error("Passwords do not match.");
 
         const { error: authError } = await supabase.auth.updateUser({ password: newPin });
         if (authError) throw new Error(authError.message);
@@ -51,19 +51,19 @@ function setStatus(text) {
         if (newPinEl) newPinEl.value = "";
         if (confirmPinEl) confirmPinEl.value = "";
 
-        toast("PIN updated.", { type: "success" });
+        toast("Password updated.", { type: "success" });
         const next = qs("next");
         location.href = next ? `./${String(next).replace(/^\\//, "")}` : "./dashboard.html";
       } catch (err) {
         if (await handleAuthError(err)) return;
-        const msg = err instanceof Error ? err.message : "PIN update failed.";
+        const msg = err instanceof Error ? err.message : "Password update failed.";
         toast(msg, { type: "error" });
         setStatus(msg);
       }
     });
   } catch (err) {
     if (await handleAuthError(err)) return;
-    const msg = err instanceof Error ? err.message : "Failed to load Change PIN.";
+    const msg = err instanceof Error ? err.message : "Failed to load Change Password.";
     toast(msg, { type: "error" });
     setStatus(msg);
   }

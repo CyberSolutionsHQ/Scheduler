@@ -15,7 +15,7 @@
     <div class="title">
       <div>
         <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
-        <div class="sub">Sign in with your company code + username + PIN</div>
+        <div class="sub">Sign in with your company code + username + password</div>
       </div>
     </div>
   </header>
@@ -33,8 +33,8 @@
         <label for="setupUsername">Platform admin username</label>
         <input id="setupUsername" autocomplete="username" autocapitalize="none" />
 
-        <label for="setupPin">Platform admin PIN</label>
-        <input id="setupPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+        <label for="setupPin">Platform admin password</label>
+        <input id="setupPin" type="password" minlength="8" autocomplete="new-password" />
 
         <div class="btnRow">
           <button class="btn" type="submit">Create admin</button>
@@ -53,8 +53,8 @@
         <label for="username">Username or email</label>
         <input id="username" placeholder="e.g., manager1" autocomplete="username" autocapitalize="none" />
 
-        <label for="pin">PIN</label>
-        <input id="pin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="current-password" />
+        <label for="pin">Password</label>
+        <input id="pin" type="password" minlength="8" placeholder="8+ characters" autocomplete="current-password" />
 
         <div class="btnRow">
           <button class="btn" type="submit">Sign in</button>

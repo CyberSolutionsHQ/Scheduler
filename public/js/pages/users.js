@@ -127,7 +127,7 @@ function wireLogout() {
         createHint.textContent =
           profile.role === "manager"
             ? "Employee logins take effect immediately."
-            : "Platform admins can reset manager PINs from the list below.";
+            : "Platform admins can reset manager passwords from the list below.";
       }
 
       let q = supabase
@@ -153,7 +153,7 @@ function wireLogout() {
               ? user.role === "employee"
               : user.role === "manager";
           const resetButton = canReset
-            ? `<button class="btn secondary" data-action="reset-pin" data-username="${user.username}">Reset PIN</button>`
+            ? `<button class="btn secondary" data-action="reset-pin" data-username="${user.username}">Reset password</button>`
             : "";
           return `
             <div class="item">
@@ -173,13 +173,13 @@ function wireLogout() {
       if (!btn) return;
       const username = btn.getAttribute("data-username") || "";
       try {
-        const newPin = assertPin(window.prompt("New 4-digit PIN:", "") || "", "New PIN");
+        const newPin = assertPin(window.prompt("New password (8+ characters):", "") || "", "New password");
         const { data, error } = await supabase.functions.invoke("reset_user_pin", {
           body: { companyCode, username, newPin },
         });
         if (error) throw new Error(error.message);
         if (data?.error) throw new Error(data.error);
-        toast("PIN updated.", { type: "success" });
+        toast("Password updated.", { type: "success" });
       } catch (err) {
         if (await handleAuthError(err)) return;
         toast(err instanceof Error ? err.message : "Reset failed.", { type: "error" });
@@ -191,7 +191,7 @@ function wireLogout() {
       try {
         const employeeId = String(empSelect?.value || "").trim();
         const username = normalizeUsername(String(usernameEl?.value || "").trim());
-        const pin = assertPin(String(pinEl?.value || "").trim(), "PIN");
+        const pin = assertPin(String(pinEl?.value || "").trim(), "Password");
 
         if (!employeeId) throw new Error("Select an employee.");
 

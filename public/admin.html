@@ -20,15 +20,15 @@
         <label for="adminUsername">New username (optional)</label>
         <input id="adminUsername" autocomplete="username" autocapitalize="none" />
 
-        <label for="adminPin">New 4-digit PIN (optional)</label>
-        <input id="adminPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+        <label for="adminPin">New password (8+ characters, optional)</label>
+        <input id="adminPin" type="password" minlength="8" autocomplete="new-password" />
 
         <div class="btnRow" style="margin-top:12px;">
           <button class="btn" type="submit">Update credentials</button>
         </div>
       </form>
       <div class="small" style="margin-top:10px;">
-        Changing your username requires setting a new PIN.
+        Changing your username requires setting a new password.
       </div>
     </section>
 
@@ -44,8 +44,8 @@
         <label for="managerUsername">Manager username</label>
         <input id="managerUsername" autocomplete="username" autocapitalize="none" />
 
-        <label for="managerPin">Manager 4-digit PIN</label>
-        <input id="managerPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+        <label for="managerPin">Manager password (8+ characters)</label>
+        <input id="managerPin" type="password" minlength="8" autocomplete="new-password" />
 
         <div class="btnRow" style="margin-top:12px;">
           <button class="btn" type="submit">Create</button>
@@ -63,8 +63,8 @@
         <label for="newManagerUsername">Manager username</label>
         <input id="newManagerUsername" autocomplete="username" autocapitalize="none" />
 
-        <label for="newManagerPin">Manager 4-digit PIN</label>
-        <input id="newManagerPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+        <label for="newManagerPin">Manager password (8+ characters)</label>
+        <input id="newManagerPin" type="password" minlength="8" autocomplete="new-password" />
 
         <div class="btnRow" style="margin-top:12px;">
           <button class="btn" type="submit">Create manager</button>

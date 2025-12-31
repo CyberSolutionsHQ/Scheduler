@@ -71,11 +71,11 @@ function wireLogout() {
       try {
         const proposedUsername = String(newUsernameEl?.value || "").trim();
         const proposedPinRaw = String(newPinEl?.value || "").trim();
-        const proposedPin = proposedPinRaw ? assertPin(proposedPinRaw) : "";
+        const proposedPin = proposedPinRaw ? assertPin(proposedPinRaw, "New password") : "";
         const normalizedUsername = proposedUsername ? normalizeUsername(proposedUsername) : "";
 
         if (!normalizedUsername && !proposedPin) {
-          throw new Error("Enter a new username and/or a new PIN.");
+          throw new Error("Enter a new username and/or a new password.");
         }
 
         const { data, error } = await supabase.functions.invoke("submit_change_request", {
@@ -120,14 +120,14 @@ function wireLogout() {
       try {
         const newUsername = String(adminUsernameEl?.value || "").trim();
         const newPinRaw = String(adminPinEl?.value || "").trim();
-        const newPin = newPinRaw ? assertPin(newPinRaw, "New PIN") : "";
+        const newPin = newPinRaw ? assertPin(newPinRaw, "New password") : "";
         const normalizedUsername = newUsername ? normalizeUsername(newUsername) : "";
 
         if (!normalizedUsername && !newPin) {
-          throw new Error("Enter a new username and/or a new PIN.");
+          throw new Error("Enter a new username and/or a new password.");
         }
         if (normalizedUsername && !newPin) {
-          throw new Error("Changing the username requires setting a new PIN.");
+          throw new Error("Changing the username requires setting a new password.");
         }
 
         const { data, error } = await supabase.functions.invoke("update_admin_credentials", {

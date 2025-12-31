@@ -23,8 +23,8 @@ function wireLogout() {
 
 function labelRequestType(type) {
   if (type === "username") return "Username reset";
-  if (type === "pin") return "PIN reset";
-  if (type === "both") return "Username + PIN reset";
+  if (type === "pin") return "Password reset";
+  if (type === "both") return "Username + password reset";
   return type || "—";
 }
 
@@ -152,12 +152,12 @@ function labelRequestType(type) {
 
       if (approve) {
         if (row.request_type === "pin") {
-          newPin = assertPin(window.prompt("New 4-digit PIN:", "") || "", "New PIN");
+          newPin = assertPin(window.prompt("New password (8+ characters):", "") || "", "New password");
         } else if (row.request_type === "username") {
           newUsername = normalizeUsername(window.prompt("New username:", "") || "");
         } else if (row.request_type === "both") {
           newUsername = normalizeUsername(window.prompt("New username:", "") || "");
-          newPin = assertPin(window.prompt("New 4-digit PIN:", "") || "", "New PIN");
+          newPin = assertPin(window.prompt("New password (8+ characters):", "") || "", "New password");
         }
       }
 

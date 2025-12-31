@@ -5,8 +5,8 @@
   <meta name="theme-color" content="#0e1520">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Change PIN • Cyber Solutions LLC Schedule Manager</title>
-  <meta name="description" content="Update your PIN securely for Schedule Manager access.">
+  <title>Change Password • Cyber Solutions LLC Schedule Manager</title>
+  <meta name="description" content="Update your password securely for Schedule Manager access.">
   <link rel="canonical" href="https://cybersolutionshq.github.io/Scheduler/change-pin.html">
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
@@ -15,25 +15,25 @@
     <div class="title">
       <div>
         <h1 class="h1">Cyber Solutions LLC Schedule Manager</h1>
-        <div class="sub">Security check • Set a new 4-digit PIN to continue</div>
+        <div class="sub">Security check • Set a new password (8+ characters) to continue</div>
       </div>
     </div>
   </header>
 
   <div class="container">
     <section class="card">
-      <h2>Change PIN</h2>
+      <h2>Change password</h2>
       <div class="small" id="profileLine" style="margin-bottom:10px;"></div>
 
       <form id="changePinForm" autocomplete="off">
-        <label for="newPin">New PIN</label>
-        <input id="newPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
+        <label for="newPin">New password</label>
+        <input id="newPin" type="password" minlength="8" placeholder="8+ characters" autocomplete="new-password" />
 
-        <label for="confirmPin">Confirm new PIN</label>
-        <input id="confirmPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
+        <label for="confirmPin">Confirm new password</label>
+        <input id="confirmPin" type="password" minlength="8" placeholder="8+ characters" autocomplete="new-password" />
 
         <div class="btnRow">
-          <button class="btn" type="submit">Save PIN</button>
+          <button class="btn" type="submit">Save password</button>
           <button class="btn secondary" id="logoutBtn" type="button">Sign out</button>
         </div>
         <div class="small" id="status" style="margin-top:10px; color:#ffdf9f;"></div>
@@ -45,4 +45,3 @@
   <script type="module" src="./js/pages/change-pin.js"></script>
 </body>
 </html>
-

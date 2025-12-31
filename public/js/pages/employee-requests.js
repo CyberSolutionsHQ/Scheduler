@@ -131,7 +131,7 @@ function labelRequestType(type) {
                   Target: ${target ? `${target.username} (${target.role})` : r.targetUserId}<br/>
                   Requested by: ${requester ? requester.username : r.requesterUserId}<br/>
                   Proposed username: ${r.proposedUsername || "—"}<br/>
-                  Proposed PIN: ${r.proposedPin ? "••••" : "—"}<br/>
+                  Proposed password: ${r.proposedPin ? "••••" : "—"}<br/>
                   Created: ${new Date(r.createdAt).toLocaleString()}
                 </div>
               </div>

@@ -50,9 +50,13 @@ export function normalizeUsername(username: string): string {
   return u;
 }
 
-export function assertPin(pin: string, field = "pin"): void {
+const MIN_PASSWORD_LENGTH = 8;
+
+export function assertPin(pin: string, field = "password"): void {
   const p = (pin ?? "").trim();
-  if (!/^\d{4}$/.test(p)) throw new Error(`${field} must be a 4-digit string`);
+  if (p.length < MIN_PASSWORD_LENGTH) {
+    throw new Error(`${field} must be at least ${MIN_PASSWORD_LENGTH} characters`);
+  }
 }
 
 export function internalEmail(companyCode: string, username: string): string {
@@ -118,4 +122,3 @@ export async function getCallerContext(
 export function assertCallerActive(caller: CallerContext): void {
   if (!caller.active) throw new Error("User is inactive");
 }
-

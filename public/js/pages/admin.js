@@ -102,14 +102,14 @@ function wireLogout() {
       try {
         const newUsername = String(adminUsernameEl?.value || "").trim();
         const newPinRaw = String(adminPinEl?.value || "").trim();
-        const newPin = newPinRaw ? assertPin(newPinRaw, "New PIN") : "";
+        const newPin = newPinRaw ? assertPin(newPinRaw, "New password") : "";
         const normalizedUsername = newUsername ? normalizeUsername(newUsername) : "";
 
         if (!normalizedUsername && !newPin) {
-          throw new Error("Enter a new username and/or a new PIN.");
+          throw new Error("Enter a new username and/or a new password.");
         }
         if (normalizedUsername && !newPin) {
-          throw new Error("Changing the username requires setting a new PIN.");
+          throw new Error("Changing the username requires setting a new password.");
         }
 
         const { data, error } = await supabase.functions.invoke("update_admin_credentials", {
@@ -146,7 +146,7 @@ function wireLogout() {
         if (data?.error) throw new Error(data.error);
 
         if (createCompanyResult) {
-          createCompanyResult.textContent = `Created ${data.companyCode}. Manager: ${data.managerUsername} / PIN: ${data.managerPin}`;
+          createCompanyResult.textContent = `Created ${data.companyCode}. Manager: ${data.managerUsername} / Password: ${data.managerPin}`;
         }
         createCompanyForm.reset();
         toast("Company created.", { type: "success" });
@@ -172,7 +172,7 @@ function wireLogout() {
         if (data?.error) throw new Error(data.error);
 
         if (createManagerResult) {
-          createManagerResult.textContent = `Created ${data.managerUsername} / PIN: ${data.managerPin}`;
+          createManagerResult.textContent = `Created ${data.managerUsername} / Password: ${data.managerPin}`;
         }
         createManagerForm.reset();
         toast("Manager created.", { type: "success" });

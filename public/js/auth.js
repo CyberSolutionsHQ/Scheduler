@@ -12,10 +12,14 @@ export function normalizeUsername(value) {
   return username;
 }
 
-export function assertPin(value, field = "PIN") {
-  const pin = String(value ?? "").trim();
-  if (!/^\d{4}$/.test(pin)) throw new Error(`${field} must be exactly 4 digits.`);
-  return pin;
+const MIN_PASSWORD_LENGTH = 8;
+
+export function assertPin(value, field = "Password") {
+  const password = String(value ?? "").trim();
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    throw new Error(`${field} must be at least ${MIN_PASSWORD_LENGTH} characters.`);
+  }
+  return password;
 }
 
 export function normalizeEmail(value) {

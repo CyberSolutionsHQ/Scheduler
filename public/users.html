@@ -25,8 +25,8 @@
         <label for="newUsername">Username</label>
         <input id="newUsername" autocomplete="username" autocapitalize="none" />
 
-        <label for="newPin">4-digit PIN</label>
-        <input id="newPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+        <label for="newPin">Password (8+ characters)</label>
+        <input id="newPin" type="password" minlength="8" autocomplete="new-password" />
 
         <div class="btnRow">
           <button class="btn" type="submit">Create login</button>

@@ -16,6 +16,7 @@ alter table "companies" alter column "id" set not null;
 alter table "companies" add column if not exists "company_code" text not null;
 alter table "companies" alter column "company_code" set not null;
 alter table "companies" add column if not exists "company_name" text not null;
+update "companies" set "company_name" = "company_code" where "company_name" is null;
 alter table "companies" alter column "company_name" set not null;
 alter table "companies" add column if not exists "is_disabled" boolean default false not null;
 alter table "companies" alter column "is_disabled" set not null;
@@ -25,7 +26,15 @@ alter table "companies" alter column "support_enabled" set not null;
 alter table "companies" alter column "support_enabled" set default false;
 alter table "companies" add column if not exists "created_at" timestamptz default now() not null;
 alter table "companies" alter column "created_at" set not null;
-alter table "companies" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'companies' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "companies" alter column "created_at" set default now()';
+  end if;
+end $$;
 
 do $$ begin
   if not exists (select 1 from pg_constraint where conrelid = 'companies'::regclass and contype = 'p') then
@@ -75,10 +84,26 @@ alter table "users" alter column "force_pin_change" set not null;
 alter table "users" alter column "force_pin_change" set default false;
 alter table "users" add column if not exists "created_at" timestamptz default now() not null;
 alter table "users" alter column "created_at" set not null;
-alter table "users" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'users' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "users" alter column "created_at" set default now()';
+  end if;
+end $$;
 alter table "users" add column if not exists "updated_at" timestamptz default now() not null;
 alter table "users" alter column "updated_at" set not null;
-alter table "users" alter column "updated_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'users' and column_name = 'updated_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "users" alter column "updated_at" set default now()';
+  end if;
+end $$;
 
 do $$ begin
   if not exists (select 1 from pg_constraint where conrelid = 'users'::regclass and contype = 'p') then
@@ -118,10 +143,26 @@ alter table "employees" alter column "active" set not null;
 alter table "employees" alter column "active" set default true;
 alter table "employees" add column if not exists "created_at" timestamptz default now() not null;
 alter table "employees" alter column "created_at" set not null;
-alter table "employees" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'employees' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "employees" alter column "created_at" set default now()';
+  end if;
+end $$;
 alter table "employees" add column if not exists "updated_at" timestamptz default now() not null;
 alter table "employees" alter column "updated_at" set not null;
-alter table "employees" alter column "updated_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'employees' and column_name = 'updated_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "employees" alter column "updated_at" set default now()';
+  end if;
+end $$;
 
 do $$ begin
   if not exists (select 1 from pg_constraint where conrelid = 'employees'::regclass and contype = 'p') then
@@ -159,10 +200,26 @@ alter table "job_sites" alter column "active" set not null;
 alter table "job_sites" alter column "active" set default true;
 alter table "job_sites" add column if not exists "created_at" timestamptz default now() not null;
 alter table "job_sites" alter column "created_at" set not null;
-alter table "job_sites" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'job_sites' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "job_sites" alter column "created_at" set default now()';
+  end if;
+end $$;
 alter table "job_sites" add column if not exists "updated_at" timestamptz default now() not null;
 alter table "job_sites" alter column "updated_at" set not null;
-alter table "job_sites" alter column "updated_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'job_sites' and column_name = 'updated_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "job_sites" alter column "updated_at" set default now()';
+  end if;
+end $$;
 
 do $$ begin
   if not exists (select 1 from pg_constraint where conrelid = 'job_sites'::regclass and contype = 'p') then
@@ -192,7 +249,15 @@ alter table "schedules" add column if not exists "week_start_date" date not null
 alter table "schedules" alter column "week_start_date" set not null;
 alter table "schedules" add column if not exists "created_at" timestamptz default now() not null;
 alter table "schedules" alter column "created_at" set not null;
-alter table "schedules" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'schedules' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "schedules" alter column "created_at" set default now()';
+  end if;
+end $$;
 
 do $$ begin
   if not exists (select 1 from pg_constraint where conrelid = 'schedules'::regclass and contype = 'p') then
@@ -244,10 +309,26 @@ alter table "shifts" add column if not exists "emp_id" text;
 alter table "shifts" add column if not exists "crew_id" text;
 alter table "shifts" add column if not exists "created_at" timestamptz default now() not null;
 alter table "shifts" alter column "created_at" set not null;
-alter table "shifts" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'shifts' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "shifts" alter column "created_at" set default now()';
+  end if;
+end $$;
 alter table "shifts" add column if not exists "updated_at" timestamptz default now() not null;
 alter table "shifts" alter column "updated_at" set not null;
-alter table "shifts" alter column "updated_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'shifts' and column_name = 'updated_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "shifts" alter column "updated_at" set default now()';
+  end if;
+end $$;
 
 do $$ begin
   if not exists (select 1 from pg_constraint where conrelid = 'shifts'::regclass and contype = 'p') then
@@ -287,7 +368,15 @@ alter table "credential_reset_requests" add column if not exists "target_user_id
 alter table "credential_reset_requests" alter column "target_user_id" set not null;
 alter table "credential_reset_requests" add column if not exists "created_at" timestamptz default now() not null;
 alter table "credential_reset_requests" alter column "created_at" set not null;
-alter table "credential_reset_requests" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'credential_reset_requests' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "credential_reset_requests" alter column "created_at" set default now()';
+  end if;
+end $$;
 alter table "credential_reset_requests" add column if not exists "resolved_at" timestamptz;
 
 do $$ begin
@@ -335,7 +424,15 @@ alter table "requests" add column if not exists "proposed_username" text;
 alter table "requests" add column if not exists "proposed_pin" text;
 alter table "requests" add column if not exists "created_at" timestamptz default now() not null;
 alter table "requests" alter column "created_at" set not null;
-alter table "requests" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'requests' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "requests" alter column "created_at" set default now()';
+  end if;
+end $$;
 alter table "requests" add column if not exists "handled_at" timestamptz;
 alter table "requests" add column if not exists "handled_by" text;
 alter table "requests" add column if not exists "decision_note" text;
@@ -376,10 +473,26 @@ alter table "locations" alter column "active" set not null;
 alter table "locations" alter column "active" set default true;
 alter table "locations" add column if not exists "created_at" timestamptz default now() not null;
 alter table "locations" alter column "created_at" set not null;
-alter table "locations" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'locations' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "locations" alter column "created_at" set default now()';
+  end if;
+end $$;
 alter table "locations" add column if not exists "updated_at" timestamptz default now() not null;
 alter table "locations" alter column "updated_at" set not null;
-alter table "locations" alter column "updated_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'locations' and column_name = 'updated_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "locations" alter column "updated_at" set default now()';
+  end if;
+end $$;
 
 do $$ begin
   if not exists (select 1 from pg_constraint where conrelid = 'locations'::regclass and contype = 'p') then
@@ -415,10 +528,26 @@ alter table "job_types" alter column "active" set not null;
 alter table "job_types" alter column "active" set default true;
 alter table "job_types" add column if not exists "created_at" timestamptz default now() not null;
 alter table "job_types" alter column "created_at" set not null;
-alter table "job_types" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'job_types' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "job_types" alter column "created_at" set default now()';
+  end if;
+end $$;
 alter table "job_types" add column if not exists "updated_at" timestamptz default now() not null;
 alter table "job_types" alter column "updated_at" set not null;
-alter table "job_types" alter column "updated_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'job_types' and column_name = 'updated_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "job_types" alter column "updated_at" set default now()';
+  end if;
+end $$;
 
 do $$ begin
   if not exists (select 1 from pg_constraint where conrelid = 'job_types'::regclass and contype = 'p') then
@@ -454,10 +583,26 @@ alter table "crews" alter column "active" set not null;
 alter table "crews" alter column "active" set default true;
 alter table "crews" add column if not exists "created_at" timestamptz default now() not null;
 alter table "crews" alter column "created_at" set not null;
-alter table "crews" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'crews' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "crews" alter column "created_at" set default now()';
+  end if;
+end $$;
 alter table "crews" add column if not exists "updated_at" timestamptz default now() not null;
 alter table "crews" alter column "updated_at" set not null;
-alter table "crews" alter column "updated_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'crews' and column_name = 'updated_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "crews" alter column "updated_at" set default now()';
+  end if;
+end $$;
 
 do $$ begin
   if not exists (select 1 from pg_constraint where conrelid = 'crews'::regclass and contype = 'p') then
@@ -491,7 +636,15 @@ alter table "crew_members" add column if not exists "employee_id" text not null;
 alter table "crew_members" alter column "employee_id" set not null;
 alter table "crew_members" add column if not exists "created_at" timestamptz default now() not null;
 alter table "crew_members" alter column "created_at" set not null;
-alter table "crew_members" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'crew_members' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "crew_members" alter column "created_at" set default now()';
+  end if;
+end $$;
 
 do $$ begin
   if not exists (select 1 from pg_constraint where conrelid = 'crew_members'::regclass and contype = 'p') then
@@ -527,7 +680,15 @@ alter table "shift_jobs" add column if not exists "job_type_id" text not null;
 alter table "shift_jobs" alter column "job_type_id" set not null;
 alter table "shift_jobs" add column if not exists "created_at" timestamptz default now() not null;
 alter table "shift_jobs" alter column "created_at" set not null;
-alter table "shift_jobs" alter column "created_at" set default now();
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns where table_schema = 'public'
+      and table_name = 'shift_jobs' and column_name = 'created_at' and is_generated = 'NEVER'
+  ) then
+    execute 'alter table "shift_jobs" alter column "created_at" set default now()';
+  end if;
+end $$;
 
 do $$ begin
   if not exists (select 1 from pg_constraint where conrelid = 'shift_jobs'::regclass and contype = 'p') then

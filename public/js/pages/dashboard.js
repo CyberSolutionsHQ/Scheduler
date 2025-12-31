@@ -140,7 +140,7 @@ async function renderPlatformAdmin() {
       if (data?.error) throw new Error(data.error);
 
       if (resultEl) {
-        resultEl.textContent = `Created ${data.companyCode}. Manager: ${data.managerUsername} / PIN: ${data.managerPin}`;
+        resultEl.textContent = `Created ${data.companyCode}. Manager: ${data.managerUsername} / Password: ${data.managerPin}`;
       }
       toast("Company created.", { type: "success" });
       form.reset();

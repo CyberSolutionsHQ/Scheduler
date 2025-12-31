@@ -20,13 +20,13 @@
     </section>
 
     <section class="card" id="changeRequestCard">
-      <h2>Request username / PIN change</h2>
+      <h2>Request username / password change</h2>
       <form id="changeRequestForm" autocomplete="off">
         <label for="newUsername">New username (optional)</label>
         <input id="newUsername" autocomplete="username" autocapitalize="none" />
 
-        <label for="newPin">New 4-digit PIN (optional)</label>
-        <input id="newPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+        <label for="newPin">New password (8+ characters, optional)</label>
+        <input id="newPin" type="password" minlength="8" autocomplete="new-password" />
 
         <div class="btnRow" style="margin-top:12px;">
           <button class="btn" type="submit">Submit request</button>
@@ -43,8 +43,8 @@
         <label for="requestType">Request type</label>
         <select id="requestType">
           <option value="username">Username reset</option>
-          <option value="pin">PIN reset</option>
-          <option value="both">Username + PIN reset</option>
+          <option value="pin">Password reset</option>
+          <option value="both">Username + password reset</option>
         </select>
 
         <div class="btnRow" style="margin-top:12px;">
@@ -62,14 +62,14 @@
         <label for="adminUsername">New username (optional)</label>
         <input id="adminUsername" autocomplete="username" autocapitalize="none" />
 
-        <label for="adminPin">New 4-digit PIN (optional)</label>
-        <input id="adminPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+        <label for="adminPin">New password (8+ characters, optional)</label>
+        <input id="adminPin" type="password" minlength="8" autocomplete="new-password" />
 
         <div class="btnRow" style="margin-top:12px;">
           <button class="btn" type="submit">Update credentials</button>
         </div>
         <div class="small" style="margin-top:10px;">
-          Changing your username requires setting a new PIN.
+          Changing your username requires setting a new password.
         </div>
       </form>
     </section>
