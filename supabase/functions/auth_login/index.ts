@@ -2,6 +2,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { corsHeaders, handleOptions } from "../_shared/cors.ts";
 import {
   assertPin,
+  computePinHash,
   createAdminClient,
   getEnv,
   internalEmail,
@@ -33,11 +34,13 @@ Deno.serve(async (req) => {
     assertPin(pin, "pin");
 
     let email = "";
+    let companyCode = "";
+    let username = "";
     if (body.email) {
       email = normalizeEmail(body.email);
     } else {
-      const companyCode = normalizeCompanyCode(String(body.companyCode ?? ""));
-      const username = normalizeUsername(String(body.username ?? ""));
+      companyCode = normalizeCompanyCode(String(body.companyCode ?? ""));
+      username = normalizeUsername(String(body.username ?? ""));
       email = internalEmail(companyCode, username).toLowerCase();
     }
 
@@ -48,26 +51,128 @@ Deno.serve(async (req) => {
       global: { headers: { "X-Client-Info": "schedule-manager-edge" } },
     });
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    let authResult = await supabase.auth.signInWithPassword({
       email,
       password: pin,
     });
 
-    if (error || !data?.session || !data.user) {
+    const supabaseAdmin = createAdminClient();
+    let userRow:
+      | {
+        id: string;
+        companyCode: string;
+        username: string;
+        role: string;
+        employeeId: string | null;
+        active: boolean;
+        force_pin_change: boolean | null;
+        pinHash: string | null;
+      }
+      | null = null;
+
+    if (authResult.error || !authResult.data?.session || !authResult.data.user) {
+      if (companyCode && username) {
+        let { data: fallbackUser, error: fallbackError } = await supabaseAdmin
+          .from("users")
+          .select('id, "companyCode", username, role, "employeeId", active, force_pin_change, pinHash')
+          .eq("companyCode", companyCode)
+          .eq("username", username)
+          .maybeSingle();
+
+        if (fallbackError) throw new Error(fallbackError.message);
+        if (fallbackUser) {
+          const expectedHash = await computePinHash(companyCode, username, pin);
+          if (!fallbackUser.pinHash || fallbackUser.pinHash !== expectedHash) {
+            return json(
+              { error: "invalid_credentials" },
+              { status: 401, headers: corsHeaders },
+            );
+          }
+
+          const { data: authUser, error: authGetError } = await supabaseAdmin.auth.admin
+            .getUserById(fallbackUser.id);
+
+          if (authGetError || !authUser?.user) {
+            const { data: authCreate, error: authCreateError } = await supabaseAdmin.auth.admin
+              .createUser({
+                email,
+                password: pin,
+                email_confirm: true,
+              });
+            if (authCreateError || !authCreate.user) {
+              throw new Error(authCreateError?.message ?? "Failed to create auth user");
+            }
+
+            if (authCreate.user.id !== fallbackUser.id) {
+              const dependentChecks = await Promise.all([
+                supabaseAdmin
+                  .from("requests")
+                  .select("id", { count: "exact", head: true })
+                  .or(`requesterUserId.eq.${fallbackUser.id},targetUserId.eq.${fallbackUser.id},handledBy.eq.${fallbackUser.id}`),
+                supabaseAdmin
+                  .from("credential_reset_requests")
+                  .select("id", { count: "exact", head: true })
+                  .or(`requested_by_user_id.eq.${fallbackUser.id},target_user_id.eq.${fallbackUser.id}`),
+                supabaseAdmin
+                  .from("platform_admin_reset_tokens")
+                  .select("id", { count: "exact", head: true })
+                  .eq("user_id", fallbackUser.id),
+              ]);
+
+              const hasDependencies = dependentChecks.some((check) => (check.count ?? 0) > 0);
+              if (hasDependencies) {
+                return json(
+                  { error: "user_id_mismatch_requires_migration" },
+                  { status: 409, headers: corsHeaders },
+                );
+              }
+
+              const { error: updateIdError } = await supabaseAdmin
+                .from("users")
+                .update({ id: authCreate.user.id })
+                .eq("id", fallbackUser.id);
+              if (updateIdError) throw new Error(updateIdError.message);
+
+              fallbackUser = { ...fallbackUser, id: authCreate.user.id };
+            }
+          } else {
+            const authEmail = String(authUser.user.email || email).toLowerCase();
+            email = authEmail;
+            const { error: authUpdateError } = await supabaseAdmin.auth.admin
+              .updateUserById(fallbackUser.id, {
+                password: pin,
+              });
+            if (authUpdateError) throw new Error(authUpdateError.message);
+          }
+
+          authResult = await supabase.auth.signInWithPassword({
+            email,
+            password: pin,
+          });
+
+          userRow = fallbackUser;
+        }
+      }
+    }
+
+    if (authResult.error || !authResult.data?.session || !authResult.data.user) {
       return json(
         { error: "invalid_credentials" },
         { status: 401, headers: corsHeaders },
       );
     }
 
-    const supabaseAdmin = createAdminClient();
-    const { data: userRow, error: userError } = await supabaseAdmin
-      .from("users")
-      .select('id, "companyCode", username, role, "employeeId", active, force_pin_change')
-      .eq("id", data.user.id)
-      .maybeSingle();
+    if (!userRow || userRow.id !== authResult.data.user.id) {
+      const { data: fetchedUser, error: userError } = await supabaseAdmin
+        .from("users")
+        .select('id, "companyCode", username, role, "employeeId", active, force_pin_change')
+        .eq("id", authResult.data.user.id)
+        .maybeSingle();
+      if (userError) throw new Error(userError.message);
+      userRow = fetchedUser ?? null;
+    }
 
-    if (userError || !userRow) {
+    if (!userRow) {
       return json(
         { error: "user_mapping_not_found" },
         { status: 400, headers: corsHeaders },
@@ -98,11 +203,11 @@ Deno.serve(async (req) => {
     return json(
       {
         session: {
-          access_token: data.session.access_token,
-          refresh_token: data.session.refresh_token,
-          expires_in: data.session.expires_in,
-          token_type: data.session.token_type,
-          user_id: data.user.id,
+          access_token: authResult.data.session.access_token,
+          refresh_token: authResult.data.session.refresh_token,
+          expires_in: authResult.data.session.expires_in,
+          token_type: authResult.data.session.token_type,
+          user_id: authResult.data.user.id,
         },
         profile: {
           id: userRow.id,
