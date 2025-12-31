@@ -2,7 +2,7 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches: [main, master]
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -30,12 +30,22 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          cat > ./public/runtime-config.js <<EOF
-          window.RUNTIME_CONFIG = {
-            SUPABASE_URL: "${SUPABASE_URL:-}",
-            SUPABASE_ANON_KEY: "${SUPABASE_ANON_KEY:-}"
-          };
-          EOF
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "Missing required secrets: SUPABASE_URL and/or SUPABASE_ANON_KEY" >&2
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          config = {
+              "SUPABASE_URL": os.environ.get("SUPABASE_URL", ""),
+              "SUPABASE_ANON_KEY": os.environ.get("SUPABASE_ANON_KEY", "")
+          }
+          payload = "window.RUNTIME_CONFIG = " + json.dumps(config, indent=2) + ";\n"
+          Path("public/runtime-config.js").write_text(payload, encoding="utf-8")
+          PY
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
